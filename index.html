@@ -1,9 +1,115 @@
-﻿<!DOCTYPE html>
-<html>
-  <head>
-    <title>David</title>
-  </head>
-  <body>
-    <h1>Seraphim</h1>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Always bet on Seraphim</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        /* Navigation Styles */
+        nav {
+            background: #333;
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+        }
+
+        nav a:hover {
+            color: #ddd;
+        }
+
+        /* Section Styles */
+        section {
+            min-height: 100vh;
+            padding: 6rem 2rem 2rem;
+            scroll-margin-top: 4rem;
+        }
+
+        section:nth-child(even) {
+            background: #f5f5f5;
+        }
+
+        /* Content Styles */
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            max-width: 800px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section id="home">
+        <h1>Always bet on Seraphim</h1>
+        <p>Welcome to my portfolio website!</p>
+    </section>
+
+    <section id="about">
+        <h2>About Me</h2>
+        <p>Add your personal information, skills, and background here.</p>
+    </section>
+
+    <section id="projects">
+        <h2>My Projects</h2>
+        <p>Showcase your projects with descriptions and links here.</p>
+    </section>
+
+    <section id="contact">
+        <h2>Contact</h2>
+        <p>Add your contact information or a contact form here.</p>
+    </section>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const section = document.querySelector(this.getAttribute('href'));
+                section.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
 </html>
