@@ -58,9 +58,34 @@
         .date {
             margin: 24px 0;
         }
+
+ /* ========== Dark Mode Overrides ========== */
+    .dark-mode {
+      background-color: #1a1a1a; /* Dark background */
+      color: #f0f0f0;           /* Light text */
+    }
+
+    .dark-mode .nav {
+      background-color: #333;
+      border-color: #444;
+    }
+
+    .dark-mode #theme-toggle {
+      color: #f0f0f0; /* Make toggle icon light in dark mode */
+    }
+
+    .dark-mode a,
+    .dark-mode .contact-link,
+    .dark-mode .update-banner a {
+      color: #66ccff; /* Links in dark mode */
+    }
     </style>
 </head>
 <body>
+<!-- Navigation Bar with Dark Mode Toggle -->
+<nav class="nav">
+  <!-- Toggle button (○ for light mode, ◉ for dark mode) -->
+  <button id="theme-toggle" aria-label="Toggle dark mode">○</button>
 <!-- Navigation Bar with Dark Mode Toggle -->
 <nav class="nav">
   <!-- Toggle button (○ for light mode, ◉ for dark mode) -->
