@@ -1,131 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Page Title</title>
+  <meta charset="UTF-8">
+  <title>My Page</title>
 
-  <!-- Import Charter font -->
-  <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/charter" />
+  <!-- 1. Tiny inline script at the very top of <head> -->
+  <script>
+    (function() {
+      // Check localStorage
+      if (localStorage.getItem('darkMode') === 'true') {
+        // Apply dark mode before rendering
+        document.documentElement.classList.add('dark-mode');
+      }
+    })();
+  </script>
 
   <style>
+    /* (Optional) Remove transitions if you want zero animation */
+    body {
+      transition: none !important;
+    }
+
     /* Base styles */
     body {
-      font-family: Charter, 'Bitstream Charter', serif;
-      line-height: 1.5;
-      max-width: 650px;
-      margin: 40px auto;
-      padding: 0 20px;
-      color: #1a1a1a;
-      background-color: #fff; /* Light mode background */
-      transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+      font-family: 'Charter', serif;
+      background-color: #fff; /* Light background */
+      color: #000;            /* Light text */
     }
 
-    h1 {
-      font-size: 24px;
-      margin-bottom: 8px;
-      font-weight: bold;
-    }
-
-    /* Navigation Bar */
-    .nav {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      margin-bottom: 32px;
-      background-color: #f9f9f9;
-      padding: 10px 15px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-
-    /* Dark mode toggle button */
-    #theme-toggle {
-      position: absolute;
-      left: 15px; /* Far left */
-      background: transparent;
-      border: none;
-      font-size: 20px;
-      cursor: pointer;
-      color: #1a1a1a; /* Match text color in light mode */
-      transition: color 0.3s ease;
-    }
-
-    /* Navigation links */
-    .nav a {
-      color: #0066cc;
-      text-decoration: none;
-      margin: 0 15px;
-      font-weight: bold;
-    }
-
-    .nav a:hover {
-      text-decoration: underline;
-    }
-
-    /* Dark Mode Overrides */
+    /* The .dark-mode override */
     .dark-mode {
-      background-color: #1a1a1a; /* Dark background */
-      color: #f0f0f0;           /* Light text */
+      background-color: #1a1a1a !important; /* Dark background */
+      color: #f0f0f0 !important;           /* Light text */
     }
 
-    .dark-mode .nav {
-      background-color: #333;
-      border-color: #444;
-    }
-
-    .dark-mode #theme-toggle {
-      color: #f0f0f0; /* Make toggle icon light in dark mode */
-    }
-
-    .dark-mode a {
-      color: #66ccff; /* Links in dark mode */
-    }
+    /* Example nav styling, etc. */
+    .nav { /* ... */ }
+    /* etc. */
   </style>
 </head>
 <body>
-  <!-- Navigation Bar -->
   <div class="nav">
-    <!-- Toggle button (○ for light mode, ◉ for dark mode) -->
-    <button id="theme-toggle" aria-label="Toggle dark mode">○</button>
-
-    <script>
-      // 1. On page load, read the stored preference
-      const userPrefersDark = localStorage.getItem('darkMode');
-      let isDarkMode = (userPrefersDark === 'true');
-
-      // 2. If the stored preference is dark, add the .dark-mode class right away
-      if (isDarkMode) {
-        document.body.classList.add('dark-mode');
-      }
-
-      // 3. Grab the toggle button
-      const toggleButton = document.getElementById('theme-toggle');
-
-      // 4. Set the correct symbol on initial load
-      toggleButton.textContent = isDarkMode ? '◉' : '○';
-
-      // 5. Listen for clicks to toggle dark mode
-      toggleButton.addEventListener('click', () => {
-        isDarkMode = !isDarkMode; // Flip the state
-        document.body.classList.toggle('dark-mode', isDarkMode);
-        // Save the new preference
-        localStorage.setItem('darkMode', isDarkMode);
-        // Update the button symbol
-        toggleButton.textContent = isDarkMode ? '◉' : '○';
-      });
-    </script>
-
-    <!-- Navigation links (adjust as needed) -->
+    <!-- Dark mode toggle button -->
+    <button id="theme-toggle">○</button>
+    <!-- Your nav links -->
     <a href="index.html">Home</a>
     <a href="about.html">About</a>
-    <a href="projects.html">Projects</a>
-    <a href="contact.html">Contact</a>
+    <!-- etc. -->
   </div>
 
-  <h1>Page Title</h1>
-  <p>This is the home page. Use the navigation links above to explore other sections of the site.</p>
-  <p>I like intelligence. ASI is very cool. I will be writing about the safest directions for ASI ...</p>
+  <h1>My Page</h1>
+  <p>Some content here...</p>
+
+  <!-- 2. The main toggling script at the bottom -->
+  <script>
+    // Read current preference
+    let isDarkMode = (localStorage.getItem('darkMode') === 'true');
+
+    // Grab the toggle button
+    const toggleButton = document.getElementById('theme-toggle');
+
+    // Set the correct symbol on initial load
+    toggleButton.textContent = isDarkMode ? '◉' : '○';
+
+    // Listen for clicks to toggle dark mode
+    toggleButton.addEventListener('click', () => {
+      isDarkMode = !isDarkMode; // Flip the state
+      // Toggle the .dark-mode class on <html> or <body>
+      document.documentElement.classList.toggle('dark-mode', isDarkMode);
+      // Save the new preference
+      localStorage.setItem('darkMode', isDarkMode);
+      // Update the button symbol
+      toggleButton.textContent = isDarkMode ? '◉' : '○';
+    });
+  </script>
 </body>
 </html>
