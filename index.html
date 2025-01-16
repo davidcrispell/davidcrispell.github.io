@@ -6,7 +6,6 @@
   <title>Seraphim - Home</title>
 
   <!-- Import Charter font -->
-  <!-- Note: If using @import, keep it OR use a link -->
   <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/charter" />
 
   <style>
@@ -30,12 +29,10 @@
 
     /* Navigation Bar */
     .nav {
-      /* We add flex/relative so we can position the toggle button far left */
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
-
       margin-bottom: 32px;
       background-color: #f9f9f9;
       padding: 10px 15px;
@@ -46,12 +43,12 @@
     /* Dark mode toggle button */
     #theme-toggle {
       position: absolute;
-      left: 15px;          /* Far left */
+      left: 15px; /* Far left */
       background: transparent;
       border: none;
       font-size: 20px;
       cursor: pointer;
-      color: #1a1a1a;      /* Match text color in light mode */
+      color: #1a1a1a; /* Match text color in light mode */
       transition: color 0.3s ease;
     }
 
@@ -129,7 +126,6 @@
     .dark-mode .update-banner a {
       color: #66ccff; /* Links in dark mode */
     }
-
   </style>
 </head>
 <body>
@@ -171,17 +167,50 @@
 
   <a href="#" class="contact-link">Contact</a>
 
-  <!-- Script to toggle dark mode -->
+  <!-- Script to toggle and remember dark mode using cookies -->
   <script>
-    const toggleButton = document.getElementById('theme-toggle');
-    let isDarkMode = false;
+    // Cookie helper functions
+    function setCookie(cName, cValue, expDays) {
+      const date = new Date();
+      date.setTime(date.getTime() + (expDays * 24 * 60 * 60 * 1000));
+      const expires = "expires=" + date.toUTCString();
+      document.cookie = cName + "=" + cValue + ";" + expires + ";path=/";
+    }
 
+    function getCookie(cName) {
+      const name = cName + "=";
+      const decodedCookie = decodeURIComponent(document.cookie);
+      const cookieArray = decodedCookie.split(';');
+      for (let i = 0; i < cookieArray.length; i++) {
+        let c = cookieArray[i].trim();
+        if (c.indexOf(name) === 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    }
+
+    // Read existing cookie
+    let isDarkMode = (getCookie("darkMode") === "true");
+
+    // If true, apply dark mode on page load
+    if (isDarkMode) {
+      document.body.classList.add('dark-mode');
+    }
+
+    // Get the toggle button
+    const toggleButton = document.getElementById('theme-toggle');
+
+    // Set the correct symbol on initial load
+    toggleButton.textContent = isDarkMode ? '◉' : '○';
+
+    // Toggle dark mode on click
     toggleButton.addEventListener('click', () => {
-      // Toggle the dark-mode class on the body
       isDarkMode = !isDarkMode;
       document.body.classList.toggle('dark-mode', isDarkMode);
-
-      // Update the button icon
+      // Save the new preference in a cookie (here: 365 days)
+      setCookie("darkMode", isDarkMode, 365);
+      // Update the button symbol
       toggleButton.textContent = isDarkMode ? '◉' : '○';
     });
   </script>
