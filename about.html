@@ -1,78 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>My Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About</title>
+    <style>
+        /* Import Charter font */
+        @import url('https://fonts.cdnfonts.com/css/charter');
 
-  <!-- 1. Tiny inline script at the very top of <head> -->
-  <script>
-    (function() {
-      // Check localStorage
-      if (localStorage.getItem('darkMode') === 'true') {
-        // Apply dark mode before rendering
-        document.documentElement.classList.add('dark-mode');
-      }
-    })();
-  </script>
+        body {
+            font-family: Charter, 'Bitstream Charter', serif;
+            line-height: 1.5;
+            max-width: 650px;
+            margin: 40px auto;
+            padding: 0 20px;
+            color: #1a1a1a;
+        }
 
-  <style>
-    /* (Optional) Remove transitions if you want zero animation */
-    body {
-      transition: none !important;
-    }
+        nav {
+            margin-bottom: 20px;
+        }
 
-    /* Base styles */
-    body {
-      font-family: 'Charter', serif;
-      background-color: #fff; /* Light background */
-      color: #000;            /* Light text */
-    }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            gap: 15px;
+        }
 
-    /* The .dark-mode override */
-    .dark-mode {
-      background-color: #1a1a1a !important; /* Dark background */
-      color: #f0f0f0 !important;           /* Light text */
-    }
+        nav ul li {
+            display: inline;
+        }
 
-    /* Example nav styling, etc. */
-    .nav { /* ... */ }
-    /* etc. */
-  </style>
+        nav ul li a {
+            text-decoration: none;
+            color: #0066cc;
+        }
+
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        p {
+            margin: 16px 0;
+        }
+
+        .signature {
+            margin-top: 32px;
+        }
+
+        .date {
+            margin: 24px 0;
+        }
+    </style>
 </head>
 <body>
-  <div class="nav">
-    <!-- Dark mode toggle button -->
-    <button id="theme-toggle">○</button>
-    <!-- Your nav links -->
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <!-- etc. -->
-  </div>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <!-- Add more links as needed -->
+        </ul>
+    </nav>
 
-  <h1>My Page</h1>
-  <p>Some content here...</p>
+    <h1>About</h1>
 
-  <!-- 2. The main toggling script at the bottom -->
-  <script>
-    // Read current preference
-    let isDarkMode = (localStorage.getItem('darkMode') === 'true');
+    <p>I like intelligence. ASI is very cool. I will be writing about the safest directions for ASI, the foundations of intelligence, pattern recognition, reasoning, the relations between all of them, and hopefully shipping it! also more to come obviously this is very under construction everywehre
+</p>
 
-    // Grab the toggle button
-    const toggleButton = document.getElementById('theme-toggle');
-
-    // Set the correct symbol on initial load
-    toggleButton.textContent = isDarkMode ? '◉' : '○';
-
-    // Listen for clicks to toggle dark mode
-    toggleButton.addEventListener('click', () => {
-      isDarkMode = !isDarkMode; // Flip the state
-      // Toggle the .dark-mode class on <html> or <body>
-      document.documentElement.classList.toggle('dark-mode', isDarkMode);
-      // Save the new preference
-      localStorage.setItem('darkMode', isDarkMode);
-      // Update the button symbol
-      toggleButton.textContent = isDarkMode ? '◉' : '○';
-    });
-  </script>
 </body>
 </html>
