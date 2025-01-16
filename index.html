@@ -1,218 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Seraphim - Home</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seraphim - Home</title>
+    <style>
+        /* Import Charter font */
+        @import url('https://fonts.cdnfonts.com/css/charter');
 
-  <!-- Import Charter font -->
-  <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/charter" />
+        body {
+            font-family: Charter, 'Bitstream Charter', serif;
+            line-height: 1.5;
+            max-width: 650px;
+            margin: 40px auto;
+            padding: 0 20px;
+            color: #1a1a1a;
+        }
 
-  <style>
-    /* Base styles */
-    body {
-      font-family: Charter, 'Bitstream Charter', serif;
-      line-height: 1.5;
-      max-width: 650px;
-      margin: 40px auto;
-      padding: 0 20px;
-      color: #1a1a1a;
-      background-color: #fff; /* Light mode background */
-      transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
-    }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
 
-    h1 {
-      font-size: 24px;
-      margin-bottom: 8px;
-      font-weight: bold;
-    }
+        .nav {
+            margin-bottom: 32px;
+            background-color: #f9f9f9;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
 
-    /* Navigation Bar */
-    .nav {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      margin-bottom: 32px;
-      background-color: #f9f9f9;
-      padding: 10px 15px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
+        .nav a {
+            color: #0066cc;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
 
-    /* Dark mode toggle button */
-    #theme-toggle {
-      position: absolute;
-      left: 15px; /* Far left */
-      background: transparent;
-      border: none;
-      font-size: 20px;
-      cursor: pointer;
-      color: #1a1a1a; /* Match text color in light mode */
-      transition: color 0.3s ease;
-    }
+        .nav a:hover {
+            text-decoration: underline;
+        }
 
-    /* Navigation links */
-    .nav a {
-      color: #0066cc;
-      text-decoration: none;
-      margin: 0 15px;
-      font-weight: bold;
-    }
+        .update-banner {
+            font-style: italic;
+            margin-bottom: 32px;
+        }
 
-    .nav a:hover {
-      text-decoration: underline;
-    }
+        .update-banner a {
+            color: #0066cc;
+            text-decoration: none;
+        }
 
-    /* Update Banner */
-    .update-banner {
-      font-style: italic;
-      margin-bottom: 32px;
-    }
+        .update-banner a:hover {
+            text-decoration: underline;
+        }
 
-    .update-banner a {
-      color: #0066cc;
-      text-decoration: none;
-    }
+        h2 {
+            font-size: 20px;
+            margin: 24px 0 16px 0;
+            font-weight: bold;
+        }
 
-    .update-banner a:hover {
-      text-decoration: underline;
-    }
+        p {
+            margin: 16px 0;
+        }
 
-    h2 {
-      font-size: 20px;
-      margin: 24px 0 16px 0;
-      font-weight: bold;
-    }
+        .signature {
+            margin-top: 32px;
+        }
 
-    p {
-      margin: 16px 0;
-    }
+        .date {
+            margin: 24px 0;
+        }
 
-    .signature {
-      margin-top: 32px;
-    }
+        .contact-link {
+            color: #0066cc;
+            text-decoration: none;
+        }
 
-    .date {
-      margin: 24px 0;
-    }
-
-    .contact-link {
-      color: #0066cc;
-      text-decoration: none;
-    }
-
-    .contact-link:hover {
-      text-decoration: underline;
-    }
-
-    /* ========== Dark Mode Overrides ========== */
-    .dark-mode {
-      background-color: #1a1a1a; /* Dark background */
-      color: #f0f0f0;           /* Light text */
-    }
-
-    .dark-mode .nav {
-      background-color: #333;
-      border-color: #444;
-    }
-
-    .dark-mode #theme-toggle {
-      color: #f0f0f0; /* Make toggle icon light in dark mode */
-    }
-
-    .dark-mode a,
-    .dark-mode .contact-link,
-    .dark-mode .update-banner a {
-      color: #66ccff; /* Links in dark mode */
-    }
-  </style>
+        .contact-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-  <!-- Navigation Bar -->
-  <div class="nav">
-    <!-- Toggle button (○ for light mode, ◉ for dark mode) -->
-    <button id="theme-toggle" aria-label="Toggle dark mode">○</button>
+    <!-- Navigation Bar -->
+    <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="projects.html">Projects</a>
+        <a href="contact.html">Contact</a>
+    </div>
 
-    <!-- Actual navigation links -->
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="projects.html">Projects</a>
-    <a href="contact.html">Contact</a>
-  </div>
 
-  <h1>Seraphim</h1>
+    <h1>Seraphim</h1>
+    
+    <div class="update-banner">
+        Update: AISI commencement announcement here. See more <a href="#">here</a>.
+    </div>
 
-  <div class="update-banner">
-    Update: AISI commencement announcement here. See more <a href="#">here</a>.
-  </div>
+    <h2>Home</h2>
 
-  <h2>Home</h2>
+    <p>This is the home page. Use the navigation links above to explore other sections of the site.</p>
 
-  <p>This is the home page. Use the navigation links above to explore other sections of the site.</p>
+    <p>Seraphim represents the theoretical machine defined with maximal pattern recognition. We argue that such a machine represents a maximally intelligent creature.</p>
 
-  <p>
-    Seraphim represents the theoretical machine defined with maximal
-    pattern recognition. We argue that such a machine represents a
-    maximally intelligent creature.
-  </p>
+    <p>Updates on all projects soon!</p>
 
-  <p>Updates on all projects soon!</p>
+    <div class="signature">
+        David Crispell
+    </div>
 
-  <div class="signature">
-    David Crispell
-  </div>
+    <div class="date">
+        January 16, 2025
+    </div>
 
-  <div class="date">January 16, 2025</div>
-
-  <a href="#" class="contact-link">Contact</a>
-
-  <!-- Script to toggle and remember dark mode using cookies -->
-  <script>
-    // Cookie helper functions
-    function setCookie(cName, cValue, expDays) {
-      const date = new Date();
-      date.setTime(date.getTime() + (expDays * 24 * 60 * 60 * 1000));
-      const expires = "expires=" + date.toUTCString();
-      document.cookie = cName + "=" + cValue + ";" + expires + ";path=/";
-    }
-
-    function getCookie(cName) {
-      const name = cName + "=";
-      const decodedCookie = decodeURIComponent(document.cookie);
-      const cookieArray = decodedCookie.split(';');
-      for (let i = 0; i < cookieArray.length; i++) {
-        let c = cookieArray[i].trim();
-        if (c.indexOf(name) === 0) {
-          return c.substring(name.length, c.length);
-        }
-      }
-      return "";
-    }
-
-    // Read existing cookie
-    let isDarkMode = (getCookie("darkMode") === "true");
-
-    // If true, apply dark mode on page load
-    if (isDarkMode) {
-      document.body.classList.add('dark-mode');
-    }
-
-    // Get the toggle button
-    const toggleButton = document.getElementById('theme-toggle');
-
-    // Set the correct symbol on initial load
-    toggleButton.textContent = isDarkMode ? '◉' : '○';
-
-    // Toggle dark mode on click
-    toggleButton.addEventListener('click', () => {
-      isDarkMode = !isDarkMode;
-      document.body.classList.toggle('dark-mode', isDarkMode);
-      // Save the new preference in a cookie (here: 365 days)
-      setCookie("darkMode", isDarkMode, 365);
-      // Update the button symbol
-      toggleButton.textContent = isDarkMode ? '◉' : '○';
-    });
-  </script>
+    <a href="#" class="contact-link">Contact</a>
 </body>
 </html>
