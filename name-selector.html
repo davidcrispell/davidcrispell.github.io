@@ -233,7 +233,7 @@
             }
 
             const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '<h2>Randomly Selected Names:</h2>';
+            resultsDiv.innerHTML = '<h2>Winners:</h2>';
 
             selected.forEach(([first, last], index) => {
                 const nameElement = document.createElement('p');
@@ -262,7 +262,7 @@
         </ul>
     </nav>
 
-    <h1>Random Name Selector</h1>
+    <h1>Lottery Machine</h1>
 
     <p>Select a CSV or TSV file and specify the number of names to randomly select. You can regenerate selections without re-uploading the file.</p>
 
