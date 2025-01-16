@@ -1,122 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seraphim - Home</title>
-    <style>
-        /* Import Charter font */
-        @import url('https://fonts.cdnfonts.com/css/charter');
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Seraphim - Home</title>
 
-        body {
-            font-family: Charter, 'Bitstream Charter', serif;
-            line-height: 1.5;
-            max-width: 650px;
-            margin: 40px auto;
-            padding: 0 20px;
-            color: #1a1a1a;
-        }
+  <!-- Import Charter font -->
+  <!-- Note: If using @import, keep it OR use a link -->
+  <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/charter" />
 
-        h1 {
-            font-size: 24px;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
+  <style>
+    /* Base styles */
+    body {
+      font-family: Charter, 'Bitstream Charter', serif;
+      line-height: 1.5;
+      max-width: 650px;
+      margin: 40px auto;
+      padding: 0 20px;
+      color: #1a1a1a;
+      background-color: #fff; /* Light mode background */
+      transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+    }
 
-        .nav {
-            margin-bottom: 32px;
-            background-color: #f9f9f9;
-            padding: 10px 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            text-align: center;
-        }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
 
-        .nav a {
-            color: #0066cc;
-            text-decoration: none;
-            margin: 0 15px;
-            font-weight: bold;
-        }
+    /* Navigation Bar */
+    .nav {
+      /* We add flex/relative so we can position the toggle button far left */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
 
-        .nav a:hover {
-            text-decoration: underline;
-        }
+      margin-bottom: 32px;
+      background-color: #f9f9f9;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
 
-        .update-banner {
-            font-style: italic;
-            margin-bottom: 32px;
-        }
+    /* Dark mode toggle button */
+    #theme-toggle {
+      position: absolute;
+      left: 15px;          /* Far left */
+      background: transparent;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #1a1a1a;      /* Match text color in light mode */
+      transition: color 0.3s ease;
+    }
 
-        .update-banner a {
-            color: #0066cc;
-            text-decoration: none;
-        }
+    /* Navigation links */
+    .nav a {
+      color: #0066cc;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: bold;
+    }
 
-        .update-banner a:hover {
-            text-decoration: underline;
-        }
+    .nav a:hover {
+      text-decoration: underline;
+    }
 
-        h2 {
-            font-size: 20px;
-            margin: 24px 0 16px 0;
-            font-weight: bold;
-        }
+    /* Update Banner */
+    .update-banner {
+      font-style: italic;
+      margin-bottom: 32px;
+    }
 
-        p {
-            margin: 16px 0;
-        }
+    .update-banner a {
+      color: #0066cc;
+      text-decoration: none;
+    }
 
-        .signature {
-            margin-top: 32px;
-        }
+    .update-banner a:hover {
+      text-decoration: underline;
+    }
 
-        .date {
-            margin: 24px 0;
-        }
+    h2 {
+      font-size: 20px;
+      margin: 24px 0 16px 0;
+      font-weight: bold;
+    }
 
-        .contact-link {
-            color: #0066cc;
-            text-decoration: none;
-        }
+    p {
+      margin: 16px 0;
+    }
 
-        .contact-link:hover {
-            text-decoration: underline;
-        }
-    </style>
+    .signature {
+      margin-top: 32px;
+    }
+
+    .date {
+      margin: 24px 0;
+    }
+
+    .contact-link {
+      color: #0066cc;
+      text-decoration: none;
+    }
+
+    .contact-link:hover {
+      text-decoration: underline;
+    }
+
+    /* ========== Dark Mode Overrides ========== */
+    .dark-mode {
+      background-color: #1a1a1a; /* Dark background */
+      color: #f0f0f0;           /* Light text */
+    }
+
+    .dark-mode .nav {
+      background-color: #333;
+      border-color: #444;
+    }
+
+    .dark-mode #theme-toggle {
+      color: #f0f0f0; /* Make toggle icon light in dark mode */
+    }
+
+    .dark-mode a,
+    .dark-mode .contact-link,
+    .dark-mode .update-banner a {
+      color: #66ccff; /* Links in dark mode */
+    }
+
+  </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <div class="nav">
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="projects.html">Projects</a>
-        <a href="contact.html">Contact</a>
-    </div>
+  <!-- Navigation Bar -->
+  <div class="nav">
+    <!-- Toggle button (○ for light mode, ◉ for dark mode) -->
+    <button id="theme-toggle" aria-label="Toggle dark mode">○</button>
 
+    <!-- Actual navigation links -->
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="projects.html">Projects</a>
+    <a href="contact.html">Contact</a>
+  </div>
 
-    <h1>Seraphim</h1>
-    
-    <div class="update-banner">
-        Update: AISI commencement announcement here. See more <a href="#">here</a>.
-    </div>
+  <h1>Seraphim</h1>
 
-    <h2>Home</h2>
+  <div class="update-banner">
+    Update: AISI commencement announcement here. See more <a href="#">here</a>.
+  </div>
 
-    <p>This is the home page. Use the navigation links above to explore other sections of the site.</p>
+  <h2>Home</h2>
 
-    <p>Seraphim represents the theoretical machine defined with maximal pattern recognition. We argue that such a machine represents a maximally intelligent creature.</p>
+  <p>This is the home page. Use the navigation links above to explore other sections of the site.</p>
 
-    <p>Updates on all projects soon!</p>
+  <p>
+    Seraphim represents the theoretical machine defined with maximal
+    pattern recognition. We argue that such a machine represents a
+    maximally intelligent creature.
+  </p>
 
-    <div class="signature">
-        David Crispell
-    </div>
+  <p>Updates on all projects soon!</p>
 
-    <div class="date">
-        January 16, 2025
-    </div>
+  <div class="signature">
+    David Crispell
+  </div>
 
-    <a href="#" class="contact-link">Contact</a>
+  <div class="date">January 16, 2025</div>
+
+  <a href="#" class="contact-link">Contact</a>
+
+  <!-- Script to toggle dark mode -->
+  <script>
+    const toggleButton = document.getElementById('theme-toggle');
+    let isDarkMode = false;
+
+    toggleButton.addEventListener('click', () => {
+      // Toggle the dark-mode class on the body
+      isDarkMode = !isDarkMode;
+      document.body.classList.toggle('dark-mode', isDarkMode);
+
+      // Update the button icon
+      toggleButton.textContent = isDarkMode ? '◉' : '○';
+    });
+  </script>
 </body>
 </html>
