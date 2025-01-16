@@ -3,27 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attendance Lottery</title>
+    <title>Random Name Selector</title>
     <style>
         @import url('https://fonts.cdnfonts.com/css/charter');
-
+        
         body {
             font-family: Charter, 'Bitstream Charter', serif;
             line-height: 1.5;
-            max-width: 650px;
+            max-width: 750px;
             margin: 40px auto;
             padding: 0 20px;
-            color: #1a1a1a;
+            color: #fff;
+            background-color: #222;
+            text-align: center;
         }
 
         nav {
             margin-bottom: 20px;
+            background: linear-gradient(90deg, #ffcc00, #ff9900);
+            padding: 10px;
+            border-radius: 5px;
         }
 
         nav ul {
             list-style-type: none;
             padding: 0;
             display: flex;
+            justify-content: center;
             gap: 15px;
         }
 
@@ -33,7 +39,8 @@
 
         nav ul li a {
             text-decoration: none;
-            color: #0066cc;
+            color: #222;
+            font-weight: bold;
         }
 
         nav ul li a:hover {
@@ -41,43 +48,77 @@
         }
 
         h1 {
-            font-size: 24px;
-            margin-bottom: 8px;
+            font-size: 36px;
+            margin-bottom: 16px;
             font-weight: bold;
+            color: #ffcc00;
+            text-shadow: 2px 2px #000;
         }
 
         p {
             margin: 16px 0;
-        }
-
-        .signature {
-            margin-top: 32px;
-        }
-
-        .date {
-            margin: 24px 0;
+            color: #ddd;
         }
 
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ffcc00;
         }
 
         .btn {
             padding: 10px 20px;
-            background-color: #0066cc;
-            color: white;
+            background: linear-gradient(90deg, #ffcc00, #ff9900);
+            color: #222;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-weight: bold;
         }
 
         .btn:hover {
-            background-color: #004a99;
+            background: linear-gradient(90deg, #ff9900, #ffcc00);
         }
 
         .results {
             margin-top: 20px;
+            background: #444;
+            border-radius: 10px;
+            padding: 20px;
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
         }
+
+        .results h2 {
+            color: #ffcc00;
+        }
+
+        .signature {
+            margin-top: 32px;
+            color: #ffcc00;
+        }
+
+        .date {
+            margin: 24px 0;
+            color: #aaa;
+        }
+
+        input[type="file"], input[type="number"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #555;
+            background: #333;
+            color: #fff;
+        }
+
+        input[type="number"] {
+            width: 100px;
+        }
+
     </style>
     <script>
         let currentNames = [];
@@ -167,9 +208,9 @@
         </ul>
     </nav>
 
-    <h1>Attendance Lottery</h1>
+    <h1>Random Name Selector</h1>
 
-    <p>Select a CSV or TSV file and specify the number of names to randomly select. You can regenerate selections.</p>
+    <p>Select a CSV or TSV file and specify the number of names to randomly select. You can regenerate selections without re-uploading the file.</p>
 
     <div class="form-group">
         <label for="fileInput">Choose File:</label>
@@ -177,21 +218,21 @@
     </div>
 
     <div class="form-group">
-        <label for="numSelections">How many winners?</label>
+        <label for="numSelections">Number of Selections:</label>
         <input type="number" id="numSelections" value="10" min="1">
     </div>
 
     <button class="btn" onclick="document.getElementById('fileInput').click()">Select File</button>
-    <button class="btn" onclick="regenerateNames()">Shuffle</button>
+    <button class="btn" onclick="regenerateNames()">Regenerate</button>
 
     <div id="results" class="results"></div>
 
     <div class="signature">
-        join AISI on buffconnect
+        join AISI (artificial intelligence student initiative) on buffconnect!
     </div>
 
     <div class="date">
-        last updated January 16, 2025
+        last updated (reeeaaallly bad gambling styling) January 16, 2025
     </div>
 </body>
 </html>
