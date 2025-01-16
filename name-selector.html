@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Name Selector</title>
+    <title>Attendance Lottery</title>
     <style>
         @import url('https://fonts.cdnfonts.com/css/charter');
 
@@ -167,9 +167,9 @@
         </ul>
     </nav>
 
-    <h1>Random Name Selector</h1>
+    <h1>Attendance Lottery</h1>
 
-    <p>Select a CSV or TSV file and specify the number of names to randomly select. You can regenerate selections without re-uploading the file.</p>
+    <p>Select a CSV or TSV file and specify the number of names to randomly select. You can regenerate selections.</p>
 
     <div class="form-group">
         <label for="fileInput">Choose File:</label>
@@ -177,21 +177,21 @@
     </div>
 
     <div class="form-group">
-        <label for="numSelections">Number of Selections:</label>
+        <label for="numSelections">How many winners?</label>
         <input type="number" id="numSelections" value="10" min="1">
     </div>
 
     <button class="btn" onclick="document.getElementById('fileInput').click()">Select File</button>
-    <button class="btn" onclick="regenerateNames()">Regenerate</button>
+    <button class="btn" onclick="regenerateNames()">Shuffle</button>
 
     <div id="results" class="results"></div>
 
     <div class="signature">
-        Your Name Here
+        join AISI on buffconnect
     </div>
 
     <div class="date">
-        January 16, 2025
+        last updated January 16, 2025
     </div>
 </body>
 </html>
