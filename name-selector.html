@@ -80,10 +80,12 @@
         }
     </style>
     <script>
+        let currentNames = [];
+
         async function handleFileSelection(event) {
             const file = event.target.files[0];
             const numSelections = parseInt(document.getElementById('numSelections').value) || 10;
-            
+
             if (!file) {
                 alert('Please select a file.');
                 return;
@@ -107,31 +109,51 @@
                     return;
                 }
 
-                const header = rows.shift(); // Remove header if exists
-                const names = rows.filter(row => row.length >= 2).map(row => [row[0].trim(), row[1].trim()]);
+                rows.shift(); // Remove header if exists
+                currentNames = rows.filter(row => row.length >= 2).map(row => [row[0].trim(), row[1].trim()]);
 
-                if (names.length < numSelections) {
-                    alert(`File contains only ${names.length} names, but ${numSelections} were requested.`);
+                if (currentNames.length < numSelections) {
+                    alert(`File contains only ${currentNames.length} names, but ${numSelections} were requested.`);
                     return;
                 }
 
-                const selected = []; // Random selection
-                while (selected.length < numSelections) {
-                    const randomIndex = Math.floor(Math.random() * names.length);
-                    selected.push(names.splice(randomIndex, 1)[0]);
-                }
-
-                const resultsDiv = document.getElementById('results');
-                resultsDiv.innerHTML = '<h2>Randomly Selected Names:</h2>';
-
-                selected.forEach(([first, last], index) => {
-                    const nameElement = document.createElement('p');
-                    nameElement.textContent = `${index + 1}. ${first} ${last}`;
-                    resultsDiv.appendChild(nameElement);
-                });
+                displayRandomNames(numSelections);
             };
 
             reader.readAsText(file);
+        }
+
+        function displayRandomNames(numSelections) {
+            if (currentNames.length < numSelections) {
+                alert(`Not enough names available. Please upload a larger file.`);
+                return;
+            }
+
+            const selected = [];
+            const namesCopy = [...currentNames];
+
+            while (selected.length < numSelections) {
+                const randomIndex = Math.floor(Math.random() * namesCopy.length);
+                selected.push(namesCopy.splice(randomIndex, 1)[0]);
+            }
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h2>Randomly Selected Names:</h2>';
+
+            selected.forEach(([first, last], index) => {
+                const nameElement = document.createElement('p');
+                nameElement.textContent = `${index + 1}. ${first} ${last}`;
+                resultsDiv.appendChild(nameElement);
+            });
+        }
+
+        function regenerateNames() {
+            const numSelections = parseInt(document.getElementById('numSelections').value) || 10;
+            if (currentNames.length === 0) {
+                alert('Please upload a file first.');
+                return;
+            }
+            displayRandomNames(numSelections);
         }
     </script>
 </head>
@@ -147,7 +169,7 @@
 
     <h1>Random Name Selector</h1>
 
-    <p>Select a CSV or TSV file and specify the number of names to randomly select.</p>
+    <p>Select a CSV or TSV file and specify the number of names to randomly select. You can regenerate selections without re-uploading the file.</p>
 
     <div class="form-group">
         <label for="fileInput">Choose File:</label>
@@ -160,6 +182,7 @@
     </div>
 
     <button class="btn" onclick="document.getElementById('fileInput').click()">Select File</button>
+    <button class="btn" onclick="regenerateNames()">Regenerate</button>
 
     <div id="results" class="results"></div>
 
