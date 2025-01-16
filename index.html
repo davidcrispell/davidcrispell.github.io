@@ -3,113 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Always bet on Seraphim</title>
+    <title>Seraphim</title>
     <style>
-        /* Basic Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /* Import Charter font */
+        @import url('https://fonts.cdnfonts.com/css/charter');
 
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
+            font-family: Charter, 'Bitstream Charter', serif;
+            line-height: 1.5;
+            max-width: 650px;
+            margin: 40px auto;
+            padding: 0 20px;
+            color: #1a1a1a;
         }
 
-        /* Navigation Styles */
-        nav {
-            background: #333;
-            padding: 1rem;
-            position: fixed;
-            width: 100%;
-            top: 0;
-        }
-
-        nav ul {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-size: 1.1rem;
-        }
-
-        nav a:hover {
-            color: #ddd;
-        }
-
-        /* Section Styles */
-        section {
-            min-height: 100vh;
-            padding: 6rem 2rem 2rem;
-            scroll-margin-top: 4rem;
-        }
-
-        section:nth-child(even) {
-            background: #f5f5f5;
-        }
-
-        /* Content Styles */
         h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+            font-size: 24px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .update-banner {
+            font-style: italic;
+            margin-bottom: 32px;
+        }
+
+        .update-banner a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .update-banner a:hover {
+            text-decoration: underline;
         }
 
         h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
+            font-size: 20px;
+            margin: 24px 0 16px 0;
+            font-weight: bold;
         }
 
         p {
-            margin-bottom: 1rem;
-            max-width: 800px;
+            margin: 16px 0;
+        }
+
+        .signature {
+            margin-top: 32px;
+        }
+
+        .date {
+            margin: 24px 0;
+        }
+
+        .contact-link {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .contact-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <nav>
-        <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-    </nav>
+    <h1>Seraphim</h1>
+    
+    <div class="update-banner">
+        Update: Important announcement here. See more <a href="#">here</a>.
+    </div>
 
-    <section id="home">
-        <h1>Always bet on Seraphim</h1>
-        <p>Welcome to my portfolio website!</p>
-    </section>
+    <h2>Main heading goes here.</h2>
 
-    <section id="about">
-        <h2>About Me</h2>
-        <p>Add your personal information, skills, and background here.</p>
-    </section>
+    <p>Your main content goes here. The spacing and typography are carefully matched to create a clean, professional appearance.</p>
 
-    <section id="projects">
-        <h2>My Projects</h2>
-        <p>Showcase your projects with descriptions and links here.</p>
-    </section>
+    <p>Additional paragraphs will maintain consistent spacing. The line height and paragraph margins are optimized for readability.</p>
 
-    <section id="contact">
-        <h2>Contact</h2>
-        <p>Add your contact information or a contact form here.</p>
-    </section>
+    <p>The Charter font gives it that distinctive look while maintaining excellent readability across different screen sizes.</p>
 
-    <script>
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('nav a').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const section = document.querySelector(this.getAttribute('href'));
-                section.scrollIntoView({ behavior: 'smooth' });
-            });
-        });
-    </script>
+    <div class="signature">
+        Your Name Here
+    </div>
+
+    <div class="date">
+        January 16, 2025
+    </div>
+
+    <a href="#" class="contact-link">Contact</a>
 </body>
 </html>
