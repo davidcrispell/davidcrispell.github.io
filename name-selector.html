@@ -171,8 +171,11 @@
             display: none;
         }
     </style>
+
+    <!-- REPLACE YOUR OLD SCRIPT BLOCK WITH THIS NEW ONE -->
     <script>
         let currentNames = [];
+        let audio = new Audio('https://davidcrispell.github.io/GAMBLING.mp3');
 
         async function handleFileSelection(event) {
             const file = event.target.files[0];
@@ -193,38 +196,32 @@
 
             const reader = new FileReader();
             reader.onload = () => {
-                // 1) Read the file and split into lines
                 const text = reader.result;
-                // 2) Trim each line and filter out empty lines
                 const lines = text
                     .split('\n')
                     .map(line => line.trim())
                     .filter(line => line !== '');
 
-                // 3) If there's only one or fewer lines of non-empty data, there's not enough to process
                 if (lines.length <= 1) {
                     alert('Not enough data in the file.');
                     return;
                 }
 
-                // 4) Convert lines to a 2D array, splitting each line by our delimiter
                 const rows = lines.map(line => line.split(delimiter));
-
-                // 5) Remove header row (assuming the first row is a header)
+                // Remove header row (assuming the first row is a header)
                 rows.shift();
 
-                // 6) Filter out rows without at least two columns, then trim each field
+                // Filter out any rows without at least two columns
                 currentNames = rows
                     .filter(row => row.length >= 2)
                     .map(row => [row[0].trim(), row[1].trim()]);
 
-                // 7) Check if we have enough names to fulfill the requested number
                 if (currentNames.length < numSelections) {
                     alert(`File contains only ${currentNames.length} names, but ${numSelections} were requested.`);
                     return;
                 }
 
-                // 8) Display random names
+                // Display random names (no audio here to avoid autoplay block)
                 displayRandomNames(numSelections);
             };
 
@@ -255,12 +252,20 @@
             });
         }
 
+        // Called when user clicks the "Regenerate" button (explicit user gesture)
         function regenerateNames() {
             const numSelections = parseInt(document.getElementById('numSelections').value) || 10;
             if (currentNames.length === 0) {
                 alert('Please upload a file first.');
                 return;
             }
+            
+            // Because this is now a direct click event, browsers allow the audio to play
+            audio.currentTime = 0; // Reset playback for repeated button clicks
+            audio.play().catch(err => {
+                console.warn('Autoplay blocked. User interaction is required to allow audio.', err);
+            });
+            
             displayRandomNames(numSelections);
         }
     </script>
