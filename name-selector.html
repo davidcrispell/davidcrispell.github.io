@@ -202,6 +202,13 @@
       color: #FFD700;
       text-shadow: 0 0 8px #FF4500;
     }
+    
+    .obfuscated {
+      font-family: monospace;
+      color: #FF00FF;
+      text-shadow: 0 0 5px #FF00FF;
+    }
+
 
     .date {
       margin: 24px 0;
@@ -336,37 +343,63 @@
       reader.readAsText(file);
     }
 
-    function displayRandomNames(numSelections) {
-      if (currentNames.length < numSelections) {
-        alert('Not enough names available. Please upload a larger file.');
-        return;
-      }
+    // Helper function to generate random characters
+function generateRandomChars(length) {
+  const chars = '!@#$%^&*()_+-=[]{}|;:,.<>?ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+}
 
-      const selected = [];
-      const namesCopy = [...currentNames];
+// Modified displayRandomNames function with scrambling
+function displayRandomNames(numSelections) {
+  if (currentNames.length < numSelections) {
+    alert('Not enough names available. Please upload a larger file.');
+    return;
+  }
 
-      while (selected.length < numSelections) {
-        const randomIndex = Math.floor(Math.random() * namesCopy.length);
-        selected.push(namesCopy.splice(randomIndex, 1)[0]);
-      }
+  const selected = [];
+  const namesCopy = [...currentNames];
 
-      const resultsDiv = document.getElementById('results');
-      resultsDiv.innerHTML = `<h2>${createAnimatedTitle()}</h2>`;
+  while (selected.length < numSelections) {
+    const randomIndex = Math.floor(Math.random() * namesCopy.length);
+    selected.push(namesCopy.splice(randomIndex, 1)[0]);
+  }
 
-      selected.forEach(([first, last], index) => {
-        const nameElement = document.createElement('p');
-        nameElement.textContent = `${index + 1}. ${first} ${last}`;
-        resultsDiv.appendChild(nameElement);
-      });
+  const resultsDiv = document.getElementById('results');
+  resultsDiv.innerHTML = `<h2>${createAnimatedTitle()}</h2>`;
 
-      // Clear any existing title animation interval
-      if (titleInterval) {
-        clearTimeout(titleInterval);
-      }
+  // Create elements with obfuscated text first
+  selected.forEach(([first, last], index) => {
+    const nameElement = document.createElement('p');
+    const fullNameLength = first.length + last.length + 1; // +1 for space
+    nameElement.innerHTML = `${index + 1}. <span class="obfuscated">${generateRandomChars(fullNameLength)}</span>`;
+    nameElement.dataset.finalText = `${index + 1}. ${first} ${last}`;
+    resultsDiv.appendChild(nameElement);
+  });
 
-      // Start title animation after 6 seconds
-      titleInterval = setTimeout(startTitleAnimation, 6000);
+  // Start the scrambling process
+  let obfuscationInterval = setInterval(() => {
+    const elements = document.querySelectorAll('#results p');
+    elements.forEach(element => {
+      const finalText = element.dataset.finalText.split('. ')[1];
+      element.innerHTML = `${element.dataset.finalText.split('.')[0]}. <span class="obfuscated">${generateRandomChars(finalText.length)}</span>`;
+    });
+  }, 100);
+
+  // After 5 seconds, reveal the real names
+  setTimeout(() => {
+    clearInterval(obfuscationInterval);
+    const elements = document.querySelectorAll('#results p');
+    elements.forEach(element => {
+      element.textContent = element.dataset.finalText;
+    });
+
+    // Start title animation
+    if (titleInterval) {
+      clearTimeout(titleInterval);
     }
+    titleInterval = setTimeout(startTitleAnimation, 1000);
+  }, 6100);
+}
 
     function flashLights() {
       const resultsDiv = document.getElementById('results');
