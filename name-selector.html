@@ -1,345 +1,353 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Name Selector</title>
-    <!-- Example of a Casino-style font (optional) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
-    <style>
-        /* Casino aesthetic: bold, flashy colors, and a retro vibe */
-        
-        body {
-            font-family: 'Press Start 2P', monospace;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-            color: #fff;
-            background: radial-gradient(circle at center, #000 10%, #111 60%, #000 100%);
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            min-height: 100vh;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Random Name Selector</title>
+  <!-- Example of a Casino-style font (optional) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+  <style>
+    /* Casino aesthetic: bold, flashy colors, and a retro vibe */
+    
+    body {
+      font-family: 'Press Start 2P', monospace;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      color: #fff;
+      background: radial-gradient(circle at center, #000 10%, #111 60%, #000 100%);
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+
+    nav {
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, #FFD700, #FF0000);
+      padding: 10px;
+      border-bottom: 3px solid #660000;
+      box-shadow: 0 4px 8px rgba(255, 0, 0, 0.7);
+    }
+
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #222;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    nav ul li a:hover {
+      color: #fff;
+      text-shadow: 1px 1px 2px #000;
+    }
+
+    h1 {
+      margin-top: 40px;
+      margin-bottom: 24px;
+      font-size: 30px;
+      color: #FFD700;
+      text-shadow: 
+          0 0 10px #FFD700,
+          0 0 20px #FFD700,
+          0 0 30px #FFD700,
+          0 0 40px #FF4500,
+          0 0 70px #FF4500,
+          0 0 80px #FF4500,
+          0 0 100px #FF4500;
+    }
+
+    p {
+      margin: 16px auto;
+      max-width: 750px;
+      line-height: 1.4;
+      color: #ccc;
+      font-size: 14px;
+    }
+
+    .form-group {
+      margin: 20px auto;
+      max-width: 750px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    label {
+      color: #FFD700;
+      font-size: 14px;
+      text-transform: uppercase;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      margin: 10px 5px;
+      background: linear-gradient(90deg, #FFD700, #FF0000);
+      color: #222;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 12px;
+      box-shadow: 0 4px 10px rgba(255, 0, 0, 0.7);
+      transition: transform 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #FF0000, #FFD700);
+      color: #fff;
+    }
+
+    input[type="file"],
+    input[type="number"] {
+      padding: 10px;
+      border-radius: 5px;
+      border: 2px solid #FFD700;
+      background: #222;
+      color: #fff;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 12px;
+      width: 250px;
+      text-align: center;
+    }
+
+    input[type="number"] {
+      width: 100px;
+    }
+
+    .results {
+      margin: 20px auto;
+      max-width: 750px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 3px solid #FF0000;
+      border-radius: 10px;
+      padding: 20px;
+      color: #fff;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+      text-align: left;
+    }
+
+    .results h2 {
+      margin-top: 0;
+      color: #FFD700;
+      text-align: center;
+      text-shadow: 
+          0 0 6px #FFD700,
+          0 0 12px #FFD700;
+    }
+
+    .results p {
+      margin: 8px 0;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .signature {
+      margin-top: 60px;
+      font-size: 14px;
+      color: #FFD700;
+      text-shadow: 0 0 8px #FF4500;
+    }
+
+    .date {
+      margin: 24px 0;
+      font-size: 12px;
+      color: #999;
+    }
+
+    #fileInput {
+      display: none;
+    }
+
+    /* -------------------------------- */
+    /* PLINKO FLASH ANIMATION CSS       */
+    /* -------------------------------- */
+    .flash {
+      animation: plinkoFlash 0.6s alternate;
+      animation-iteration-count: 30;
+    }
+
+    @keyframes plinkoFlash {
+      0% {
+        border-color: #FF0000;
+        box-shadow: 0 0 10px #FF0000;
+      }
+      100% {
+        border-color: #FFD700;
+        box-shadow: 0 0 20px #FFD700;
+      }
+    }
+  </style>
+
+  <script>
+    let currentNames = [];
+    const audioSource = 'https://davidcrispell.github.io/GAMBLING.mp3';
+
+    /**
+     * Creates and plays a brand-new audio object
+     * so multiple copies can overlap (chaotic effect).
+     */
+    function playChaoticSound() {
+      const newAudio = new Audio(audioSource);
+      newAudio.play().catch(err => {
+        console.warn('Autoplay may be blocked.', err);
+      });
+    }
+
+    function handleFileSelection(event) {
+      const file = event.target.files[0];
+      const numSelections = parseInt(document.getElementById('numSelections').value) || 10;
+
+      if (!file) {
+        alert('Please select a file.');
+        return;
+      }
+
+      const fileExt = file.name.split('.').pop().toLowerCase();
+      const delimiter = fileExt === 'tsv' ? '\t' : fileExt === 'csv' ? ',' : null;
+
+      if (!delimiter) {
+        alert('File must be either .csv or .tsv');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const text = reader.result;
+        const lines = text
+          .split('\n')
+          .map(line => line.trim())
+          .filter(line => line !== '');
+
+        if (lines.length <= 1) {
+          alert('Not enough data in the file.');
+          return;
         }
 
-        nav {
-            margin-bottom: 20px;
-            background: linear-gradient(90deg, #FFD700, #FF0000);
-            padding: 10px;
-            border-bottom: 3px solid #660000;
-            box-shadow: 0 4px 8px rgba(255, 0, 0, 0.7);
+        const rows = lines.map(line => line.split(delimiter));
+        // Remove header row (assuming the first row is a header)
+        rows.shift();
+
+        // Filter out any rows without at least two columns
+        currentNames = rows
+          .filter(row => row.length >= 2)
+          .map(row => [row[0].trim(), row[1].trim()]);
+
+        if (currentNames.length < numSelections) {
+          alert(`File contains only ${currentNames.length} names, but ${numSelections} were requested.`);
+          return;
         }
 
-        nav ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-        }
+        // Display random names
+        displayRandomNames(numSelections);
 
-        nav ul li a {
-            text-decoration: none;
-            color: #222;
-            font-weight: bold;
-            font-size: 14px;
-        }
+        // Play the chaotic sound
+        playChaoticSound();
+        // Flash the lights
+        flashLights();
+      };
 
-        nav ul li a:hover {
-            color: #fff;
-            text-shadow: 1px 1px 2px #000;
-        }
+      reader.readAsText(file);
+    }
 
-        h1 {
-            margin-top: 40px;
-            margin-bottom: 24px;
-            font-size: 30px;
-            color: #FFD700;
-            text-shadow: 
-                0 0 10px #FFD700,
-                0 0 20px #FFD700,
-                0 0 30px #FFD700,
-                0 0 40px #FF4500,
-                0 0 70px #FF4500,
-                0 0 80px #FF4500,
-                0 0 100px #FF4500;
-        }
+    function displayRandomNames(numSelections) {
+      if (currentNames.length < numSelections) {
+        alert('Not enough names available. Please upload a larger file.');
+        return;
+      }
 
-        p {
-            margin: 16px auto;
-            max-width: 750px;
-            line-height: 1.4;
-            color: #ccc;
-            font-size: 14px;
-        }
+      const selected = [];
+      const namesCopy = [...currentNames];
 
-        .form-group {
-            margin: 20px auto;
-            max-width: 750px;
-            text-align: left;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
+      while (selected.length < numSelections) {
+        const randomIndex = Math.floor(Math.random() * namesCopy.length);
+        selected.push(namesCopy.splice(randomIndex, 1)[0]);
+      }
 
-        label {
-            color: #FFD700;
-            font-size: 14px;
-            text-transform: uppercase;
-        }
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = '<h2>Winners:</h2>';
 
-        .btn {
-            padding: 10px 20px;
-            margin: 10px 5px;
-            background: linear-gradient(90deg, #FFD700, #FF0000);
-            color: #222;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 12px;
-            box-shadow: 0 4px 10px rgba(255, 0, 0, 0.7);
-            transition: transform 0.2s ease;
-        }
+      selected.forEach(([first, last], index) => {
+        const nameElement = document.createElement('p');
+        nameElement.textContent = `${index + 1}. ${first} ${last}`;
+        resultsDiv.appendChild(nameElement);
+      });
+    }
 
-        .btn:hover {
-            transform: scale(1.05);
-            background: linear-gradient(90deg, #FF0000, #FFD700);
-            color: #fff;
-        }
+    function flashLights() {
+      const resultsDiv = document.getElementById('results');
+      // Remove any existing flash class
+      resultsDiv.classList.remove('flash');
+      // Force reflow (to restart the animation)
+      void resultsDiv.offsetWidth;
+      // Add the class to start the animation
+      resultsDiv.classList.add('flash');
+    }
 
-        input[type="file"],
-        input[type="number"] {
-            padding: 10px;
-            border-radius: 5px;
-            border: 2px solid #FFD700;
-            background: #222;
-            color: #fff;
-            font-family: 'Press Start 2P', monospace;
-            font-size: 12px;
-            width: 250px;
-            text-align: center;
-        }
+    // Called when user clicks the "Regenerate" button (explicit user gesture)
+    function regenerateNames() {
+      const numSelections = parseInt(document.getElementById('numSelections').value) || 10;
+      if (currentNames.length === 0) {
+        alert('Please upload a file first.');
+        return;
+      }
+      
+      // Play multiple overlapping sounds
+      playChaoticSound();
 
-        input[type="number"] {
-            width: 100px;
-        }
+      displayRandomNames(numSelections);
 
-        .results {
-            margin: 20px auto;
-            max-width: 750px;
-            background: rgba(0, 0, 0, 0.7);
-            border: 3px solid #FF0000;
-            border-radius: 10px;
-            padding: 20px;
-            color: #fff;
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
-            text-align: left;
-        }
-
-        .results h2 {
-            margin-top: 0;
-            color: #FFD700;
-            text-align: center;
-            text-shadow: 
-                0 0 6px #FFD700,
-                0 0 12px #FFD700;
-        }
-
-        .results p {
-            margin: 8px 0;
-            font-size: 14px;
-            color: #fff;
-        }
-
-        .signature {
-            margin-top: 60px;
-            font-size: 14px;
-            color: #FFD700;
-            text-shadow: 0 0 8px #FF4500;
-        }
-
-        .date {
-            margin: 24px 0;
-            font-size: 12px;
-            color: #999;
-        }
-
-        #fileInput {
-            display: none;
-        }
-
-        /* -------------------------------- */
-        /* ADDED FOR PLINKO FLASH ANIMATION */
-        /* -------------------------------- */
-        .flash {
-            animation: plinkoFlash 0.5s alternate;
-            animation-iteration-count: 18; /* 6 alternations (3 seconds total) */
-        }
-
-        @keyframes plinkoFlash {
-            0% {
-                border-color: #FF0000;
-                box-shadow: 0 0 10px #FF0000;
-            }
-            100% {
-                border-color: #FFD700;
-                box-shadow: 0 0 20px #FFD700;
-            }
-        }
-    </style>
-
-    <script>
-        let currentNames = [];
-        let audio = new Audio('https://davidcrispell.github.io/GAMBLING.mp3');
-
-        async function handleFileSelection(event) {
-            const file = event.target.files[0];
-            const numSelections = parseInt(document.getElementById('numSelections').value) || 10;
-
-            if (!file) {
-                alert('Please select a file.');
-                return;
-            }
-
-            const fileExt = file.name.split('.').pop().toLowerCase();
-            const delimiter = fileExt === 'tsv' ? '\t' : fileExt === 'csv' ? ',' : null;
-
-            if (!delimiter) {
-                alert('File must be either .csv or .tsv');
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = () => {
-                const text = reader.result;
-                const lines = text
-                    .split('\n')
-                    .map(line => line.trim())
-                    .filter(line => line !== '');
-
-                if (lines.length <= 1) {
-                    alert('Not enough data in the file.');
-                    return;
-                }
-
-                const rows = lines.map(line => line.split(delimiter));
-                // Remove header row (assuming the first row is a header)
-                rows.shift();
-
-                // Filter out any rows without at least two columns
-                currentNames = rows
-                    .filter(row => row.length >= 2)
-                    .map(row => [row[0].trim(), row[1].trim()]);
-
-                if (currentNames.length < numSelections) {
-                    alert(`File contains only ${currentNames.length} names, but ${numSelections} were requested.`);
-                    return;
-                }
-
-                // Display random names (no audio here to avoid autoplay block)
-                displayRandomNames(numSelections);
-            };
-
-            reader.readAsText(file);
-        }
-
-        function displayRandomNames(numSelections) {
-            if (currentNames.length < numSelections) {
-                alert('Not enough names available. Please upload a larger file.');
-                return;
-            }
-
-            const selected = [];
-            const namesCopy = [...currentNames];
-
-            while (selected.length < numSelections) {
-                const randomIndex = Math.floor(Math.random() * namesCopy.length);
-                selected.push(namesCopy.splice(randomIndex, 1)[0]);
-            }
-
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '<h2>Winners:</h2>';
-
-            selected.forEach(([first, last], index) => {
-                const nameElement = document.createElement('p');
-                nameElement.textContent = `${index + 1}. ${first} ${last}`;
-                resultsDiv.appendChild(nameElement);
-            });
-        }
-
-        // ---------------------------------------
-        // ADDED FOR PLINKO FLASH
-        // ---------------------------------------
-        function flashLights() {
-            const resultsDiv = document.getElementById('results');
-            // Remove any existing flash class first (in case user clicks quickly)
-            resultsDiv.classList.remove('flash');
-            // Trigger a reflow (forcing the browser to process the removal of the class)
-            void resultsDiv.offsetWidth;
-            // Add the class back to start animation
-            resultsDiv.classList.add('flash');
-        }
-
-        // Called when user clicks the "Regenerate" button (explicit user gesture)
-        function regenerateNames() {
-            const numSelections = parseInt(document.getElementById('numSelections').value) || 10;
-            if (currentNames.length === 0) {
-                alert('Please upload a file first.');
-                return;
-            }
-            
-            // Because this is now a direct click event, browsers allow the audio to play
-            audio.currentTime = 0; // Reset playback for repeated button clicks
-            audio.play().catch(err => {
-                console.warn('Autoplay blocked. User interaction is required to allow audio.', err);
-            });
-            
-            displayRandomNames(numSelections);
-
-            // ---------------------------------------
-            // Flash the "plinko" lights
-            // ---------------------------------------
-            flashLights();
-        }
-    </script>
+      // Trigger the lights
+      flashLights();
+    }
+  </script>
 </head>
 <body>
-    <nav>
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="projects.html">Projects</a></li>
-            <li><a href="contact.html">Contact</a></li>
-        </ul>
-    </nav>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
 
-    <h1>Lottery Machine</h1>
+  <h1>Lottery Machine</h1>
 
-    <p>Select a CSV or TSV file and specify the number of names to randomly select. You can regenerate selections without re-uploading the file.</p>
+  <p>Select a CSV or TSV file and specify the number of names to randomly select. You can regenerate selections without re-uploading the file.</p>
 
-    <!-- Hidden file input (no label) -->
-    <input type="file" id="fileInput" accept=".csv,.tsv" onchange="handleFileSelection(event)">
+  <!-- Hidden file input (no label) -->
+  <input type="file" id="fileInput" accept=".csv,.tsv" onchange="handleFileSelection(event)">
 
-    <div class="form-group">
-        <label for="numSelections">How many winners?</label>
-        <input type="number" id="numSelections" value="10" min="1">
-    </div>
+  <div class="form-group">
+    <label for="numSelections">How many winners?</label>
+    <input type="number" id="numSelections" value="10" min="1">
+  </div>
 
-    <!-- This button triggers the hidden file input -->
-    <button class="btn" onclick="document.getElementById('fileInput').click()">Select File</button>
-    <button class="btn" onclick="regenerateNames()">Regenerate</button>
+  <!-- This button triggers the hidden file input -->
+  <button class="btn" onclick="document.getElementById('fileInput').click()">Select File</button>
+  <button class="btn" onclick="regenerateNames()">Regenerate</button>
 
-    <div id="results" class="results"></div>
+  <div id="results" class="results"></div>
 
-    <div class="signature">
-        join AISI (artificial intelligence student initiative) on buffconnect!
-    </div>
+  <div class="signature">
+    join AISI (artificial intelligence student initiative) on buffconnect!
+  </div>
 
-    <div class="date">
-        last updated (reeeaaallly bad gambling styling) January 16, 2025
-    </div>
+  <div class="date">
+    last updated (reeeaaallly bad gambling styling) January 16, 2025
+  </div>
 </body>
 </html>
