@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- Head and previous styles remain the same until the animated-letter classes -->
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>Random Name Selector</title>
-  <!-- Example of a Casino-style font (optional) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+  />
   <style>
-    /* Casino aesthetic: bold, flashy colors, and a retro vibe */
-    
+    /* Previous styles remain identical until .animated-letter */
     body {
       font-family: 'Press Start 2P', monospace;
       margin: 0;
@@ -100,7 +102,7 @@
       cursor: pointer;
       font-weight: bold;
       font-size: 12px;
-      box-shadow: 0 4px 10px rgba(255, 0, 0, 0.7);
+      box-shadow: 0 4px 8px rgba(255, 0, 0, 0.7);
       transition: transform 0.2s ease;
     }
 
@@ -141,11 +143,51 @@
 
     .results h2 {
       margin-top: 0;
-      color: #FFD700;
       text-align: center;
-      text-shadow: 
-          0 0 6px #FFD700,
-          0 0 12px #FFD700;
+      font-size: 24px;
+    }
+
+    .animated-title {
+      display: inline-block;
+    }
+
+    .animated-letter {
+      display: inline-block;
+      color: #FFD700;
+      opacity: 1;
+      transition: all 0.3s ease;
+    }
+
+    /* Updated: Start with no animation */
+    .animated-letter.odd, .animated-letter.even {
+      animation: none;
+    }
+
+    /* Updated: Brighter colors and adjusted fade color */
+    @keyframes glowOdd {
+      from {
+        color: #FFFFFF;
+        text-shadow: 0 0 5px #FFFFFF,
+                     0 0 10px #FFD700,
+                     0 0 15px #FF4500;
+      }
+      to {
+        color: #FFD700;
+        text-shadow: 0 0 2px #FFD700;
+      }
+    }
+
+    @keyframes glowEven {
+      from {
+        color: #FFD700;
+        text-shadow: 0 0 2px #FFD700;
+      }
+      to {
+        color: #FFFFFF;
+        text-shadow: 0 0 5px #FFFFFF,
+                     0 0 10px #FFD700,
+                     0 0 15px #FF4500;
+      }
     }
 
     .results p {
@@ -171,11 +213,8 @@
       display: none;
     }
 
-    /* -------------------------------- */
-    /* PLINKO FLASH ANIMATION CSS       */
-    /* -------------------------------- */
     .flash {
-      animation: plinkoFlash 0.6s alternate;
+      animation: plinkoFlash 0.55s alternate;
       animation-iteration-count: 30;
     }
 
@@ -189,16 +228,52 @@
         box-shadow: 0 0 20px #FFD700;
       }
     }
+
+    .flash-faster {
+      animation: fasterFlash 0.25s alternate infinite;
+    }
+
+    @keyframes fasterFlash {
+      0% {
+        color: #FF00FF;
+        text-shadow: 0 0 5px #FF00FF;
+      }
+      100% {
+        color: #00FFFF;
+        text-shadow: 0 0 10px #00FFFF;
+      }
+    }
   </style>
 
   <script>
     let currentNames = [];
     const audioSource = 'https://davidcrispell.github.io/GAMBLING.mp3';
+    let alternatingInterval = null;
+    let titleInterval = null;
 
-    /**
-     * Creates and plays a brand-new audio object
-     * so multiple copies can overlap (chaotic effect).
-     */
+    function createAnimatedTitle() {
+      const title = "WINNERS!";
+      let html = '<div class="animated-title">';
+      
+      for (let i = 0; i < title.length; i++) {
+        html += `<span class="animated-letter ${i % 2 === 0 ? 'even' : 'odd'}">${title[i]}</span>`;
+      }
+      
+      html += '</div>';
+      return html;
+    }
+
+    function startTitleAnimation() {
+      const letters = document.querySelectorAll('.animated-letter');
+      letters.forEach((letter, index) => {
+        if (index % 2 === 0) {
+          letter.style.animation = 'glowEven 0.5s ease-in-out infinite alternate';
+        } else {
+          letter.style.animation = 'glowOdd 0.5s ease-in-out infinite alternate';
+        }
+      });
+    }
+
     function playChaoticSound() {
       const newAudio = new Audio(audioSource);
       newAudio.play().catch(err => {
@@ -208,7 +283,9 @@
 
     function handleFileSelection(event) {
       const file = event.target.files[0];
-      const numSelections = parseInt(document.getElementById('numSelections').value) || 10;
+      const numSelections = parseInt(
+        document.getElementById('numSelections').value
+      ) || 10;
 
       if (!file) {
         alert('Please select a file.');
@@ -216,7 +293,8 @@
       }
 
       const fileExt = file.name.split('.').pop().toLowerCase();
-      const delimiter = fileExt === 'tsv' ? '\t' : fileExt === 'csv' ? ',' : null;
+      const delimiter =
+        fileExt === 'tsv' ? '\t' : fileExt === 'csv' ? ',' : null;
 
       if (!delimiter) {
         alert('File must be either .csv or .tsv');
@@ -228,34 +306,30 @@
         const text = reader.result;
         const lines = text
           .split('\n')
-          .map(line => line.trim())
-          .filter(line => line !== '');
+          .map((line) => line.trim())
+          .filter((line) => line !== '');
 
         if (lines.length <= 1) {
           alert('Not enough data in the file.');
           return;
         }
 
-        const rows = lines.map(line => line.split(delimiter));
-        // Remove header row (assuming the first row is a header)
+        const rows = lines.map((line) => line.split(delimiter));
         rows.shift();
 
-        // Filter out any rows without at least two columns
         currentNames = rows
-          .filter(row => row.length >= 2)
-          .map(row => [row[0].trim(), row[1].trim()]);
+          .filter((row) => row.length >= 2)
+          .map((row) => [row[0].trim(), row[1].trim()]);
 
         if (currentNames.length < numSelections) {
-          alert(`File contains only ${currentNames.length} names, but ${numSelections} were requested.`);
+          alert(
+            `File contains only ${currentNames.length} names, but ${numSelections} were requested.`
+          );
           return;
         }
 
-        // Display random names
         displayRandomNames(numSelections);
-
-        // Play the chaotic sound
         playChaoticSound();
-        // Flash the lights
         flashLights();
       };
 
@@ -277,39 +351,65 @@
       }
 
       const resultsDiv = document.getElementById('results');
-      resultsDiv.innerHTML = '<h2>Winners:</h2>';
+      resultsDiv.innerHTML = `<h2>${createAnimatedTitle()}</h2>`;
 
       selected.forEach(([first, last], index) => {
         const nameElement = document.createElement('p');
         nameElement.textContent = `${index + 1}. ${first} ${last}`;
         resultsDiv.appendChild(nameElement);
       });
+
+      // Clear any existing title animation interval
+      if (titleInterval) {
+        clearTimeout(titleInterval);
+      }
+
+      // Start title animation after 6 seconds
+      titleInterval = setTimeout(startTitleAnimation, 6000);
     }
 
     function flashLights() {
       const resultsDiv = document.getElementById('results');
-      // Remove any existing flash class
       resultsDiv.classList.remove('flash');
-      // Force reflow (to restart the animation)
       void resultsDiv.offsetWidth;
-      // Add the class to start the animation
       resultsDiv.classList.add('flash');
+
+      if (alternatingInterval) {
+        clearInterval(alternatingInterval);
+      }
+
+      setTimeout(() => {
+        let toggle = false;
+        alternatingInterval = setInterval(() => {
+          toggle = !toggle;
+          const allNames = document.querySelectorAll('#results p');
+
+          allNames.forEach((p) => p.classList.remove('flash-faster'));
+
+          if (toggle) {
+            for (let i = 0; i < allNames.length; i += 2) {
+              allNames[i].classList.add('flash-faster');
+            }
+          } else {
+            for (let i = 1; i < allNames.length; i += 2) {
+              allNames[i].classList.add('flash-faster');
+            }
+          }
+        }, 250);
+      }, 6000);
     }
 
-    // Called when user clicks the "Regenerate" button (explicit user gesture)
     function regenerateNames() {
-      const numSelections = parseInt(document.getElementById('numSelections').value) || 10;
+      const numSelections = parseInt(
+        document.getElementById('numSelections').value
+      ) || 10;
       if (currentNames.length === 0) {
         alert('Please upload a file first.');
         return;
       }
-      
-      // Play multiple overlapping sounds
+
       playChaoticSound();
-
       displayRandomNames(numSelections);
-
-      // Trigger the lights
       flashLights();
     }
   </script>
@@ -326,19 +426,29 @@
 
   <h1>Lottery Machine</h1>
 
-  <p>Select a CSV or TSV file and specify the number of names to randomly select. You can regenerate selections without re-uploading the file.</p>
+  <p>
+    Select a CSV or TSV file and specify the number of names to randomly select.
+    You can regenerate selections without re-uploading the file.
+  </p>
 
-  <!-- Hidden file input (no label) -->
-  <input type="file" id="fileInput" accept=".csv,.tsv" onchange="handleFileSelection(event)">
+  <input
+    type="file"
+    id="fileInput"
+    accept=".csv,.tsv"
+    onchange="handleFileSelection(event)"
+  />
 
   <div class="form-group">
     <label for="numSelections">How many winners?</label>
-    <input type="number" id="numSelections" value="10" min="1">
+    <input type="number" id="numSelections" value="10" min="1" />
   </div>
 
-  <!-- This button triggers the hidden file input -->
-  <button class="btn" onclick="document.getElementById('fileInput').click()">Select File</button>
-  <button class="btn" onclick="regenerateNames()">Regenerate</button>
+  <button class="btn" onclick="document.getElementById('fileInput').click()">
+    Select File
+  </button>
+  <button class="btn" onclick="regenerateNames()">
+    Regenerate
+  </button>
 
   <div id="results" class="results"></div>
 
