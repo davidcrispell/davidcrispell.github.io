@@ -128,6 +128,84 @@
     input[type="number"] {
       width: 100px;
     }
+    
+    .name-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 5px 0;
+}
+
+.flashing-name {
+  color: #FF00FF;
+  text-shadow: 0 0 5px #FF00FF, 0 0 10px #00FFFF, 0 0 15px #FFFFFF;
+  animation: fasterFlash 0.25s alternate infinite;
+}
+
+.name-checkbox {
+  width: 20px;
+  height: 20px;
+  accent-color: #FFD700; /* Checkbox color */
+  cursor: pointer;
+}
+
+.checked-glow {
+  color: #FFD700;
+  text-shadow: 0 0 10px #FFD700, 0 0 20px #FF4500, 0 0 30px #FF4500;
+}
+
+@keyframes fasterFlash {
+  0% {
+    color: #FF00FF;
+    text-shadow: 0 0 5px #FF00FF;
+  }
+  50% {
+    color: #00FFFF;
+    text-shadow: 0 0 10px #00FFFF;
+  }
+  100% {
+    color: #FFFFFF;
+    text-shadow: 0 0 15px #FFFFFF;
+  }
+}
+
+    
+    .name-entry {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 5px 0;
+}
+
+.name-checkbox {
+  -webkit-appearance: none; /* Remove default appearance */
+  appearance: none; /* Remove default appearance */
+  width: 25px;
+  height: 25px;
+  background-color: #222; /* Default background color */
+  border: 3px solid #FFD700;
+  border-radius: 2px; /* Slightly rounded for retro feel */
+  box-shadow: 0 0 10px #FFD700, 0 0 20px #FF4500;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+
+.name-checkbox:checked {
+  background-color: #FF4500; /* Bright retro color when checked */
+  box-shadow: 0 0 15px #FF4500, 0 0 25px #FFD700, 0 0 35px #FFD700;
+  border-color: #FF0000;
+}
+
+.name-checkbox:hover {
+  transform: scale(1.1);
+  background-color: #444; /* Slightly lighter color on hover */
+}
+
+
+.checked-glow {
+  color: #FFD700;
+  text-shadow: 0 0 10px #FFD700, 0 0 20px #FF4500, 0 0 30px #FF4500;
+}
 
     .results {
       margin: 20px auto;
@@ -345,7 +423,24 @@ function generateRandomChars(length) {
   return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Modified displayRandomNames function with scrambling
+// Updated displayRandomNames function with checklist functionality
 function displayRandomNames(numSelections) {
   if (currentNames.length < numSelections) {
     alert('Not enough names available. Please upload a larger file.');
@@ -363,36 +458,69 @@ function displayRandomNames(numSelections) {
   const resultsDiv = document.getElementById('results');
   resultsDiv.innerHTML = `<h2>${createAnimatedTitle()}</h2>`;
 
-  // Create elements with obfuscated text first
   selected.forEach((fullName, index) => {
-    const nameElement = document.createElement('p');
-    const fullNameLength = fullName.length;
-    nameElement.innerHTML = `${index + 1}. <span class="obfuscated">${generateRandomChars(fullNameLength)}</span>`;
-    nameElement.dataset.finalText = `${index + 1}. ${fullName}`;
+    const nameElement = document.createElement('div');
+    nameElement.classList.add('name-entry');
+
+    // Create label with flashing animation
+    const label = document.createElement('label');
+    label.classList.add('flashing-name');
+    label.dataset.finalText = `${index + 1}. ${fullName}`;
+    label.innerHTML = `<span class="obfuscated">${generateRandomChars(fullName.length)}</span>`;
+
+    // Add checkbox
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.classList.add('name-checkbox');
+    checkbox.id = `name-${index}`;
+    checkbox.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        label.classList.remove('flashing-name');
+        label.classList.add('checked-glow');
+      } else {
+        label.classList.remove('checked-glow');
+        label.classList.add('flashing-name');
+      }
+    });
+
+    nameElement.appendChild(label);
+    nameElement.appendChild(checkbox);
     resultsDiv.appendChild(nameElement);
   });
 
-  // Start the scrambling process
+  // Start scrambling process
   let obfuscationInterval = setInterval(() => {
-    const elements = document.querySelectorAll('#results p');
-    elements.forEach((element) => {
-      const finalText = element.dataset.finalText.split('. ')[1];
-      element.innerHTML = `${element.dataset.finalText.split('.')[0]}. <span class="obfuscated">${generateRandomChars(finalText.length)}</span>`;
+    const labels = document.querySelectorAll('#results label');
+    labels.forEach((label) => {
+      const finalText = label.dataset.finalText.split('. ')[1];
+      label.innerHTML = `<span class="obfuscated">${generateRandomChars(finalText.length)}</span>`;
     });
   }, 100);
 
-  // After 5 seconds, reveal the real names and start the title animation
+  // After 5 seconds, reveal the real names
   setTimeout(() => {
     clearInterval(obfuscationInterval);
-    const elements = document.querySelectorAll('#results p');
-    elements.forEach((element) => {
-      element.textContent = element.dataset.finalText;
+    const labels = document.querySelectorAll('#results label');
+    labels.forEach((label) => {
+      label.textContent = label.dataset.finalText;
     });
 
     // Start title animation simultaneously
     startTitleAnimation();
   }, 6000);
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
