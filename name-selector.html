@@ -288,60 +288,56 @@
       });
     }
 
-    function handleFileSelection(event) {
-      const file = event.target.files[0];
-      const numSelections = parseInt(
-        document.getElementById('numSelections').value
-      ) || 10;
+function handleFileSelection(event) {
+  const file = event.target.files[0];
+  const numSelections = parseInt(
+    document.getElementById('numSelections').value
+  ) || 10;
 
-      if (!file) {
-        alert('Please select a file.');
-        return;
-      }
+  if (!file) {
+    alert('Please select a file.');
+    return;
+  }
 
-      const fileExt = file.name.split('.').pop().toLowerCase();
-      const delimiter =
-        fileExt === 'tsv' ? '\t' : fileExt === 'csv' ? ',' : null;
+  const fileExt = file.name.split('.').pop().toLowerCase();
+  const delimiter =
+    fileExt === 'tsv' ? '\t' : fileExt === 'csv' ? ',' : null;
 
-      if (!delimiter) {
-        alert('File must be either .csv or .tsv');
-        return;
-      }
+  if (!delimiter) {
+    alert('File must be either .csv or .tsv');
+    return;
+  }
 
-      const reader = new FileReader();
-      reader.onload = () => {
-        const text = reader.result;
-        const lines = text
-          .split('\n')
-          .map((line) => line.trim())
-          .filter((line) => line !== '');
+  const reader = new FileReader();
+  reader.onload = () => {
+    const text = reader.result;
+    const lines = text
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line !== '');
 
-        if (lines.length <= 1) {
-          alert('Not enough data in the file.');
-          return;
-        }
-
-        const rows = lines.map((line) => line.split(delimiter));
-        rows.shift();
-
-        currentNames = rows
-          .filter((row) => row.length >= 2)
-          .map((row) => [row[0].trim(), row[1].trim()]);
-
-        if (currentNames.length < numSelections) {
-          alert(
-            `File contains only ${currentNames.length} names, but ${numSelections} were requested.`
-          );
-          return;
-        }
-
-        displayRandomNames(numSelections);
-        playChaoticSound();
-        flashLights();
-      };
-
-      reader.readAsText(file);
+    if (lines.length <= 1) {
+      alert('Not enough data in the file.');
+      return;
     }
+
+    currentNames = lines.map((line) => line.split(delimiter)[0].trim());
+
+    if (currentNames.length < numSelections) {
+      alert(
+        `File contains only ${currentNames.length} names, but ${numSelections} were requested.`
+      );
+      return;
+    }
+
+    displayRandomNames(numSelections);
+    playChaoticSound();
+    flashLights();
+  };
+
+  reader.readAsText(file);
+}
+
 
     // Helper function to generate random characters
 function generateRandomChars(length) {
@@ -368,38 +364,37 @@ function displayRandomNames(numSelections) {
   resultsDiv.innerHTML = `<h2>${createAnimatedTitle()}</h2>`;
 
   // Create elements with obfuscated text first
-  selected.forEach(([first, last], index) => {
+  selected.forEach((fullName, index) => {
     const nameElement = document.createElement('p');
-    const fullNameLength = first.length + last.length + 1; // +1 for space
+    const fullNameLength = fullName.length;
     nameElement.innerHTML = `${index + 1}. <span class="obfuscated">${generateRandomChars(fullNameLength)}</span>`;
-    nameElement.dataset.finalText = `${index + 1}. ${first} ${last}`;
+    nameElement.dataset.finalText = `${index + 1}. ${fullName}`;
     resultsDiv.appendChild(nameElement);
   });
 
   // Start the scrambling process
   let obfuscationInterval = setInterval(() => {
     const elements = document.querySelectorAll('#results p');
-    elements.forEach(element => {
+    elements.forEach((element) => {
       const finalText = element.dataset.finalText.split('. ')[1];
       element.innerHTML = `${element.dataset.finalText.split('.')[0]}. <span class="obfuscated">${generateRandomChars(finalText.length)}</span>`;
     });
   }, 100);
 
-  // After 5 seconds, reveal the real names
+  // After 5 seconds, reveal the real names and start the title animation
   setTimeout(() => {
     clearInterval(obfuscationInterval);
     const elements = document.querySelectorAll('#results p');
-    elements.forEach(element => {
+    elements.forEach((element) => {
       element.textContent = element.dataset.finalText;
     });
 
-    // Start title animation
-    if (titleInterval) {
-      clearTimeout(titleInterval);
-    }
-    titleInterval = setTimeout(startTitleAnimation, 1000);
-  }, 7000);
+    // Start title animation simultaneously
+    startTitleAnimation();
+  }, 6000);
 }
+
+
 
     function flashLights() {
       const resultsDiv = document.getElementById('results');
