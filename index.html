@@ -109,18 +109,30 @@
 
     <p>This is the home page. Use the navigation links above to explore other sections of the site.</p>
 
-    <p>Seraphim represents the theoretical machine defined with maximal pattern recognition, and consequently pattern recomposition + recombination. We argue that such a machine represents a maximally intelligent creature — A Seraphim.</p>
-
-    <p>Updates on all projects soon!</p>
+    <p>A Seraphim is the theoretical machine defined with maximal pattern recognition. Consequently, this ability implies axiomatic memory, and thus axiom recombination. We argue that such a machine represents a maximally intelligent creature — A Seraphim.</p>
 
     <div class="signature">
         David Crispell
     </div>
 
-    <div class="date">
-        January 16, 2025
+    <div class="date" id="currentDate">
+        <!-- The date will be inserted here by JavaScript -->
     </div>
 
     <a href="#" class="contact-link">Contact</a>
+
+    <script>
+        // Function to format the date as "Month Day, Year"
+        function formatDate(date) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        // Get the current date
+        const currentDate = new Date();
+
+        // Insert the formatted date into the HTML
+        document.getElementById('currentDate').textContent = formatDate(currentDate);
+    </script>
 </body>
 </html>
