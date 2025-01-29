@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    .timeline-wrapper {
+      width: 100%;
+      position: relative;
+      background: white;
+    }
+
+    .timeline-container {
+      width: 100%;
+      overflow-x: scroll;
+      padding: 20px 0;
+      background: white;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    }
+
+    .timeline-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .timeline {
+      display: flex;
+      min-width: max-content;
+      padding: 0 20px;
+      margin: 0 auto;
+    }
+
+    /* Scroll buttons */
+    .scroll-button {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      z-index: 1000;
+      transition: opacity 0.3s ease;
+    }
+
+    .scroll-button:hover {
+      background: rgba(255, 255, 255, 1);
+    }
+
+    .scroll-left {
+      left: 20px;
+    }
+
+    .scroll-right {
+      right: 20px;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding: 0 40px;
+      min-width: 200px;
+      opacity: 0;
+      transform: translateX(50px);
+      transition: all 0.8s ease;
+    }
+
+    .timeline-item::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 100%;
+      height: 1px;
+      background: #e0e0e0;
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .timeline-item.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .timeline-item.visible::after {
+      opacity: 1;
+    }
+
+    .timeline-date {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 8px 16px;
+      border: 1px solid rgba(224, 224, 224, 0.5);
+      border-radius: 20px;
+      font-size: 14px;
+      color: #333;
+      position: relative;
+      z-index: 2;
+      display: inline-block;
+      margin-bottom: 12px;
+      backdrop-filter: blur(4px);
+      transition: all 0.8s ease;
+    }
+
+    .timeline-content {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 16px;
+      border: 1px solid rgba(224, 224, 224, 0.5);
+      border-radius: 4px;
+      position: relative;
+      z-index: 2;
+      max-width: 250px;
+      backdrop-filter: blur(4px);
+      transition: all 0.8s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .timeline-title {
+      font-size: 16px;
+      font-weight: 500;
+      margin: 0 0 8px 0;
+      color: #2b2b2b;
+    }
+
+    .timeline-description {
+      font-size: 14px;
+      color: #666;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .timeline-item.fade-out {
+      opacity: 0;
+      transform: translateX(-50px);
+    }
+
+    @media (max-width: 768px) {
+      .scroll-button {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="timeline-wrapper">
+    <button class="scroll-button scroll-left" onclick="scrollTimeline('left')">←</button>
+    <button class="scroll-button scroll-right" onclick="scrollTimeline('right')">→</button>
+    <div class="timeline-container" id="timelineContainer">
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-date">2020</div>
+          <div class="timeline-content">
+            <h3 class="timeline-title">Project Inception</h3>
+            <p class="timeline-description">Initial research and conceptual development began.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">2021</div>
+          <div class="timeline-content">
+            <h3 class="timeline-title">Development Phase</h3>
+            <p class="timeline-description">Core systems and frameworks established.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">2022</div>
+          <div class="timeline-content">
+            <h3 class="timeline-title">Beta Release</h3>
+            <p class="timeline-description">First public testing phase launched.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">2023</div>
+          <div class="timeline-content">
+            <h3 class="timeline-title">Major Milestone</h3>
+            <p class="timeline-description">Reached significant project objectives.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">2024</div>
+          <div class="timeline-content">
+            <h3 class="timeline-title">Current Progress</h3>
+            <p class="timeline-description">Continuing development and expansion.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const container = document.getElementById('timelineContainer');
+    
+    function scrollTimeline(direction) {
+      const scrollAmount = 300;
+      const scrollPosition = direction === 'left' 
+        ? container.scrollLeft - scrollAmount 
+        : container.scrollLeft + scrollAmount;
+      
+      container.scrollTo({
+        left: scrollPosition,
+        behavior: 'smooth'
+      });
+    }
+
+    // Intersection Observer for fade effects
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          entry.target.classList.remove('fade-out');
+        } else {
+          if (entry.target.classList.contains('visible')) {
+            entry.target.classList.add('fade-out');
+          }
+        }
+      });
+    }, {
+      threshold: 0.1,
+      root: container,
+      rootMargin: '-10px'
+    });
+
+    document.querySelectorAll('.timeline-item').forEach(item => {
+      observer.observe(item);
+    });
+
+    // Enable keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        scrollTimeline('left');
+      } else if (e.key === 'ArrowRight') {
+        scrollTimeline('right');
+      }
+    });
+  </script>
+</body>
+</html>
