@@ -1,246 +1,209 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-    }
-
-    .timeline-wrapper {
-      width: 100%;
-      position: relative;
-      background: white;
-    }
-
-    .timeline-container {
-      width: 100%;
-      overflow-x: scroll;
-      padding: 20px 0;
-      background: white;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-      -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-    }
-
-    .timeline-container::-webkit-scrollbar {
-      display: none;
-    }
-
-    .timeline {
-      display: flex;
-      min-width: max-content;
-      padding: 0 20px;
-      margin: 0 auto;
-    }
-
-    /* Scroll buttons */
-    .scroll-button {
-      position: fixed;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(255, 255, 255, 0.9);
-      border: none;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      z-index: 1000;
-      transition: opacity 0.3s ease;
-    }
-
-    .scroll-button:hover {
-      background: rgba(255, 255, 255, 1);
-    }
-
-    .scroll-left {
-      left: 20px;
-    }
-
-    .scroll-right {
-      right: 20px;
-    }
-
-    .timeline-item {
-      position: relative;
-      padding: 0 40px;
-      min-width: 200px;
-      opacity: 0;
-      transform: translateX(50px);
-      transition: all 0.8s ease;
-    }
-
-    .timeline-item::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 50%;
-      width: 100%;
-      height: 1px;
-      background: #e0e0e0;
-      z-index: 1;
-      opacity: 0;
-      transition: opacity 0.8s ease;
-    }
-
-    .timeline-item.visible {
-      opacity: 1;
-      transform: translateX(0);
-    }
-
-    .timeline-item.visible::after {
-      opacity: 1;
-    }
-
-    .timeline-date {
-      background: rgba(255, 255, 255, 0.9);
-      padding: 8px 16px;
-      border: 1px solid rgba(224, 224, 224, 0.5);
-      border-radius: 20px;
-      font-size: 14px;
-      color: #333;
-      position: relative;
-      z-index: 2;
-      display: inline-block;
-      margin-bottom: 12px;
-      backdrop-filter: blur(4px);
-      transition: all 0.8s ease;
-    }
-
-    .timeline-content {
-      background: rgba(255, 255, 255, 0.9);
-      padding: 16px;
-      border: 1px solid rgba(224, 224, 224, 0.5);
-      border-radius: 4px;
-      position: relative;
-      z-index: 2;
-      max-width: 250px;
-      backdrop-filter: blur(4px);
-      transition: all 0.8s ease;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    }
-
-    .timeline-title {
-      font-size: 16px;
-      font-weight: 500;
-      margin: 0 0 8px 0;
-      color: #2b2b2b;
-    }
-
-    .timeline-description {
-      font-size: 14px;
-      color: #666;
-      margin: 0;
-      line-height: 1.5;
-    }
-
-    .timeline-item.fade-out {
-      opacity: 0;
-      transform: translateX(-50px);
-    }
-
-    @media (max-width: 768px) {
-      .scroll-button {
-        display: none;
-      }
-    }
-  </style>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #333;
+            touch-action: none;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
 <body>
-  <div class="timeline-wrapper">
-    <button class="scroll-button scroll-left" onclick="scrollTimeline('left')">←</button>
-    <button class="scroll-button scroll-right" onclick="scrollTimeline('right')">→</button>
-    <div class="timeline-container" id="timelineContainer">
-      <div class="timeline">
-        <div class="timeline-item">
-          <div class="timeline-date">2020</div>
-          <div class="timeline-content">
-            <h3 class="timeline-title">Project Inception</h3>
-            <p class="timeline-description">Initial research and conceptual development began.</p>
-          </div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-date">2021</div>
-          <div class="timeline-content">
-            <h3 class="timeline-title">Development Phase</h3>
-            <p class="timeline-description">Core systems and frameworks established.</p>
-          </div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-date">2022</div>
-          <div class="timeline-content">
-            <h3 class="timeline-title">Beta Release</h3>
-            <p class="timeline-description">First public testing phase launched.</p>
-          </div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-date">2023</div>
-          <div class="timeline-content">
-            <h3 class="timeline-title">Major Milestone</h3>
-            <p class="timeline-description">Reached significant project objectives.</p>
-          </div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-date">2024</div>
-          <div class="timeline-content">
-            <h3 class="timeline-title">Current Progress</h3>
-            <p class="timeline-description">Continuing development and expansion.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+    <canvas id="canvas"></canvas>
 
-  <script>
-    const container = document.getElementById('timelineContainer');
-    
-    function scrollTimeline(direction) {
-      const scrollAmount = 300;
-      const scrollPosition = direction === 'left' 
-        ? container.scrollLeft - scrollAmount 
-        : container.scrollLeft + scrollAmount;
-      
-      container.scrollTo({
-        left: scrollPosition,
-        behavior: 'smooth'
-      });
-    }
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size to window size
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-    // Intersection Observer for fade effects
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          entry.target.classList.remove('fade-out');
-        } else {
-          if (entry.target.classList.contains('visible')) {
-            entry.target.classList.add('fade-out');
-          }
+        // Node configuration
+        const nodes = [];
+        const numNodes = 100;  // Number of nodes
+        const nodeRadius = 3;
+        const maxEdgeDistance = 100;
+        const waveStrength = 0.05;  // Reduced wave strength
+        const damping = 0.98;  // Reduced damping factor
+        const randomMotionStrength = 0.02;  // Strength of random motion
+
+        // Wave storage
+        const waves = [];
+
+        class Node {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;  // Initial velocity
+                this.vy = (Math.random() - 0.5) * 0.5;  // Initial velocity
+                this.radius = nodeRadius;
+            }
+
+            update() {
+                // Apply damping to simulate viscous substrate
+                this.vx *= damping;
+                this.vy *= damping;
+
+                // Add random motion to prevent complete deceleration
+                this.vx += (Math.random() - 0.5) * randomMotionStrength;
+                this.vy += (Math.random() - 0.5) * randomMotionStrength;
+
+                // Update position
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Bounce off walls
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'white';
+                ctx.fill();
+            }
         }
-      });
-    }, {
-      threshold: 0.1,
-      root: container,
-      rootMargin: '-10px'
-    });
 
-    document.querySelectorAll('.timeline-item').forEach(item => {
-      observer.observe(item);
-    });
+        class Wave {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.radius = 0;
+                this.maxRadius = Math.min(canvas.width, canvas.height) * 0.3;  // Reduced wave range
+                this.opacity = 1;
+            }
 
-    // Enable keyboard navigation
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft') {
-        scrollTimeline('left');
-      } else if (e.key === 'ArrowRight') {
-        scrollTimeline('right');
-      }
-    });
-  </script>
+            update() {
+                this.radius += 1;  // Reduced wave expansion speed
+                this.opacity = 1 - (this.radius / this.maxRadius);
+                
+                // Apply wave force to nodes
+                nodes.forEach(node => {
+                    const dx = node.x - this.x;
+                    const dy = node.y - this.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < this.radius + 10) {
+                        // Use quadratic falloff for more natural force
+                        const force = (1 - Math.pow(distance / this.maxRadius, 2)) * waveStrength;
+                        const angle = Math.atan2(dy, dx);
+                        
+                        node.vx += Math.cos(angle) * force;
+                        node.vy += Math.sin(angle) * force;
+                    }
+                });
+
+                // Interfere with other waves
+                waves.forEach(otherWave => {
+                    if (otherWave !== this) {
+                        const dx = this.x - otherWave.x;
+                        const dy = this.y - otherWave.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance < this.radius + otherWave.radius) {
+                            const overlap = this.radius + otherWave.radius - distance;
+                            const angle = Math.atan2(dy, dx);
+                            const force = overlap * 0.01;  // Adjust force for interference
+
+                            this.x += Math.cos(angle) * force;
+                            this.y += Math.sin(angle) * force;
+                            otherWave.x -= Math.cos(angle) * force;
+                            otherWave.y -= Math.sin(angle) * force;
+                        }
+                    }
+                });
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+        }
+
+        // Create initial nodes
+        for (let i = 0; i < numNodes; i++) {
+            nodes.push(new Node());
+        }
+
+        // Animation loop
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Update and draw nodes
+            nodes.forEach(node => {
+                node.update();
+                node.draw();
+            });
+
+            // Draw edges between nearby nodes
+            nodes.forEach((a, i) => {
+                nodes.slice(i + 1).forEach(b => {
+                    const dx = a.x - b.x;
+                    const dy = a.y - b.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < maxEdgeDistance) {
+                        ctx.beginPath();
+                        ctx.moveTo(a.x, a.y);
+                        ctx.lineTo(b.x, b.y);
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${1 - distance/maxEdgeDistance})`;
+                        ctx.stroke();
+                    }
+                });
+            });
+
+            // Update and draw waves
+            for (let i = waves.length - 1; i >= 0; i--) {
+                waves[i].update();
+                waves[i].draw();
+                
+                if (waves[i].radius > waves[i].maxRadius) {
+                    waves.splice(i, 1);
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        // Handle mouse/touch clicks
+        canvas.addEventListener('mousedown', createWave);
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            createWave(e.touches[0]);
+        });
+
+        function createWave(e) {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            waves.push(new Wave(x, y));
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            // Keep nodes within new bounds
+            nodes.forEach(node => {
+                node.x = Math.min(node.x, canvas.width);
+                node.y = Math.min(node.y, canvas.height);
+            });
+        });
+
+        // Start animation
+        animate();
+    </script>
 </body>
 </html>
