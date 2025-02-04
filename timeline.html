@@ -1,265 +1,352 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timeline</title>
-    <style>
-        /* Import Charter font */
-        @import url('https://fonts.cdnfonts.com/css/charter');
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Timeline</title>
+  <style>
+    /* Use a terminal-style monospace font */
+    body {
+      font-family: 'Courier New', Courier, monospace;
+      line-height: 1.5;
+      max-width: 650px;
+      margin: 40px auto;
+      padding: 0 20px;
+      color: #ffffff; /* White text */
+      background-color: #000000; /* Black background */
+      position: relative;
+      z-index: 1;
+    }
 
-        body {
-            font-family: Charter, 'Bitstream Charter', serif;
-            line-height: 1.5;
-            max-width: 650px;
-            margin: 40px auto;
-            padding: 0 20px;
-            color: #ffffff; /* White text */
-            background-color: #000000; /* Black background */
-            position: relative;
-            z-index: 1;
-        }
+    nav {
+      margin-bottom: 20px;
+    }
 
-        nav {
-            margin-bottom: 20px;
-        }
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+      display: flex;
+      gap: 15px;
+    }
 
-        nav ul {
-            list-style-type: none;
-            padding: 0;
-            display: flex;
-            gap: 15px;
-        }
+    nav ul li {
+      display: inline;
+    }
 
-        nav ul li {
-            display: inline;
-        }
+    nav ul li a {
+      text-decoration: none;
+      color: #00ccff; /* Light blue links */
+    }
 
-        nav ul li a {
-            text-decoration: none;
-            color: #00ccff; /* Light blue links */
-        }
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
 
-        nav ul li a:hover {
-            text-decoration: underline;
-        }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
 
-        h1 {
-            font-size: 24px;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
+    p {
+      margin: 16px 0;
+    }
 
-        p {
-            margin: 16px 0;
-        }
+    .signature {
+      margin-top: 32px;
+    }
 
-        .signature {
-            margin-top: 32px;
-        }
+    .date {
+      margin: 24px 0;
+    }
 
-        .date {
-            margin: 24px 0;
-        }
+    /* Expanded Timeline container styling */
+    .timeline-container {
+      overflow-x: auto;
+      margin: 40px 0;
+      border-top: 1px solid white;
+      border-bottom: 1px solid white;
+      /* Increase the vertical space for the timeline */
+      height: 150px;
+    }
+    /* Timeline element with a partially transparent black background */
+    .timeline {
+      position: relative;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      /* The width is set dynamically by JavaScript */
+    }
+    /* Adjusted tick mark styles for a larger timeline */
+    .tick {
+      position: absolute;
+      background: white;
+    }
+    .tick.year {
+      height: 40px;
+      width: 2px;
+      bottom: 0;
+    }
+    .tick.month {
+      height: 20px;
+      width: 1px;
+      bottom: 0;
+    }
+    .tick-label {
+      position: absolute;
+      color: white;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    /* Position labels above the tick marks */
+    .tick-label.year {
+      bottom: 45px;
+      font-size: 14px;
+      transform: translateX(-50%);
+    }
+    .tick-label.month {
+      bottom: 25px;
+      font-size: 12px;
+      transform: translateX(-50%);
+    }
 
-        /* Background canvas styling */
-        canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-    </style>
+    /* Background canvas styling */
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+  </style>
 </head>
 <body>
-    <canvas id="canvas"></canvas>
+  <canvas id="canvas"></canvas>
 
-    <nav>
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="timeline.html">Timeline</a></li>
-            <li><a href="projects.html">Projects</a></li>
-            <li><a href="contact.html">Contact</a></li>
-        </ul>
-    </nav>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="timeline.html">Timeline</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
 
-    <h1>Timeline</h1>
+  <h1>Timeline</h1>
 
-    <p>This is where your timeline content will go. You can add events, milestones, or any other information you'd like to showcase in a chronological order.</p>
+  <!-- Horizontal scrolling timeline -->
+  <div class="timeline-container">
+    <div class="timeline"></div>
+  </div>
 
-    <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
+  <p>This is where your timeline content will go. You can add events, milestones, or any other information you'd like to showcase in a chronological order.</p>
+
+  <script>
+    /* Canvas animation code */
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Set canvas size to window size
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Node configuration
+    const nodes = [];
+    const numNodes = 150;
+    const nodeRadius = 3;
+    const maxEdgeDistance = 150;
+    const waveStrength = 0.05;
+    const damping = 0.92;
+    // Increased random motion strength for more erratic movement
+    const randomMotionStrength = 0.05;
+
+    // Wave storage
+    const waves = [];
+
+    class Node {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.5;
+        this.vy = (Math.random() - 0.5) * 0.5;
+        this.radius = nodeRadius;
+      }
+
+      update() {
+        this.vx *= damping;
+        this.vy *= damping;
+        this.vx += (Math.random() - 0.5) * randomMotionStrength;
+        this.vy += (Math.random() - 0.5) * randomMotionStrength;
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'white';
+        ctx.fill();
+      }
+    }
+
+    class Wave {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.radius = 0;
+        this.maxRadius = Math.min(canvas.width, canvas.height) * 0.3;
+        this.opacity = 1;
+      }
+
+      update() {
+        this.radius += 1;
+        this.opacity = 1 - (this.radius / this.maxRadius);
         
-        // Set canvas size to window size
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        // Node configuration
-        const nodes = [];
-        const numNodes = 150;
-        const nodeRadius = 3;
-        const maxEdgeDistance = 150;
-        const waveStrength = 0.05;
-        const damping = 0.92;
-        const randomMotionStrength = 0.02;
-
-        // Wave storage
-        const waves = [];
-
-        class Node {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 0.5;
-                this.vy = (Math.random() - 0.5) * 0.5;
-                this.radius = nodeRadius;
-            }
-
-            update() {
-                this.vx *= damping;
-                this.vy *= damping;
-
-                this.vx += (Math.random() - 0.5) * randomMotionStrength;
-                this.vy += (Math.random() - 0.5) * randomMotionStrength;
-
-                this.x += this.vx;
-                this.y += this.vy;
-
-                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-            }
-
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = 'white'; /* White nodes */
-                ctx.fill();
-            }
-        }
-
-        class Wave {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.radius = 0;
-                this.maxRadius = Math.min(canvas.width, canvas.height) * 0.3;
-                this.opacity = 1;
-            }
-
-            update() {
-                this.radius += 1;
-                this.opacity = 1 - (this.radius / this.maxRadius);
-                
-                nodes.forEach(node => {
-                    const dx = node.x - this.x;
-                    const dy = node.y - this.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (distance < this.radius + 10) {
-                        const force = (1 - Math.pow(distance / this.maxRadius, 2)) * waveStrength;
-                        const angle = Math.atan2(dy, dx);
-                        
-                        node.vx += Math.cos(angle) * force;
-                        node.vy += Math.sin(angle) * force;
-                    }
-                });
-
-                waves.forEach(otherWave => {
-                    if (otherWave !== this) {
-                        const dx = this.x - otherWave.x;
-                        const dy = this.y - otherWave.y;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-
-                        if (distance < this.radius + otherWave.radius) {
-                            const overlap = this.radius + otherWave.radius - distance;
-                            const angle = Math.atan2(dy, dx);
-                            const force = overlap * 0.01;
-
-                            this.x += Math.cos(angle) * force;
-                            this.y += Math.sin(angle) * force;
-                            otherWave.x -= Math.cos(angle) * force;
-                            otherWave.y -= Math.sin(angle) * force;
-                        }
-                    }
-                });
-            }
-
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity})`; /* White waves */
-                ctx.lineWidth = 2;
-                ctx.stroke();
-            }
-        }
-
-        for (let i = 0; i < numNodes; i++) {
-            nodes.push(new Node());
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            nodes.forEach(node => {
-                node.update();
-                node.draw();
-            });
-
-            nodes.forEach((a, i) => {
-                nodes.slice(i + 1).forEach(b => {
-                    const dx = a.x - b.x;
-                    const dy = a.y - b.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-
-                    if (distance < maxEdgeDistance) {
-                        ctx.beginPath();
-                        ctx.moveTo(a.x, a.y);
-                        ctx.lineTo(b.x, b.y);
-                        ctx.strokeStyle = `rgba(255, 255, 255, ${1 - distance/maxEdgeDistance})`; /* White lines */
-                        ctx.stroke();
-                    }
-                });
-            });
-
-            for (let i = waves.length - 1; i >= 0; i--) {
-                waves[i].update();
-                waves[i].draw();
-                
-                if (waves[i].radius > waves[i].maxRadius) {
-                    waves.splice(i, 1);
-                }
-            }
-
-            requestAnimationFrame(animate);
-        }
-
-        canvas.addEventListener('mousedown', createWave);
-        canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            createWave(e.touches[0]);
+        nodes.forEach(node => {
+          const dx = node.x - this.x;
+          const dy = node.y - this.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < this.radius + 10) {
+            const force = (1 - Math.pow(distance / this.maxRadius, 2)) * waveStrength;
+            const angle = Math.atan2(dy, dx);
+            node.vx += Math.cos(angle) * force;
+            node.vy += Math.sin(angle) * force;
+          }
         });
 
-        function createWave(e) {
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            waves.push(new Wave(x, y));
-        }
-
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            
-            nodes.forEach(node => {
-                node.x = Math.min(node.x, canvas.width);
-                node.y = Math.min(node.y, canvas.height);
-            });
+        waves.forEach(otherWave => {
+          if (otherWave !== this) {
+            const dx = this.x - otherWave.x;
+            const dy = this.y - otherWave.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < this.radius + otherWave.radius) {
+              const overlap = this.radius + otherWave.radius - distance;
+              const angle = Math.atan2(dy, dx);
+              const force = overlap * 0.01;
+              this.x += Math.cos(angle) * force;
+              this.y += Math.sin(angle) * force;
+              otherWave.x -= Math.cos(angle) * force;
+              otherWave.y -= Math.sin(angle) * force;
+            }
+          }
         });
+      }
 
-        animate();
-    </script>
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity})`;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+    }
+
+    for (let i = 0; i < numNodes; i++) {
+      nodes.push(new Node());
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      nodes.forEach(node => {
+        node.update();
+        node.draw();
+      });
+      nodes.forEach((a, i) => {
+        nodes.slice(i + 1).forEach(b => {
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < maxEdgeDistance) {
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.strokeStyle = `rgba(255, 255, 255, ${1 - distance / maxEdgeDistance})`;
+            ctx.stroke();
+          }
+        });
+      });
+      for (let i = waves.length - 1; i >= 0; i--) {
+        waves[i].update();
+        waves[i].draw();
+        if (waves[i].radius > waves[i].maxRadius) {
+          waves.splice(i, 1);
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+
+    canvas.addEventListener('mousedown', createWave);
+    canvas.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      createWave(e.touches[0]);
+    });
+
+    function createWave(e) {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      waves.push(new Wave(x, y));
+    }
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      nodes.forEach(node => {
+        node.x = Math.min(node.x, canvas.width);
+        node.y = Math.min(node.y, canvas.height);
+      });
+    });
+
+    animate();
+
+    /* Timeline generation script */
+    (function generateTimeline() {
+      const timeline = document.querySelector('.timeline');
+      // Adjusted timeline range: from 2004 to 2026
+      const startYear = 2004;
+      const endYear = 2026;
+      const monthWidth = 50; // Each month gets 50px of width.
+      const totalMonths = (endYear - startYear + 1) * 12;
+      
+      // Set timeline width so that it scrolls horizontally if needed.
+      timeline.style.width = totalMonths * monthWidth + 'px';
+
+      // Month names for labels.
+      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+      for (let year = startYear; year <= endYear; year++) {
+        for (let month = 0; month < 12; month++) {
+          // Calculate x position along the timeline.
+          const xPos = ((year - startYear) * 12 + month) * monthWidth;
+          
+          // Create a tick mark.
+          const tick = document.createElement('div');
+          tick.classList.add('tick');
+          tick.style.left = xPos + 'px';
+          
+          // For January, use a "year" tick (larger) and add a year label.
+          if (month === 0) {
+            tick.classList.add('year');
+            const yearLabel = document.createElement('div');
+            yearLabel.classList.add('tick-label', 'year');
+            yearLabel.innerText = year;
+            yearLabel.style.left = xPos + 'px';
+            timeline.appendChild(yearLabel);
+          } else {
+            tick.classList.add('month');
+            const monthLabel = document.createElement('div');
+            monthLabel.classList.add('tick-label', 'month');
+            monthLabel.innerText = monthNames[month];
+            monthLabel.style.left = xPos + 'px';
+            timeline.appendChild(monthLabel);
+          }
+          timeline.appendChild(tick);
+        }
+      }
+    })();
+  </script>
 </body>
 </html>
