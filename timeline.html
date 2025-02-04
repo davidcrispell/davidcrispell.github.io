@@ -168,7 +168,7 @@
   </nav>
 
   <h1>david's timeline</h1>
-  <text>wayyy better than sujay's</text>
+  <text>something funny</text>
 
   <!-- Timeline wrapper containing the fixed center info and scrollable timeline -->
   <div class="timeline-wrapper">
@@ -182,7 +182,7 @@
 
   <!-- Bottom static text -->
   <div class="bottom-text" id="bottom-text">
-    Ticks marked with a '*' indicate an event. Ticks marked with a '🟂' indicate a cool event. Ticks marked with a '†' indicate a death. Scroll through or click on tickmarks to see event descriptions.
+    Ticks marked with a '*' indicate an event. Ticks marked with a '🟂' indicate a cool event. Ticks marked with a '†' indicate a death. Scroll through or click on tickmarks to see event descriptions. Blue means early life, Red means I've gained some hobbies, White means I'm practically maxed out brain wise.
   <!-- Event description box for custom events -->
   <div id="event-description"></div>
 
@@ -329,7 +329,7 @@
               let b_ik = 1 - (d_ik / maxEdgeDistance);
               let b_jk = 1 - (d_jk / maxEdgeDistance);
               let minBrightness = Math.min(b_ij, b_ik, b_jk);
-              // Adjust the multiplier to control fill brightness (currently set very low)
+              // Adjust the multiplier to control fill brightness.
               let fillAlpha = minBrightness * 0.02;
 
               ctx.beginPath();
@@ -440,6 +440,17 @@
             label.style.left = xPos + 'px';
             label.dataset.year = year;
             label.dataset.month = month;
+          }
+          // Set colors based on the year.
+          if (year >= 2005 && year < 2012) {
+            tick.style.backgroundColor = 'blue';
+            label.style.color = 'blue';
+          } else if (year >= 2012 && year < 2020) {
+            tick.style.backgroundColor = 'orangered';
+            label.style.color = 'orangered';
+          } else if (year >= 2020 && year <= 2026) {
+            tick.style.backgroundColor = 'white';
+            label.style.color = 'white';
           }
           // Add custom messages for specific events.
           if (year === 2025 && month === 1) {
