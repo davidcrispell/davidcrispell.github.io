@@ -155,7 +155,7 @@
   </div>
 
   <!-- Bottom text box to show current message -->
-  <div class="bottom-text" id="bottom-text">You are currently viewing 2004.</div>
+  <div class="bottom-text" id="bottom-text">Ticks marked with a '*' indicate an important event! Scroll horizontally to see more of the timeline.</div>
   <!-- Event description box for custom events -->
   <div id="event-description"></div>
 
@@ -347,11 +347,115 @@
           }
           // Custom event: for February 2025, add a custom message.
           if (year === 2025 && month === 1) {
-            const customMessage = "luka doncic for AD is INSANE";
+            const customMessage = "The craziest trade in the NBA ever happened this month. Mark Cuban AND Lebron James were both asleep at the same time, so somehow Luka Doncic got traded for Anthony Davis (and a few others)";
             tick.dataset.message = customMessage;
             label.dataset.message = customMessage;
             label.innerText += ' *';
           }
+          
+                    if (year === 2025 && month === 0) {
+            const customMessage = "I turned 20! Hopefully, this will be my last year spent with less than $1,000,000,000 in the bank!";
+            tick.dataset.message = customMessage;
+            label.dataset.message = customMessage;
+            label.innerText += '*';
+          }
+          
+                              if (year === 2005 && month === 0) {
+            const customMessage = "I was born on January 18th, 2005 in Orange County hospital. Pretty chill event if you ask me, I like my parents and living so that's cool ig";
+            tick.dataset.message = customMessage;
+            label.dataset.message = customMessage;
+            label.innerText += '*';
+          }
+          
+                              if (year === 2004 && month === 4) {
+            const customMessage = "I was damn near a month premie as a baby so I think the date of my conception lies around here.";
+            tick.dataset.message = customMessage;
+            label.dataset.message = customMessage;
+            label.innerText += '*';
+          }
+
+                    
+          if (year === 2005 && month === 2) {
+            const customMessage = "My Grandpa on my dad's side passes away from cancer about a week before I'm able to meet him. This is pretty sad, my dad says I would've loved him.";
+            tick.dataset.message = customMessage;
+            label.dataset.message = customMessage;
+            label.innerText += ' RIP';
+          }
+
+                    
+          if (year === 2007 && month === 9) {
+            const customMessage = "Little sister is born! Krista joined our family on October 31st, halloween! In the meantime, I've learned how to walk, solve problems, how old I am (2), but not how to talk! Also, as foreshadowing, the DOW Jones hits an all-time high, setting up the country for a great future!";
+            tick.dataset.message = customMessage;
+            label.dataset.message = customMessage;
+            label.innerText += '*';
+          }
+
+          if (year === 2007 && month === 1) {
+            const customMessage = "I start speech therapy because my parents are concerned with my speech delay. Apparently, I really liked pointing to things, and everyone did my bidding";
+            tick.dataset.message = customMessage;
+            label.dataset.message = customMessage;
+            label.innerText += '*';
+          }
+
+          if (year === 2008 && month === 2) {
+            const customMessage = "Economic recession! Despite having hit a DOW Jones all-time high just a few months earlier, the United States faces the beginning of a massive market crash in March of this year.";
+            tick.dataset.message = customMessage;
+            label.dataset.message = customMessage;
+            label.innerText += 'RECESSION';
+          }
+
+          if (year === 2010 && month === 8) {
+            const customMessage = "I start kindergarten around this time. In kindergarten, I manage to learn how to spell words phonetically, and somehow memorize the multiplication table from 1-12. I also develop a mild fixation on cars, which did not unfortunately translate to this day.";
+            tick.dataset.message = customMessage;
+            label.dataset.message = customMessage;
+            label.innerText += '*';
+          }
+
+          if (year === 2012 && month === 1) {
+            const customMessage = "After spending 6 years in California, our family decides to move to Colorado to follow my older brother to USAFA. My dad becomes an executive at ChemSpec-a now bankrupt chemical manufacturing company.";
+            tick.dataset.message = customMessage;
+            label.dataset.message = customMessage;
+            label.innerText += '*';
+          }
+        
+          if (year === 2009 && month === 7) {
+            const customMessage = "After some careful consideration, I should have put money into the housing market this year instead of being 4.";
+            tick.dataset.message = customMessage;
+            label.dataset.message = customMessage;
+            label.innerText += 'RECESSION';
+          }
+
+          if (year === 2012 && month === 2) {
+            const customMessage = "I am now 7 years old and temporarily living in an apartment in Colorado with my family. At school, one of the kids in class brings an Axolotl for show and tell. I immediately became obsessed, and begged my parents for one. I got one! I named her Axie.";
+            tick.dataset.message = customMessage;
+            label.dataset.message = customMessage;
+            label.innerText += '*';
+          }
+
+          if (year === 2012 && month === 4) {
+            const customMessage = "After about two months of being obsessed with aquarium husbandry and taking approximately perfect care of Axie, my parents agree to get me a bigger tank and another axolotl, whom I name Tank.";
+            tick.dataset.message = customMessage;
+            label.dataset.message = customMessage;
+            label.innerText += '*';
+          }
+
+          if (year === 2014 && month === 8) {
+            const customMessage = "I move schools to American Academy, where I meet many of my lifelong friends. I start in 4th grade, and stay there until high school. At this school, I take an interest in computers, robotics, and science/technology in general";
+            tick.dataset.message = customMessage;
+            label.dataset.message = customMessage;
+            label.innerText += '*';
+          }
+
+          
+          if (year === 2016 && month === 8) {
+            const customMessage = "I am now a \"very funny\" individual and start a meme page on instagram around this time.";
+            tick.dataset.message = customMessage;
+            label.dataset.message = customMessage;
+            label.innerText += '*';
+          }
+
+        
+
 
           timeline.appendChild(label);
           timeline.appendChild(tick);
