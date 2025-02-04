@@ -71,6 +71,8 @@
     .tick {
       position: absolute;
       background: white;
+      cursor: pointer;
+      /* The visible tick remains slim, but you can click on the label text */
     }
     .tick.year {
       height: 40px;
@@ -85,8 +87,8 @@
     .tick-label {
       position: absolute;
       color: white;
-      white-space: nowrap;
-      pointer-events: none;
+      cursor: pointer;
+      /* Removed pointer-events: none so that the label (with the star) is clickable */
     }
     .tick-label.year {
       bottom: 45px;
@@ -97,37 +99,6 @@
       bottom: 25px;
       font-size: 12px;
       transform: translateX(-50%);
-    }
-
-    /* New styles for event marker, line, and event box */
-    .event-marker {
-      position: absolute;
-      width: 40px;
-      height: 40px;
-      background-color: #00ccff;
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: black;
-      font-weight: bold;
-      z-index: 2;
-    }
-    .event-box {
-      position: absolute;
-      background: rgba(0, 0, 0, 0.8);
-      color: white;
-      padding: 8px;
-      border: 1px solid white;
-      border-radius: 4px;
-      white-space: nowrap;
-      z-index: 2;
-    }
-    .event-line {
-      position: absolute;
-      width: 2px;
-      background: white;
-      z-index: 1;
     }
 
     /* Background canvas styling */
@@ -147,6 +118,20 @@
       color: #ffffff;
       text-align: center;
     }
+    
+    /* Event description styling (appears beneath the bottom text if a custom event exists) */
+    #event-description {
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 8px;
+      border: 1px solid white;
+      border-radius: 4px;
+      margin: 10px auto;
+      text-align: center;
+      font-size: 14px;
+      max-width: 650px;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -161,7 +146,8 @@
     </ul>
   </nav>
 
-  <h1>Timeline</h1>
+  <h1>david's timeline</h1>
+  <text>something funny</text>
 
   <!-- Horizontal scrolling timeline -->
   <div class="timeline-container">
@@ -170,10 +156,12 @@
 
   <!-- Bottom text box to show current message -->
   <div class="bottom-text" id="bottom-text">You are currently viewing 2004.</div>
+  <!-- Event description box for custom events -->
+  <div id="event-description"></div>
 
   <script>
     /* ------------------------------
-       Canvas animation code (unchanged)
+       Canvas animation code
        ------------------------------ */
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
@@ -357,6 +345,14 @@
             label.dataset.year = year;
             label.dataset.month = month;
           }
+          // Custom event: for February 2025, add a custom message.
+          if (year === 2025 && month === 1) {
+            const customMessage = "luka doncic for AD is INSANE";
+            tick.dataset.message = customMessage;
+            label.dataset.message = customMessage;
+            label.innerText += ' *';
+          }
+
           timeline.appendChild(label);
           timeline.appendChild(tick);
         }
@@ -364,24 +360,18 @@
     })();
 
     /* ------------------------------
-       Bottom Text Message Helpers
+       Bottom Text & Event Description Helpers
        ------------------------------ */
     // Global variable to hold the "selected" (clicked) tick message.
     let defaultBottomMessage = null;
     const bottomText = document.getElementById('bottom-text');
 
-    // Returns the message for a tick element.
-    // If a custom message (data-message) exists, that is used;
-    // otherwise a default "You are viewing Month Year" message is returned.
-    function getTickMessage(element) {
+    // Returns the default "You are viewing X" message.
+    function getDefaultTickMessage(element) {
       const year = element.dataset.year;
       const month = element.dataset.month;
-      const customMessage = element.dataset.message;
       const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                           'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      if (customMessage) {
-        return customMessage;
-      }
       return `You are viewing ${monthNames[month]} ${year}`;
     }
 
@@ -394,26 +384,30 @@
       const currentMonthIndex = Math.floor(scrollPos / monthWidth);
       const currentYear = Math.floor(currentMonthIndex / 12) + startYear;
       bottomText.textContent = `You are currently viewing ${currentYear}.`;
+      // Hide any event description.
+      const eventDesc = document.getElementById('event-description');
+      eventDesc.style.display = 'none';
+      eventDesc.textContent = '';
     }
 
     /* ------------------------------
        Timeline Tick Interactivity
        ------------------------------ */
-    // Use event delegation on the .timeline element for pointerover and pointerout
-    const timelineDiv = document.querySelector('.timeline');
-    timelineDiv.addEventListener('pointerover', function(e) {
+    // Get the timeline element globally.
+    const timeline = document.querySelector('.timeline');
+
+    // Pointerover: show the default message.
+    timeline.addEventListener('pointerover', function(e) {
       if (e.target.classList.contains('tick') || e.target.classList.contains('tick-label')) {
-        // Temporarily show this tick’s message.
-        bottomText.textContent = getTickMessage(e.target);
+        bottomText.textContent = getDefaultTickMessage(e.target);
       }
     });
-    timelineDiv.addEventListener('pointerout', function(e) {
+    // Pointerout: revert to the default or scroll-based message.
+    timeline.addEventListener('pointerout', function(e) {
       if (e.target.classList.contains('tick') || e.target.classList.contains('tick-label')) {
-        // Check if moving to another tick/label; if so, do nothing.
         if (e.relatedTarget && (e.relatedTarget.classList.contains('tick') || e.relatedTarget.classList.contains('tick-label'))) {
           return;
         }
-        // On leaving, revert to the "selected" default message if one exists.
         if (defaultBottomMessage) {
           bottomText.textContent = defaultBottomMessage;
         } else {
@@ -422,65 +416,24 @@
       }
     });
 
-    /* ------------------------------
-       Click event for tick marker & bottom text update:
-       When a tick (or its label) is clicked, create the event marker/box
-       and also “lock in” the tick’s message as the default.
-       ------------------------------ */
-    timelineDiv.addEventListener('click', function(e) {
+    // Click event: lock in the default message and, if available, show the custom event description.
+    timeline.addEventListener('click', function(e) {
       if (!(e.target.classList.contains('tick') || e.target.classList.contains('tick-label'))) {
         return;
       }
-      const timeline = this;
-      // Remove any existing event elements.
-      ['.event-marker', '.event-box', '.event-line'].forEach(selector => {
-        const existing = timeline.querySelector(selector);
-        if (existing) { existing.remove(); }
-      });
+      const defaultMsg = getDefaultTickMessage(e.target);
+      defaultBottomMessage = defaultMsg;
+      bottomText.textContent = defaultMsg;
 
-      // Get x-coordinate of the click relative to the timeline.
-      const rect = timeline.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-
-      // Define the event marker (thumbnail) position.
-      const markerWidth = 40, markerHeight = 40;
-      const markerLeft = x - markerWidth / 2;
-      // Position the marker about 70px from the top of the timeline.
-      const markerTop = 70;
-      const marker = document.createElement('div');
-      marker.className = 'event-marker';
-      marker.style.left = markerLeft + 'px';
-      marker.style.top = markerTop + 'px';
-      marker.textContent = 'Thumb'; // Placeholder text; replace with your graphic.
-      timeline.appendChild(marker);
-
-      // Create an event box to display event details.
-      // Position it above the timeline (e.g. 60px above the marker).
-      const eventBox = document.createElement('div');
-      eventBox.className = 'event-box';
-      // Align the box horizontally with the marker.
-      eventBox.style.left = markerLeft + 'px';
-      eventBox.style.top = (markerTop - 60) + 'px';
-      eventBox.textContent = 'Event description'; // Placeholder text.
-      timeline.appendChild(eventBox);
-
-      // Create a line connecting the bottom center of the event box to the top center of the marker.
-      const markerCenterX = markerLeft + markerWidth / 2;
-      const eventBoxBottom = eventBox.offsetTop + eventBox.offsetHeight;
-      const lineX = markerCenterX - 1; // center the 2px-wide line
-      const lineYStart = eventBoxBottom;
-      const lineYEnd = markerTop;
-      const lineHeight = lineYEnd - lineYStart;
-      const eventLine = document.createElement('div');
-      eventLine.className = 'event-line';
-      eventLine.style.left = lineX + 'px';
-      eventLine.style.top = lineYStart + 'px';
-      eventLine.style.height = lineHeight + 'px';
-      timeline.appendChild(eventLine);
-
-      // Lock in (set as default) this tick’s message.
-      defaultBottomMessage = getTickMessage(e.target);
-      bottomText.textContent = defaultBottomMessage;
+      const customMsg = e.target.dataset.message;
+      const eventDesc = document.getElementById('event-description');
+      if (customMsg) {
+        eventDesc.textContent = customMsg;
+        eventDesc.style.display = 'block';
+      } else {
+        eventDesc.textContent = '';
+        eventDesc.style.display = 'none';
+      }
     });
 
     /* ------------------------------
