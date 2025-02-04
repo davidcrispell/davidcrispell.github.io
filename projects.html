@@ -1,83 +1,101 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projects</title>
-    <style>
-        /* Import Charter font */
-        @import url('https://fonts.cdnfonts.com/css/charter');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects</title>
+  <style>
+    /* Import Charter font */
+    @import url('https://fonts.cdnfonts.com/css/charter');
 
-        body {
-            font-family: Charter, 'Bitstream Charter', serif;
-            line-height: 1.5;
-            max-width: 650px;
-            margin: 40px auto;
-            padding: 0 20px;
-            color: #1a1a1a;
-        }
+    body {
+      font-family: Charter, 'Bitstream Charter', serif;
+      line-height: 1.5;
+      max-width: 650px;
+      margin: 40px auto;
+      padding: 0 20px;
+      color: #1a1a1a;
+    }
 
-        nav {
-            margin-bottom: 20px;
-        }
+    nav {
+      margin-bottom: 20px;
+    }
 
-        nav ul {
-            list-style-type: none;
-            padding: 0;
-            display: flex;
-            gap: 15px;
-        }
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+      display: flex;
+      gap: 15px;
+    }
 
-        nav ul li {
-            display: inline;
-        }
+    nav ul li {
+      display: inline;
+    }
 
-        nav ul li a {
-            text-decoration: none;
-            color: #0066cc;
-        }
+    nav ul li a {
+      text-decoration: none;
+      color: #0066cc;
+    }
 
-        nav ul li a:hover {
-            text-decoration: underline;
-        }
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
 
-        h1 {
-            font-size: 24px;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
 
-        p {
-            margin: 16px 0;
-        }
+    p {
+      margin: 16px 0;
+    }
 
-        .signature {
-            margin-top: 32px;
-        }
+    .signature {
+      margin-top: 32px;
+    }
 
-        .date {
-            margin: 24px 0;
-        }
-    </style>
+    .date {
+      margin: 24px 0;
+    }
+
+    /* Optional: Style for the projects list */
+    ul.projects {
+      padding-left: 20px;
+    }
+    ul.projects li {
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
-    <nav>
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="writing.html">Writing</a></li>
-            <li><a href="projects.html">Projects</a></li>
-            <li><a href="contact.html">Contact</a></li>
-            <!-- Add more links as needed -->
-        </ul>
-    </nav>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="writing.html">Writing</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <!-- Add more links as needed -->
+    </ul>
+  </nav>
 
-    <h1>Projects</h1>
+  <h1>Projects</h1>
 
-    <p>This page contains a repository of my projects, past and current. I wish I could pull Seraphim from the future, but alas, I am not a time traveler.</p>
-    <li><a href=timeline.html">Timeline</a><li><p>This is a timeline I made for HCI, it includes some nice background interactive graphics.</p>
-    <li><a href="name-selector.html">Lottery Machine</a></li><p>This is a project I did for Fundamentals of Human Computer interfaces. It's mostly a testbed for graphics, animation, and styling. I tried to emulate a retro gaming aesthetic.</p>
-    <li><a>Artificial Intelligence Student Initiative</a></li><p>AISI is an organization I started to foster student engagement with AI. With recent advances in technology, it is of paramount importance that the population understands the capabilities of state of the art intelligence.</p>
+  <p>
+    This page contains a repository of my projects, past and current. I wish I could pull Seraphim from the future, but alas, I am not a time traveler.
+  </p>
+
+  <ul class="projects">
+    <li>
+      <a href="timeline.html">Timeline</a>: This is a timeline I made for HCI; it includes some nice background interactive graphics.
+    </li>
+    <li>
+      <a href="name-selector.html">Lottery Machine</a>: This is a project I did for Fundamentals of Human Computer Interfaces. It's mostly a testbed for graphics, animation, and styling—I tried to emulate a retro gaming aesthetic.
+    </li>
+    <li>
+      <a href="#">Artificial Intelligence Student Initiative</a>: AISI is an organization I started to foster student engagement with AI. With recent advances in technology, it is of paramount importance that the population understands the capabilities of state-of-the-art intelligence.
+    </li>
+  </ul>
 </body>
 </html>
