@@ -1,21 +1,93 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline</title>
     <style>
+        /* Import Charter font */
+        @import url('https://fonts.cdnfonts.com/css/charter');
+
         body {
-            margin: 0;
-            overflow: hidden;
-            background-color: #333;
-            touch-action: none;
+            font-family: Charter, 'Bitstream Charter', serif;
+            line-height: 1.5;
+            max-width: 650px;
+            margin: 40px auto;
+            padding: 0 20px;
+            color: #ffffff; /* White text */
+            background-color: #000000; /* Black background */
+            position: relative;
+            z-index: 1;
         }
+
+        nav {
+            margin-bottom: 20px;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            gap: 15px;
+        }
+
+        nav ul li {
+            display: inline;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #00ccff; /* Light blue links */
+        }
+
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        p {
+            margin: 16px 0;
+        }
+
+        .signature {
+            margin-top: 32px;
+        }
+
+        .date {
+            margin: 24px 0;
+        }
+
+        /* Background canvas styling */
         canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
+            z-index: -1;
         }
     </style>
 </head>
 <body>
     <canvas id="canvas"></canvas>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="timeline.html">Timeline</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <h1>Timeline</h1>
+
+    <p>This is where your timeline content will go. You can add events, milestones, or any other information you'd like to showcase in a chronological order.</p>
 
     <script>
         const canvas = document.getElementById('canvas');
@@ -27,12 +99,12 @@
 
         // Node configuration
         const nodes = [];
-        const numNodes = 100;  // Number of nodes
+        const numNodes = 150;
         const nodeRadius = 3;
-        const maxEdgeDistance = 100;
-        const waveStrength = 0.05;  // Reduced wave strength
-        const damping = 0.98;  // Reduced damping factor
-        const randomMotionStrength = 0.02;  // Strength of random motion
+        const maxEdgeDistance = 150;
+        const waveStrength = 0.05;
+        const damping = 0.92;
+        const randomMotionStrength = 0.02;
 
         // Wave storage
         const waves = [];
@@ -41,25 +113,21 @@
             constructor() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 0.5;  // Initial velocity
-                this.vy = (Math.random() - 0.5) * 0.5;  // Initial velocity
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
                 this.radius = nodeRadius;
             }
 
             update() {
-                // Apply damping to simulate viscous substrate
                 this.vx *= damping;
                 this.vy *= damping;
 
-                // Add random motion to prevent complete deceleration
                 this.vx += (Math.random() - 0.5) * randomMotionStrength;
                 this.vy += (Math.random() - 0.5) * randomMotionStrength;
 
-                // Update position
                 this.x += this.vx;
                 this.y += this.vy;
 
-                // Bounce off walls
                 if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
                 if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
             }
@@ -67,7 +135,7 @@
             draw() {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = 'white';
+                ctx.fillStyle = 'white'; /* White nodes */
                 ctx.fill();
             }
         }
@@ -77,22 +145,20 @@
                 this.x = x;
                 this.y = y;
                 this.radius = 0;
-                this.maxRadius = Math.min(canvas.width, canvas.height) * 0.3;  // Reduced wave range
+                this.maxRadius = Math.min(canvas.width, canvas.height) * 0.3;
                 this.opacity = 1;
             }
 
             update() {
-                this.radius += 1;  // Reduced wave expansion speed
+                this.radius += 1;
                 this.opacity = 1 - (this.radius / this.maxRadius);
                 
-                // Apply wave force to nodes
                 nodes.forEach(node => {
                     const dx = node.x - this.x;
                     const dy = node.y - this.y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
                     
                     if (distance < this.radius + 10) {
-                        // Use quadratic falloff for more natural force
                         const force = (1 - Math.pow(distance / this.maxRadius, 2)) * waveStrength;
                         const angle = Math.atan2(dy, dx);
                         
@@ -101,7 +167,6 @@
                     }
                 });
 
-                // Interfere with other waves
                 waves.forEach(otherWave => {
                     if (otherWave !== this) {
                         const dx = this.x - otherWave.x;
@@ -111,7 +176,7 @@
                         if (distance < this.radius + otherWave.radius) {
                             const overlap = this.radius + otherWave.radius - distance;
                             const angle = Math.atan2(dy, dx);
-                            const force = overlap * 0.01;  // Adjust force for interference
+                            const force = overlap * 0.01;
 
                             this.x += Math.cos(angle) * force;
                             this.y += Math.sin(angle) * force;
@@ -125,28 +190,24 @@
             draw() {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity})`; /* White waves */
                 ctx.lineWidth = 2;
                 ctx.stroke();
             }
         }
 
-        // Create initial nodes
         for (let i = 0; i < numNodes; i++) {
             nodes.push(new Node());
         }
 
-        // Animation loop
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Update and draw nodes
             nodes.forEach(node => {
                 node.update();
                 node.draw();
             });
 
-            // Draw edges between nearby nodes
             nodes.forEach((a, i) => {
                 nodes.slice(i + 1).forEach(b => {
                     const dx = a.x - b.x;
@@ -157,13 +218,12 @@
                         ctx.beginPath();
                         ctx.moveTo(a.x, a.y);
                         ctx.lineTo(b.x, b.y);
-                        ctx.strokeStyle = `rgba(255, 255, 255, ${1 - distance/maxEdgeDistance})`;
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${1 - distance/maxEdgeDistance})`; /* White lines */
                         ctx.stroke();
                     }
                 });
             });
 
-            // Update and draw waves
             for (let i = waves.length - 1; i >= 0; i--) {
                 waves[i].update();
                 waves[i].draw();
@@ -176,7 +236,6 @@
             requestAnimationFrame(animate);
         }
 
-        // Handle mouse/touch clicks
         canvas.addEventListener('mousedown', createWave);
         canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
@@ -190,19 +249,16 @@
             waves.push(new Wave(x, y));
         }
 
-        // Handle window resize
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             
-            // Keep nodes within new bounds
             nodes.forEach(node => {
                 node.x = Math.min(node.x, canvas.width);
                 node.y = Math.min(node.y, canvas.height);
             });
         });
 
-        // Start animation
         animate();
     </script>
 </body>
