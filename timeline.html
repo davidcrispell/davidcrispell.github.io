@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Timeline</title>
   <style>
     /* Use a terminal-style monospace font */
@@ -17,66 +17,57 @@
       position: relative;
       z-index: 1;
     }
-
     nav {
       margin-bottom: 20px;
     }
-
     nav ul {
       list-style-type: none;
       padding: 0;
       display: flex;
       gap: 15px;
     }
-
     nav ul li {
       display: inline;
     }
-
     nav ul li a {
       text-decoration: none;
       color: #00ccff; /* Light blue links */
     }
-
     nav ul li a:hover {
       text-decoration: underline;
     }
-
     h1 {
       font-size: 24px;
       margin-bottom: 8px;
       font-weight: bold;
     }
-
     p {
       margin: 16px 0;
     }
-
     .signature {
       margin-top: 32px;
     }
-
     .date {
       margin: 24px 0;
     }
 
-    /* Expanded Timeline container styling */
+    /* Timeline container styling */
     .timeline-container {
       overflow-x: auto;
       margin: 40px 0;
       border-top: 1px solid white;
       border-bottom: 1px solid white;
-      /* Increase the vertical space for the timeline */
       height: 150px;
+      position: relative;
     }
-    /* Timeline element with a partially transparent black background */
+    /* Timeline element with a solid translucent background */
     .timeline {
       position: relative;
       height: 100%;
       background: rgba(0, 0, 0, 0.7);
-      /* The width is set dynamically by JavaScript */
+      /* The width will be set dynamically by JavaScript */
     }
-    /* Adjusted tick mark styles for a larger timeline */
+    /* Tick marks and labels */
     .tick {
       position: absolute;
       background: white;
@@ -97,7 +88,6 @@
       white-space: nowrap;
       pointer-events: none;
     }
-    /* Position labels above the tick marks */
     .tick-label.year {
       bottom: 45px;
       font-size: 14px;
@@ -109,6 +99,37 @@
       transform: translateX(-50%);
     }
 
+    /* New styles for event marker, line, and event box */
+    .event-marker {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background-color: #00ccff;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: black;
+      font-weight: bold;
+      z-index: 2;
+    }
+    .event-box {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 8px;
+      border: 1px solid white;
+      border-radius: 4px;
+      white-space: nowrap;
+      z-index: 2;
+    }
+    .event-line {
+      position: absolute;
+      width: 2px;
+      background: white;
+      z-index: 1;
+    }
+
     /* Background canvas styling */
     canvas {
       position: fixed;
@@ -117,6 +138,14 @@
       width: 100%;
       height: 100%;
       z-index: -1;
+    }
+
+    /* Bottom text box styling */
+    .bottom-text {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #ffffff;
+      text-align: center;
     }
   </style>
 </head>
@@ -139,28 +168,25 @@
     <div class="timeline"></div>
   </div>
 
-  <p>This is where your timeline content will go. You can add events, milestones, or any other information you'd like to showcase in a chronological order.</p>
+  <!-- Bottom text box to show current year -->
+  <div class="bottom-text" id="bottom-text">You are currently viewing 2004.</div>
 
   <script>
-    /* Canvas animation code */
+    /* ------------------------------
+       Canvas animation code (unchanged)
+       ------------------------------ */
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-    
-    // Set canvas size to window size
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // Node configuration
     const nodes = [];
     const numNodes = 150;
     const nodeRadius = 3;
     const maxEdgeDistance = 150;
     const waveStrength = 0.05;
     const damping = 0.92;
-    // Increased random motion strength for more erratic movement
     const randomMotionStrength = 0.05;
-
-    // Wave storage
     const waves = [];
 
     class Node {
@@ -171,7 +197,6 @@
         this.vy = (Math.random() - 0.5) * 0.5;
         this.radius = nodeRadius;
       }
-
       update() {
         this.vx *= damping;
         this.vy *= damping;
@@ -182,7 +207,6 @@
         if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
         if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
       }
-
       draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
@@ -190,7 +214,6 @@
         ctx.fill();
       }
     }
-
     class Wave {
       constructor(x, y) {
         this.x = x;
@@ -199,11 +222,9 @@
         this.maxRadius = Math.min(canvas.width, canvas.height) * 0.3;
         this.opacity = 1;
       }
-
       update() {
         this.radius += 1;
         this.opacity = 1 - (this.radius / this.maxRadius);
-        
         nodes.forEach(node => {
           const dx = node.x - this.x;
           const dy = node.y - this.y;
@@ -215,7 +236,6 @@
             node.vy += Math.sin(angle) * force;
           }
         });
-
         waves.forEach(otherWave => {
           if (otherWave !== this) {
             const dx = this.x - otherWave.x;
@@ -233,7 +253,6 @@
           }
         });
       }
-
       draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
@@ -242,17 +261,12 @@
         ctx.stroke();
       }
     }
-
     for (let i = 0; i < numNodes; i++) {
       nodes.push(new Node());
     }
-
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      nodes.forEach(node => {
-        node.update();
-        node.draw();
-      });
+      nodes.forEach(node => { node.update(); node.draw(); });
       nodes.forEach((a, i) => {
         nodes.slice(i + 1).forEach(b => {
           const dx = a.x - b.x;
@@ -276,20 +290,17 @@
       }
       requestAnimationFrame(animate);
     }
-
     canvas.addEventListener('mousedown', createWave);
     canvas.addEventListener('touchstart', (e) => {
       e.preventDefault();
       createWave(e.touches[0]);
     });
-
     function createWave(e) {
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
       waves.push(new Wave(x, y));
     }
-
     window.addEventListener('resize', () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -298,36 +309,31 @@
         node.y = Math.min(node.y, canvas.height);
       });
     });
-
     animate();
 
-    /* Timeline generation script */
+    /* ------------------------------
+       Timeline generation code
+       ------------------------------ */
     (function generateTimeline() {
       const timeline = document.querySelector('.timeline');
-      // Adjusted timeline range: from 2004 to 2026
+      // Timeline range: 2004 to 2026
       const startYear = 2004;
       const endYear = 2026;
       const monthWidth = 50; // Each month gets 50px of width.
       const totalMonths = (endYear - startYear + 1) * 12;
-      
       // Set timeline width so that it scrolls horizontally if needed.
       timeline.style.width = totalMonths * monthWidth + 'px';
 
       // Month names for labels.
-      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                           'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
       for (let year = startYear; year <= endYear; year++) {
         for (let month = 0; month < 12; month++) {
-          // Calculate x position along the timeline.
           const xPos = ((year - startYear) * 12 + month) * monthWidth;
-          
-          // Create a tick mark.
+          // Create tick mark.
           const tick = document.createElement('div');
           tick.classList.add('tick');
           tick.style.left = xPos + 'px';
-          
-          // For January, use a "year" tick (larger) and add a year label.
           if (month === 0) {
             tick.classList.add('year');
             const yearLabel = document.createElement('div');
@@ -347,6 +353,81 @@
         }
       }
     })();
+
+    /* ------------------------------
+       Event Marker Functionality:
+       When a tick (or its label) is clicked, create a thumbnail marker
+       over that month with a line to an event box.
+       ------------------------------ */
+    document.querySelector('.timeline').addEventListener('click', function(e) {
+      // Only trigger if a tick or tick-label was clicked.
+      if (!(e.target.classList.contains('tick') || e.target.classList.contains('tick-label'))) {
+        return;
+      }
+      const timeline = this;
+      // Remove any existing event elements.
+      ['.event-marker', '.event-box', '.event-line'].forEach(selector => {
+        const existing = timeline.querySelector(selector);
+        if (existing) { existing.remove(); }
+      });
+
+      // Get x-coordinate of the click relative to the timeline.
+      const rect = timeline.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+
+      // Define the event marker (thumbnail) position.
+      const markerWidth = 40, markerHeight = 40;
+      const markerLeft = x - markerWidth / 2;
+      // We'll position the marker about 70px from the top of the timeline.
+      const markerTop = 70;
+      const marker = document.createElement('div');
+      marker.className = 'event-marker';
+      marker.style.left = markerLeft + 'px';
+      marker.style.top = markerTop + 'px';
+      marker.textContent = 'Thumb'; // Placeholder text; replace with your graphic.
+      timeline.appendChild(marker);
+
+      // Create an event box to display event details.
+      // Position it above the timeline (e.g. 60px above the marker).
+      const eventBox = document.createElement('div');
+      eventBox.className = 'event-box';
+      // Align the box horizontally with the marker.
+      eventBox.style.left = markerLeft + 'px';
+      eventBox.style.top = (markerTop - 60) + 'px';
+      eventBox.textContent = 'Event description'; // Placeholder text.
+      timeline.appendChild(eventBox);
+
+      // Create a line connecting the bottom center of the event box to the top center of the marker.
+      const markerCenterX = markerLeft + markerWidth / 2;
+      const eventBoxRect = eventBox.getBoundingClientRect();
+      // Calculate the bottom of the event box relative to the timeline.
+      const eventBoxBottom = eventBox.offsetTop + eventBox.offsetHeight;
+      const lineX = markerCenterX - 1; // center the 2px-wide line
+      const lineYStart = eventBoxBottom;
+      const lineYEnd = markerTop;
+      const lineHeight = lineYEnd - lineYStart;
+      const eventLine = document.createElement('div');
+      eventLine.className = 'event-line';
+      eventLine.style.left = lineX + 'px';
+      eventLine.style.top = lineYStart + 'px';
+      eventLine.style.height = lineHeight + 'px';
+      timeline.appendChild(eventLine);
+    });
+
+    /* ------------------------------
+       Scroll detection for updating the year
+       ------------------------------ */
+    const timelineContainer = document.querySelector('.timeline-container');
+    const bottomText = document.getElementById('bottom-text');
+    timelineContainer.addEventListener('scroll', () => {
+      const monthWidth = 50;
+      const startYear = 2004;
+      const totalMonths = (2026 - startYear + 1) * 12;
+      const scrollPos = timelineContainer.scrollLeft;
+      const currentMonthIndex = Math.floor(scrollPos / monthWidth);
+      const currentYear = Math.floor(currentMonthIndex / 12) + startYear;
+      bottomText.textContent = `You are currently viewing ${currentYear}.`;
+    });
   </script>
 </body>
 </html>
