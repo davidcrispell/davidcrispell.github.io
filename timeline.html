@@ -174,7 +174,7 @@
 
   <!-- Bottom static text -->
   <div class="bottom-text" id="bottom-text">
-    Ticks marked with a '*' indicate an important event! Scroll horizontally to see more of the timeline.
+    Ticks marked with a '*' indicate an event. Ticks marked with a '🟂' indicate a cool event. Ticks marked with a '†' indicate a death.
   </div>
   <!-- Event description box for custom events -->
   <div id="event-description"></div>
@@ -451,7 +451,7 @@
             const customMessage = "I was born on January 18th, 2005 in Orange County hospital. Pretty chill event if you ask me, I like my parents and living so that's cool ig";
             tick.dataset.message = customMessage;
             label.dataset.message = customMessage;
-            label.innerText += '*';
+            label.innerText += '🟂';
           }
           if (year === 2004 && month === 4) {
             const customMessage = "I was damn near a month premie as a baby so I think the date of my conception lies around here.";
@@ -463,7 +463,7 @@
             const customMessage = "My Grandpa on my dad's side passes away from cancer about a week before I'm able to meet him. This is pretty sad, my dad says I would've loved him.";
             tick.dataset.message = customMessage;
             label.dataset.message = customMessage;
-            label.innerText += ' RIP';
+            label.innerText += ' †';
           }
           if (year === 2007 && month === 9) {
             const customMessage = "Little sister is born! Krista joined our family on October 31st, halloween! In the meantime, I've learned how to walk, solve problems, how old I am (2), but not how to talk! Also, as foreshadowing, the DOW Jones hits an all-time high, setting up the country for a great future!";
