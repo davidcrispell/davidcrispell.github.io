@@ -63,7 +63,15 @@
       border-top: 1px solid white;
       border-bottom: 1px solid white;
       height: 150px;
+      /* Hide scrollbars for IE, Edge, Firefox */
+      -ms-overflow-style: none; 
+      scrollbar-width: none;
     }
+    /* Hide scrollbars for Chrome, Safari and Opera */
+    .timeline-container::-webkit-scrollbar {
+      display: none;
+    }
+    
     /* Center info styling (always fixed at the top center of the timeline wrapper) */
     #center-info {
       position: absolute;
@@ -150,19 +158,17 @@
 <body>
   <canvas id="canvas"></canvas>
 
-    <nav>
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="writing.html">Writing</a></li>
-            <li><a href="projects.html">Projects</a></li>
-            <li><a href="contact.html">Contact</a></li>
-            <!-- Add more links as needed -->
-        </ul>
-    </nav>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="timeline.html">Timeline</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
 
   <h1>david's timeline</h1>
-  <text>wayyyyy better than sujay;s</text>
+  <text>wayyy better than sujay's</text>
 
   <!-- Timeline wrapper containing the fixed center info and scrollable timeline -->
   <div class="timeline-wrapper">
@@ -323,7 +329,8 @@
               let b_ik = 1 - (d_ik / maxEdgeDistance);
               let b_jk = 1 - (d_jk / maxEdgeDistance);
               let minBrightness = Math.min(b_ij, b_ik, b_jk);
-              let fillAlpha = minBrightness * 0.02 // 3/4ths of the dimmest edge’s brightness
+              // Adjust the multiplier to control fill brightness (currently set very low)
+              let fillAlpha = minBrightness * 0.02;
 
               ctx.beginPath();
               ctx.moveTo(nodes[i].x, nodes[i].y);
@@ -406,8 +413,7 @@
       const totalMonths = (timelineConfig.endYear - timelineConfig.startYear + 1) * 12;
       timeline.style.width = totalMonths * timelineConfig.monthWidth + 'px';
 
-      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
       for (let year = timelineConfig.startYear; year <= timelineConfig.endYear; year++) {
         for (let month = 0; month < 12; month++) {
