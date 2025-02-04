@@ -51,14 +51,29 @@
       margin: 24px 0;
     }
 
+    /* Timeline wrapper styling: holds both the fixed center-info and the scrollable timeline */
+    .timeline-wrapper {
+      position: relative;
+      margin: 50px 0;
+    }
+
     /* Timeline container styling */
     .timeline-container {
       overflow-x: auto;
-      margin: 50px 0;
       border-top: 1px solid white;
       border-bottom: 1px solid white;
       height: 150px;
-      position: relative;
+    }
+    /* Center info styling (always fixed at the top center of the timeline wrapper) */
+    #center-info {
+      position: absolute;
+      top: 2px;  /* just below the white border-top */
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 14px;
+      pointer-events: none;
+      z-index: 10;
     }
     /* Timeline element with a solid translucent background */
     .timeline {
@@ -72,7 +87,6 @@
       position: absolute;
       background: white;
       cursor: pointer;
-      /* The visible tick remains slim, but you can click on the label text */
     }
     .tick.year {
       height: 40px;
@@ -88,7 +102,6 @@
       position: absolute;
       color: white;
       cursor: pointer;
-      /* Removed pointer-events: none so that the label (with the star) is clickable */
     }
     .tick-label.year {
       bottom: 45px;
@@ -119,7 +132,7 @@
       text-align: center;
     }
     
-    /* Event description styling (appears beneath the bottom text if a custom event exists) */
+    /* Event description styling */
     #event-description {
       background: rgba(0, 0, 0, 0.8);
       color: white;
@@ -149,13 +162,20 @@
   <h1>david's timeline</h1>
   <text>something funny</text>
 
-  <!-- Horizontal scrolling timeline -->
-  <div class="timeline-container">
-    <div class="timeline"></div>
+  <!-- Timeline wrapper containing the fixed center info and scrollable timeline -->
+  <div class="timeline-wrapper">
+    <!-- Center info element fixed above the scrollable area -->
+    <div id="center-info"></div>
+    <!-- Horizontal scrolling timeline container -->
+    <div class="timeline-container">
+      <div class="timeline"></div>
+    </div>
   </div>
 
-  <!-- Bottom text box to show current message -->
-  <div class="bottom-text" id="bottom-text">Ticks marked with a '*' indicate an important event! Scroll horizontally to see more of the timeline.</div>
+  <!-- Bottom static text -->
+  <div class="bottom-text" id="bottom-text">
+    Ticks marked with a '*' indicate an important event! Scroll horizontally to see more of the timeline.
+  </div>
   <!-- Event description box for custom events -->
   <div id="event-description"></div>
 
@@ -252,23 +272,91 @@
     for (let i = 0; i < numNodes; i++) {
       nodes.push(new Node());
     }
+
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      nodes.forEach(node => { node.update(); node.draw(); });
-      nodes.forEach((a, i) => {
-        nodes.slice(i + 1).forEach(b => {
-          const dx = a.x - b.x;
-          const dy = a.y - b.y;
+
+      // 1. Update nodes.
+      nodes.forEach(node => node.update());
+
+      // 2. Compute neighbor connections (edges) between nodes.
+      let neighbors = new Array(nodes.length);
+      for (let i = 0; i < nodes.length; i++) {
+        neighbors[i] = [];
+      }
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x;
+          const dy = nodes[i].y - nodes[j].y;
           const distance = Math.sqrt(dx * dx + dy * dy);
           if (distance < maxEdgeDistance) {
+            neighbors[i].push({ index: j, distance: distance });
+            neighbors[j].push({ index: i, distance: distance });
+          }
+        }
+      }
+
+      // 3. For each triangle (closed loop of 3 nodes), fill its interior.
+      //    For each node i, check every pair of its neighbors (j and k) to see if j and k are connected.
+      for (let i = 0; i < nodes.length; i++) {
+        let neigh = neighbors[i];
+        for (let a = 0; a < neigh.length; a++) {
+          let j = neigh[a].index;
+          let d_ij = neigh[a].distance;
+          for (let b = a + 1; b < neigh.length; b++) {
+            let k = neigh[b].index;
+            let d_ik = neigh[b].distance;
+            // Check if nodes j and k are connected.
+            let connectionFound = false;
+            let d_jk = 0;
+            for (let item of neighbors[j]) {
+              if (item.index === k) {
+                connectionFound = true;
+                d_jk = item.distance;
+                break;
+              }
+            }
+            if (connectionFound) {
+              // Compute brightness for each edge.
+              let b_ij = 1 - (d_ij / maxEdgeDistance);
+              let b_ik = 1 - (d_ik / maxEdgeDistance);
+              let b_jk = 1 - (d_jk / maxEdgeDistance);
+              let minBrightness = Math.min(b_ij, b_ik, b_jk);
+              let fillAlpha = minBrightness * 0.02 // 3/4ths of the dimmest edge’s brightness
+
+              ctx.beginPath();
+              ctx.moveTo(nodes[i].x, nodes[i].y);
+              ctx.lineTo(nodes[j].x, nodes[j].y);
+              ctx.lineTo(nodes[k].x, nodes[k].y);
+              ctx.closePath();
+              ctx.fillStyle = `rgba(255, 255, 255, ${fillAlpha})`;
+              ctx.fill();
+            }
+          }
+        }
+      }
+
+      // 4. Draw edges (so they appear on top of the filled triangles).
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x;
+          const dy = nodes[i].y - nodes[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < maxEdgeDistance) {
+            let brightness = 1 - (distance / maxEdgeDistance);
             ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.strokeStyle = `rgba(255, 255, 255, ${1 - distance / maxEdgeDistance})`;
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.strokeStyle = `rgba(255, 255, 255, ${brightness})`;
             ctx.stroke();
           }
-        });
-      });
+        }
+      }
+
+      // 5. Draw nodes on top.
+      nodes.forEach(node => node.draw());
+
+      // 6. Update and draw waves.
       for (let i = waves.length - 1; i >= 0; i--) {
         waves[i].update();
         waves[i].draw();
@@ -276,8 +364,10 @@
           waves.splice(i, 1);
         }
       }
+
       requestAnimationFrame(animate);
     }
+
     canvas.addEventListener('mousedown', createWave);
     canvas.addEventListener('touchstart', (e) => {
       e.preventDefault();
@@ -300,33 +390,32 @@
     animate();
 
     /* ------------------------------
-       Timeline generation code
+       Timeline generation and interactivity code
        ------------------------------ */
+    const timelineConfig = {
+      startYear: 2004,
+      endYear: 2026,
+      monthWidth: 50
+    };
+
+    let locked = false;
+
     (function generateTimeline() {
       const timeline = document.querySelector('.timeline');
-      // Timeline range: 2004 to 2026
-      const startYear = 2004;
-      const endYear = 2026;
-      const monthWidth = 50; // Each month gets 50px of width.
-      const totalMonths = (endYear - startYear + 1) * 12;
-      // Set timeline width so that it scrolls horizontally if needed.
-      timeline.style.width = totalMonths * monthWidth + 'px';
+      const totalMonths = (timelineConfig.endYear - timelineConfig.startYear + 1) * 12;
+      timeline.style.width = totalMonths * timelineConfig.monthWidth + 'px';
 
-      // Month names for labels.
       const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                           'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-      for (let year = startYear; year <= endYear; year++) {
+      for (let year = timelineConfig.startYear; year <= timelineConfig.endYear; year++) {
         for (let month = 0; month < 12; month++) {
-          const xPos = ((year - startYear) * 12 + month) * monthWidth;
-          // Create tick mark.
+          const xPos = ((year - timelineConfig.startYear) * 12 + month) * timelineConfig.monthWidth;
           const tick = document.createElement('div');
           tick.classList.add('tick');
           tick.style.left = xPos + 'px';
-          // Add data attributes for later use.
           tick.dataset.year = year;
           tick.dataset.month = month;
-          // Create label element and add data attributes too.
           let label;
           if (month === 0) {
             tick.classList.add('year');
@@ -345,190 +434,138 @@
             label.dataset.year = year;
             label.dataset.month = month;
           }
-          // Custom event: for February 2025, add a custom message.
+          // Add custom messages for specific events.
           if (year === 2025 && month === 1) {
             const customMessage = "The craziest trade in the NBA ever happened this month. Mark Cuban AND Lebron James were both asleep at the same time, so somehow Luka Doncic got traded for Anthony Davis (and a few others)";
             tick.dataset.message = customMessage;
             label.dataset.message = customMessage;
             label.innerText += ' *';
           }
-          
-                    if (year === 2025 && month === 0) {
+          if (year === 2025 && month === 0) {
             const customMessage = "I turned 20! Hopefully, this will be my last year spent with less than $1,000,000,000 in the bank!";
             tick.dataset.message = customMessage;
             label.dataset.message = customMessage;
             label.innerText += '*';
           }
-          
-                              if (year === 2005 && month === 0) {
+          if (year === 2005 && month === 0) {
             const customMessage = "I was born on January 18th, 2005 in Orange County hospital. Pretty chill event if you ask me, I like my parents and living so that's cool ig";
             tick.dataset.message = customMessage;
             label.dataset.message = customMessage;
             label.innerText += '*';
           }
-          
-                              if (year === 2004 && month === 4) {
+          if (year === 2004 && month === 4) {
             const customMessage = "I was damn near a month premie as a baby so I think the date of my conception lies around here.";
             tick.dataset.message = customMessage;
             label.dataset.message = customMessage;
             label.innerText += '*';
           }
-
-                    
           if (year === 2005 && month === 2) {
             const customMessage = "My Grandpa on my dad's side passes away from cancer about a week before I'm able to meet him. This is pretty sad, my dad says I would've loved him.";
             tick.dataset.message = customMessage;
             label.dataset.message = customMessage;
             label.innerText += ' RIP';
           }
-
-                    
           if (year === 2007 && month === 9) {
             const customMessage = "Little sister is born! Krista joined our family on October 31st, halloween! In the meantime, I've learned how to walk, solve problems, how old I am (2), but not how to talk! Also, as foreshadowing, the DOW Jones hits an all-time high, setting up the country for a great future!";
             tick.dataset.message = customMessage;
             label.dataset.message = customMessage;
             label.innerText += '*';
           }
-
           if (year === 2007 && month === 1) {
             const customMessage = "I start speech therapy because my parents are concerned with my speech delay. Apparently, I really liked pointing to things, and everyone did my bidding";
             tick.dataset.message = customMessage;
             label.dataset.message = customMessage;
             label.innerText += '*';
           }
-
           if (year === 2008 && month === 2) {
             const customMessage = "Economic recession! Despite having hit a DOW Jones all-time high just a few months earlier, the United States faces the beginning of a massive market crash in March of this year.";
             tick.dataset.message = customMessage;
             label.dataset.message = customMessage;
-            label.innerText += 'RECESSION';
+            label.innerText += '*';
           }
-
           if (year === 2010 && month === 8) {
             const customMessage = "I start kindergarten around this time. In kindergarten, I manage to learn how to spell words phonetically, and somehow memorize the multiplication table from 1-12. I also develop a mild fixation on cars, which did not unfortunately translate to this day.";
             tick.dataset.message = customMessage;
             label.dataset.message = customMessage;
             label.innerText += '*';
           }
-
           if (year === 2012 && month === 1) {
             const customMessage = "After spending 6 years in California, our family decides to move to Colorado to follow my older brother to USAFA. My dad becomes an executive at ChemSpec-a now bankrupt chemical manufacturing company.";
             tick.dataset.message = customMessage;
             label.dataset.message = customMessage;
             label.innerText += '*';
           }
-        
           if (year === 2009 && month === 7) {
             const customMessage = "After some careful consideration, I should have put money into the housing market this year instead of being 4.";
             tick.dataset.message = customMessage;
             label.dataset.message = customMessage;
-            label.innerText += 'RECESSION';
+            label.innerText += '*';
           }
-
           if (year === 2012 && month === 2) {
             const customMessage = "I am now 7 years old and temporarily living in an apartment in Colorado with my family. At school, one of the kids in class brings an Axolotl for show and tell. I immediately became obsessed, and begged my parents for one. I got one! I named her Axie.";
             tick.dataset.message = customMessage;
             label.dataset.message = customMessage;
             label.innerText += '*';
           }
-
           if (year === 2012 && month === 4) {
             const customMessage = "After about two months of being obsessed with aquarium husbandry and taking approximately perfect care of Axie, my parents agree to get me a bigger tank and another axolotl, whom I name Tank.";
             tick.dataset.message = customMessage;
             label.dataset.message = customMessage;
             label.innerText += '*';
           }
-
           if (year === 2014 && month === 8) {
             const customMessage = "I move schools to American Academy, where I meet many of my lifelong friends. I start in 4th grade, and stay there until high school. At this school, I take an interest in computers, robotics, and science/technology in general";
             tick.dataset.message = customMessage;
             label.dataset.message = customMessage;
             label.innerText += '*';
           }
-
-          
           if (year === 2016 && month === 8) {
             const customMessage = "I am now a \"very funny\" individual and start a meme page on instagram around this time.";
             tick.dataset.message = customMessage;
             label.dataset.message = customMessage;
             label.innerText += '*';
           }
-
-        
-
-
+  
           timeline.appendChild(label);
           timeline.appendChild(tick);
         }
       }
     })();
 
-    /* ------------------------------
-       Bottom Text & Event Description Helpers
-       ------------------------------ */
-    // Global variable to hold the "selected" (clicked) tick message.
-    let defaultBottomMessage = null;
-    const bottomText = document.getElementById('bottom-text');
-
-    // Returns the default "You are viewing X" message.
-    function getDefaultTickMessage(element) {
-      const year = element.dataset.year;
-      const month = element.dataset.month;
-      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      return `You are viewing ${monthNames[month]} ${year}`;
-    }
-
-    // Called when no tick is selected: update the bottom text based on scroll.
-    function updateBottomTextFromScroll() {
+    // Function to update the "center info" and event description.
+    function updateCenterInfo() {
       const timelineContainer = document.querySelector('.timeline-container');
-      const monthWidth = 50;
-      const startYear = 2004;
-      const scrollPos = timelineContainer.scrollLeft;
-      const currentMonthIndex = Math.floor(scrollPos / monthWidth);
-      const currentYear = Math.floor(currentMonthIndex / 12) + startYear;
-      bottomText.textContent = `You are currently viewing ${currentYear}.`;
-      // Hide any event description.
-      const eventDesc = document.getElementById('event-description');
-      eventDesc.style.display = 'none';
-      eventDesc.textContent = '';
+      const centerInfoEl = document.getElementById('center-info');
+      const scrollLeft = timelineContainer.scrollLeft;
+      const center = scrollLeft + timelineContainer.clientWidth / 2;
+      const monthIndex = Math.round(center / timelineConfig.monthWidth);
+      const year = timelineConfig.startYear + Math.floor(monthIndex / 12);
+      const month = monthIndex % 12;
+      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      centerInfoEl.textContent = "Currently viewing " + monthNames[month] + ", " + year;
+      
+      if (!locked) {
+        const tickLabel = document.querySelector(`.tick-label[data-year="${year}"][data-month="${month}"]`);
+        const eventDesc = document.getElementById('event-description');
+        if (tickLabel && tickLabel.dataset.message) {
+          eventDesc.textContent = tickLabel.dataset.message;
+          eventDesc.style.display = 'block';
+        } else {
+          eventDesc.textContent = '';
+          eventDesc.style.display = 'none';
+        }
+      }
     }
 
-    /* ------------------------------
-       Timeline Tick Interactivity
-       ------------------------------ */
-    // Get the timeline element globally.
+    const timelineContainer = document.querySelector('.timeline-container');
+    timelineContainer.addEventListener('scroll', updateCenterInfo);
+
     const timeline = document.querySelector('.timeline');
-
-    // Pointerover: show the default message.
-    timeline.addEventListener('pointerover', function(e) {
-      if (e.target.classList.contains('tick') || e.target.classList.contains('tick-label')) {
-        bottomText.textContent = getDefaultTickMessage(e.target);
-      }
-    });
-    // Pointerout: revert to the default or scroll-based message.
-    timeline.addEventListener('pointerout', function(e) {
-      if (e.target.classList.contains('tick') || e.target.classList.contains('tick-label')) {
-        if (e.relatedTarget && (e.relatedTarget.classList.contains('tick') || e.relatedTarget.classList.contains('tick-label'))) {
-          return;
-        }
-        if (defaultBottomMessage) {
-          bottomText.textContent = defaultBottomMessage;
-        } else {
-          updateBottomTextFromScroll();
-        }
-      }
-    });
-
-    // Click event: lock in the default message and, if available, show the custom event description.
     timeline.addEventListener('click', function(e) {
       if (!(e.target.classList.contains('tick') || e.target.classList.contains('tick-label'))) {
         return;
       }
-      const defaultMsg = getDefaultTickMessage(e.target);
-      defaultBottomMessage = defaultMsg;
-      bottomText.textContent = defaultMsg;
-
+      locked = true;
       const customMsg = e.target.dataset.message;
       const eventDesc = document.getElementById('event-description');
       if (customMsg) {
@@ -540,15 +577,16 @@
       }
     });
 
-    /* ------------------------------
-       Scroll detection for updating the year (only when no tick is "locked in")
-       ------------------------------ */
-    const timelineContainer = document.querySelector('.timeline-container');
-    timelineContainer.addEventListener('scroll', () => {
-      if (!defaultBottomMessage) {  // only update if no tick is selected
-        updateBottomTextFromScroll();
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.tick') && !e.target.closest('.tick-label')) {
+        if (locked) {
+          locked = false;
+          updateCenterInfo();
+        }
       }
     });
+
+    updateCenterInfo();
   </script>
 </body>
 </html>
