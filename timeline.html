@@ -51,9 +51,6 @@
       margin: 24px 0;
     }
 
-
-
-
     /* Timeline container styling */
     .timeline-container {
       overflow-x: auto;
@@ -171,7 +168,7 @@
     <div class="timeline"></div>
   </div>
 
-  <!-- Bottom text box to show current year -->
+  <!-- Bottom text box to show current message -->
   <div class="bottom-text" id="bottom-text">You are currently viewing 2004.</div>
 
   <script>
@@ -330,6 +327,7 @@
       // Month names for labels.
       const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                           'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
       for (let year = startYear; year <= endYear; year++) {
         for (let month = 0; month < 12; month++) {
           const xPos = ((year - startYear) * 12 + month) * monthWidth;
@@ -337,33 +335,99 @@
           const tick = document.createElement('div');
           tick.classList.add('tick');
           tick.style.left = xPos + 'px';
+          // Add data attributes for later use.
+          tick.dataset.year = year;
+          tick.dataset.month = month;
+          // Create label element and add data attributes too.
+          let label;
           if (month === 0) {
             tick.classList.add('year');
-            const yearLabel = document.createElement('div');
-            yearLabel.classList.add('tick-label', 'year');
-            yearLabel.innerText = year;
-            yearLabel.style.left = xPos + 'px';
-            timeline.appendChild(yearLabel);
+            label = document.createElement('div');
+            label.classList.add('tick-label', 'year');
+            label.innerText = year;
+            label.style.left = xPos + 'px';
+            label.dataset.year = year;
+            label.dataset.month = month;
           } else {
             tick.classList.add('month');
-            const monthLabel = document.createElement('div');
-            monthLabel.classList.add('tick-label', 'month');
-            monthLabel.innerText = monthNames[month];
-            monthLabel.style.left = xPos + 'px';
-            timeline.appendChild(monthLabel);
+            label = document.createElement('div');
+            label.classList.add('tick-label', 'month');
+            label.innerText = monthNames[month];
+            label.style.left = xPos + 'px';
+            label.dataset.year = year;
+            label.dataset.month = month;
           }
+          timeline.appendChild(label);
           timeline.appendChild(tick);
         }
       }
     })();
 
     /* ------------------------------
-       Event Marker Functionality:
-       When a tick (or its label) is clicked, create a thumbnail marker
-       over that month with a line to an event box.
+       Bottom Text Message Helpers
        ------------------------------ */
-    document.querySelector('.timeline').addEventListener('click', function(e) {
-      // Only trigger if a tick or tick-label was clicked.
+    // Global variable to hold the "selected" (clicked) tick message.
+    let defaultBottomMessage = null;
+    const bottomText = document.getElementById('bottom-text');
+
+    // Returns the message for a tick element.
+    // If a custom message (data-message) exists, that is used;
+    // otherwise a default "You are viewing Month Year" message is returned.
+    function getTickMessage(element) {
+      const year = element.dataset.year;
+      const month = element.dataset.month;
+      const customMessage = element.dataset.message;
+      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      if (customMessage) {
+        return customMessage;
+      }
+      return `You are viewing ${monthNames[month]} ${year}`;
+    }
+
+    // Called when no tick is selected: update the bottom text based on scroll.
+    function updateBottomTextFromScroll() {
+      const timelineContainer = document.querySelector('.timeline-container');
+      const monthWidth = 50;
+      const startYear = 2004;
+      const scrollPos = timelineContainer.scrollLeft;
+      const currentMonthIndex = Math.floor(scrollPos / monthWidth);
+      const currentYear = Math.floor(currentMonthIndex / 12) + startYear;
+      bottomText.textContent = `You are currently viewing ${currentYear}.`;
+    }
+
+    /* ------------------------------
+       Timeline Tick Interactivity
+       ------------------------------ */
+    // Use event delegation on the .timeline element for pointerover and pointerout
+    const timelineDiv = document.querySelector('.timeline');
+    timelineDiv.addEventListener('pointerover', function(e) {
+      if (e.target.classList.contains('tick') || e.target.classList.contains('tick-label')) {
+        // Temporarily show this tick’s message.
+        bottomText.textContent = getTickMessage(e.target);
+      }
+    });
+    timelineDiv.addEventListener('pointerout', function(e) {
+      if (e.target.classList.contains('tick') || e.target.classList.contains('tick-label')) {
+        // Check if moving to another tick/label; if so, do nothing.
+        if (e.relatedTarget && (e.relatedTarget.classList.contains('tick') || e.relatedTarget.classList.contains('tick-label'))) {
+          return;
+        }
+        // On leaving, revert to the "selected" default message if one exists.
+        if (defaultBottomMessage) {
+          bottomText.textContent = defaultBottomMessage;
+        } else {
+          updateBottomTextFromScroll();
+        }
+      }
+    });
+
+    /* ------------------------------
+       Click event for tick marker & bottom text update:
+       When a tick (or its label) is clicked, create the event marker/box
+       and also “lock in” the tick’s message as the default.
+       ------------------------------ */
+    timelineDiv.addEventListener('click', function(e) {
       if (!(e.target.classList.contains('tick') || e.target.classList.contains('tick-label'))) {
         return;
       }
@@ -381,7 +445,7 @@
       // Define the event marker (thumbnail) position.
       const markerWidth = 40, markerHeight = 40;
       const markerLeft = x - markerWidth / 2;
-      // We'll position the marker about 70px from the top of the timeline.
+      // Position the marker about 70px from the top of the timeline.
       const markerTop = 70;
       const marker = document.createElement('div');
       marker.className = 'event-marker';
@@ -402,8 +466,6 @@
 
       // Create a line connecting the bottom center of the event box to the top center of the marker.
       const markerCenterX = markerLeft + markerWidth / 2;
-      const eventBoxRect = eventBox.getBoundingClientRect();
-      // Calculate the bottom of the event box relative to the timeline.
       const eventBoxBottom = eventBox.offsetTop + eventBox.offsetHeight;
       const lineX = markerCenterX - 1; // center the 2px-wide line
       const lineYStart = eventBoxBottom;
@@ -415,21 +477,20 @@
       eventLine.style.top = lineYStart + 'px';
       eventLine.style.height = lineHeight + 'px';
       timeline.appendChild(eventLine);
+
+      // Lock in (set as default) this tick’s message.
+      defaultBottomMessage = getTickMessage(e.target);
+      bottomText.textContent = defaultBottomMessage;
     });
 
     /* ------------------------------
-       Scroll detection for updating the year
+       Scroll detection for updating the year (only when no tick is "locked in")
        ------------------------------ */
     const timelineContainer = document.querySelector('.timeline-container');
-    const bottomText = document.getElementById('bottom-text');
     timelineContainer.addEventListener('scroll', () => {
-      const monthWidth = 50;
-      const startYear = 2004;
-      const totalMonths = (2026 - startYear + 1) * 12;
-      const scrollPos = timelineContainer.scrollLeft;
-      const currentMonthIndex = Math.floor(scrollPos / monthWidth);
-      const currentYear = Math.floor(currentMonthIndex / 12) + startYear;
-      bottomText.textContent = `You are currently viewing ${currentYear}.`;
+      if (!defaultBottomMessage) {  // only update if no tick is selected
+        updateBottomTextFromScroll();
+      }
     });
   </script>
 </body>
