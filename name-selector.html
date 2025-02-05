@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- Head and previous styles remain the same until the animated-letter classes -->
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
@@ -11,7 +10,7 @@
     href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
   />
   <style>
-    /* Previous styles remain identical until .animated-letter */
+    /* General Styles (unchanged) */
     body {
       font-family: 'Press Start 2P', monospace;
       margin: 0;
@@ -23,7 +22,6 @@
       background-attachment: fixed;
       min-height: 100vh;
     }
-
     nav {
       margin-bottom: 20px;
       background: linear-gradient(90deg, #FFD700, #FF0000);
@@ -31,7 +29,6 @@
       border-bottom: 3px solid #660000;
       box-shadow: 0 4px 8px rgba(255, 0, 0, 0.7);
     }
-
     nav ul {
       list-style-type: none;
       padding: 0;
@@ -40,19 +37,16 @@
       justify-content: center;
       gap: 30px;
     }
-
     nav ul li a {
       text-decoration: none;
       color: #222;
       font-weight: bold;
       font-size: 14px;
     }
-
     nav ul li a:hover {
       color: #fff;
       text-shadow: 1px 1px 2px #000;
     }
-
     h1 {
       margin-top: 40px;
       margin-bottom: 24px;
@@ -67,7 +61,6 @@
           0 0 80px #FF4500,
           0 0 100px #FF4500;
     }
-
     p {
       margin: 16px auto;
       max-width: 750px;
@@ -75,7 +68,6 @@
       color: #ccc;
       font-size: 14px;
     }
-
     .form-group {
       margin: 20px auto;
       max-width: 750px;
@@ -85,13 +77,11 @@
       align-items: center;
       gap: 10px;
     }
-
     label {
       color: #FFD700;
       font-size: 14px;
       text-transform: uppercase;
     }
-
     .btn {
       padding: 10px 20px;
       margin: 10px 5px;
@@ -105,13 +95,11 @@
       box-shadow: 0 4px 8px rgba(255, 0, 0, 0.7);
       transition: transform 0.2s ease;
     }
-
     .btn:hover {
       transform: scale(1.05);
       background: linear-gradient(90deg, #FF0000, #FFD700);
       color: #fff;
     }
-
     input[type="file"],
     input[type="number"] {
       padding: 10px;
@@ -124,87 +112,61 @@
       width: 250px;
       text-align: center;
     }
-
     input[type="number"] {
       width: 100px;
     }
-    
-    .name-entry {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin: 5px 0;
+    /* Winner Table Styles */
+    .winner-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
     }
-
+    .winner-table td {
+      text-align: left;  /* default left-align text in table cells */
+      vertical-align: middle;
+      padding: 5px 10px;
+    }
+    /* Right-align checkbox cell */
+    .winner-table td:nth-child(2) {
+      text-align: right;
+    }
+    /* The name text uses a monospace font so spaces are preserved */
+    .name-text {
+      font-family: 'Press Start 2P', monospace;
+      white-space: pre;  /* preserves extra spaces */
+      font-size: 16px;
+    }
     .flashing-name {
       color: #FF00FF;
       text-shadow: 0 0 5px #FF00FF, 0 0 10px #00FFFF, 0 0 15px #FFFFFF;
       animation: fasterFlash 0.25s alternate infinite;
     }
-
     .name-checkbox {
-      width: 20px;
-      height: 20px;
-      accent-color: #FFD700; /* Checkbox color */
-      cursor: pointer;
-    }
-
-    .checked-glow {
-      color: #FFD700;
-      text-shadow: 0 0 10px #FFD700, 0 0 20px #FF4500, 0 0 30px #FF4500;
-    }
-
-    @keyframes fasterFlash {
-      0% {
-        color: #FF00FF;
-        text-shadow: 0 0 5px #FF00FF;
-      }
-      50% {
-        color: #00FFFF;
-        text-shadow: 0 0 10px #00FFFF;
-      }
-      100% {
-        color: #FFFFFF;
-        text-shadow: 0 0 15px #FFFFFF;
-      }
-    }
-    
-    .name-entry {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 5px 0;
-    }
-
-    .name-checkbox {
-      -webkit-appearance: none; /* Remove default appearance */
-      appearance: none; /* Remove default appearance */
+      -webkit-appearance: none;
+      appearance: none;
       width: 25px;
       height: 25px;
-      background-color: #222; /* Default background color */
+      background-color: #222;
       border: 3px solid #FFD700;
-      border-radius: 2px; /* Slightly rounded for retro feel */
+      border-radius: 2px;
       box-shadow: 0 0 10px #FFD700, 0 0 20px #FF4500;
       cursor: pointer;
       transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
     }
-
     .name-checkbox:checked {
-      background-color: #FF4500; /* Bright retro color when checked */
+      background-color: #FF4500;
       box-shadow: 0 0 15px #FF4500, 0 0 25px #FFD700, 0 0 35px #FFD700;
       border-color: #FF0000;
     }
-
     .name-checkbox:hover {
       transform: scale(1.1);
-      background-color: #444; /* Slightly lighter color on hover */
+      background-color: #444;
     }
-
     .checked-glow {
       color: #FFD700;
       text-shadow: 0 0 10px #FFD700, 0 0 20px #FF4500, 0 0 30px #FF4500;
     }
-
+    /* Results Box */
     .results {
       margin: 20px auto;
       max-width: 750px;
@@ -216,30 +178,24 @@
       box-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
       text-align: left;
     }
-
     .results h2 {
       margin-top: 0;
       text-align: center;
       font-size: 24px;
     }
-
+    /* Animated Title */
     .animated-title {
       display: inline-block;
     }
-
     .animated-letter {
       display: inline-block;
       color: #FFD700;
       opacity: 1;
       transition: all 0.3s ease;
     }
-
-    /* Updated: Start with no animation */
     .animated-letter.odd, .animated-letter.even {
       animation: none;
     }
-
-    /* Updated: Brighter colors and adjusted fade color */
     @keyframes glowOdd {
       from {
         color: #FFFFFF;
@@ -252,7 +208,6 @@
         text-shadow: 0 0 2px #FFD700;
       }
     }
-
     @keyframes glowEven {
       from {
         color: #FFD700;
@@ -265,41 +220,29 @@
                      0 0 15px #FF4500;
       }
     }
-
     .results p {
       margin: 8px 0;
       font-size: 14px;
       color: #fff;
     }
-
     .signature {
       margin-top: 60px;
       font-size: 14px;
       color: #FFD700;
       text-shadow: 0 0 8px #FF4500;
     }
-    
-    .obfuscated {
-      font-family: monospace;
-      color: #FF00FF;
-      text-shadow: 0 0 5px #FF00FF;
-    }
-
     .date {
       margin: 24px 0;
       font-size: 12px;
       color: #999;
     }
-
     #fileInput {
       display: none;
     }
-
     .flash {
       animation: plinkoFlash 0.55s alternate;
       animation-iteration-count: 30;
     }
-
     @keyframes plinkoFlash {
       0% {
         border-color: #FF0000;
@@ -310,11 +253,9 @@
         box-shadow: 0 0 20px #FFD700;
       }
     }
-
     .flash-faster {
       animation: fasterFlash 0.25s alternate infinite;
     }
-
     @keyframes fasterFlash {
       0% {
         color: #FF00FF;
@@ -326,228 +267,222 @@
       }
     }
   </style>
+  <script>
+    let currentNames = [];
+    const audioSource = 'https://davidcrispell.github.io/GAMBLING.mp3';
+    let alternatingInterval = null;
 
-<script>
-  let currentNames = [];
-  const audioSource = 'https://davidcrispell.github.io/GAMBLING.mp3';
-  let alternatingInterval = null;
-
-  function createAnimatedTitle() {
-    const title = "WINNERS!";
-    let html = '<div class="animated-title">';
-    for (let i = 0; i < title.length; i++) {
-      html += `<span class="animated-letter ${i % 2 === 0 ? 'even' : 'odd'}">${title[i]}</span>`;
-    }
-    html += '</div>';
-    return html;
-  }
-
-  function startTitleAnimation() {
-    const letters = document.querySelectorAll('.animated-letter');
-    letters.forEach((letter, index) => {
-      if (index % 2 === 0) {
-        letter.style.animation = 'glowEven 0.5s ease-in-out infinite alternate';
-      } else {
-        letter.style.animation = 'glowOdd 0.5s ease-in-out infinite alternate';
-      }
-    });
-  }
-
-  function playChaoticSound() {
-    const newAudio = new Audio(audioSource);
-    newAudio.play().catch(err => {
-      console.warn('Autoplay may be blocked.', err);
-    });
-  }
-
-  function handleFileSelection(event) {
-    const file = event.target.files[0];
-    const numSelections = parseInt(
-      document.getElementById('numSelections').value
-    ) || 10;
-
-    if (!file) {
-      alert('Please select a file.');
-      return;
+    // Helper: Returns text with the number prefix and extra spaces for single-digit numbers.
+    function formatLabelText(index, name) {
+      const number = index + 1;
+      // When number is less than 10, add extra spaces so names align.
+      return number < 10 ? `${number}.  ${name}` : `${number}. ${name}`;
     }
 
-    const fileExt = file.name.split('.').pop().toLowerCase();
-    const delimiter =
-      fileExt === 'tsv' ? '\t' : fileExt === 'csv' ? ',' : null;
-
-    if (!delimiter) {
-      alert('File must be either .csv or .tsv');
-      return;
+    function createAnimatedTitle() {
+      const title = "WINNERS!";
+      let html = '<div class="animated-title">';
+      for (let i = 0; i < title.length; i++) {
+        html += `<span class="animated-letter ${i % 2 === 0 ? 'even' : 'odd'}">${title[i]}</span>`;
+      }
+      html += '</div>';
+      return html;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      const text = reader.result;
-      const lines = text
-        .split('\n')
-        .map((line) => line.trim())
-        .filter((line) => line !== '');
-
-      if (lines.length <= 1) {
-        alert('Not enough data in the file.');
-        return;
-      }
-
-      currentNames = lines.map((line) => line.split(delimiter)[0].trim());
-
-      if (currentNames.length < numSelections) {
-        alert(
-          `File contains only ${currentNames.length} names, but ${numSelections} were requested.`
-        );
-        return;
-      }
-
-      displayRandomNames(numSelections);
-      playChaoticSound();
-      flashLights();
-    };
-
-    reader.readAsText(file);
-  }
-
-  // NEW: Animate the rolling with gradually increasing delay.
-  function animateNameRolling(totalDuration, initialDelay, delayIncrement) {
-    let elapsedTime = 0;
-    let currentDelay = initialDelay;
-    
-    function roll() {
-      // Update all labels with a random name while keeping the number prefix.
-      const labels = document.querySelectorAll('#results label');
-      labels.forEach(label => {
-        const parts = label.dataset.finalText.split('. ');
-        const numberPrefix = parts[0];
-        const randomName = currentNames[Math.floor(Math.random() * currentNames.length)];
-        if (parseInt(numberPrefix) <= 9) {
-          label.textContent = `${numberPrefix}.    ${randomName}`;
-        }
-        else {
-          label.textContent = `${numberPrefix}. ${randomName}`;
+    function startTitleAnimation() {
+      const letters = document.querySelectorAll('.animated-letter');
+      letters.forEach((letter, index) => {
+        if (index % 2 === 0) {
+          letter.style.animation = 'glowEven 0.5s ease-in-out infinite alternate';
+        } else {
+          letter.style.animation = 'glowOdd 0.5s ease-in-out infinite alternate';
         }
       });
+    }
+
+    function playChaoticSound() {
+      const newAudio = new Audio(audioSource);
+      newAudio.play().catch(err => {
+        console.warn('Autoplay may be blocked.', err);
+      });
+    }
+
+    function handleFileSelection(event) {
+      const file = event.target.files[0];
+      const numSelections = parseInt(document.getElementById('numSelections').value) || 10;
+
+      if (!file) {
+        alert('Please select a file.');
+        return;
+      }
+
+      const fileExt = file.name.split('.').pop().toLowerCase();
+      const delimiter = fileExt === 'tsv' ? '\t' : fileExt === 'csv' ? ',' : null;
+
+      if (!delimiter) {
+        alert('File must be either .csv or .tsv');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const text = reader.result;
+        const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
+
+        if (lines.length <= 1) {
+          alert('Not enough data in the file.');
+          return;
+        }
+
+        currentNames = lines.map(line => line.split(delimiter)[0].trim());
+
+        if (currentNames.length < numSelections) {
+          alert(`File contains only ${currentNames.length} names, but ${numSelections} were requested.`);
+          return;
+        }
+
+        displayRandomNames(numSelections);
+        playChaoticSound();
+        flashLights();
+      };
+
+      reader.readAsText(file);
+    }
+
+    // Animate the rolling names with gradually increasing delay.
+    function animateNameRolling(totalDuration, initialDelay, delayIncrement) {
+      let elapsedTime = 0;
+      let currentDelay = initialDelay;
       
-      // Increase elapsed time by the current delay.
-      elapsedTime += currentDelay;
-      
-      if (elapsedTime < totalDuration) {
-        // Increase the delay to slow down the updates.
-        currentDelay += delayIncrement;
-        setTimeout(roll, currentDelay);
-      } else {
-        // Final display: set each label to its final text.
-        labels.forEach(label => {
-          label.textContent = label.dataset.finalText;
+      function roll() {
+        // Query all name text spans in the table.
+        const nameElements = document.querySelectorAll('.name-text');
+        nameElements.forEach(elem => {
+          const parts = elem.dataset.finalText.split('. ');
+          const numberPrefix = parts[0]; // e.g., "1" or "10"
+          const randomName = currentNames[Math.floor(Math.random() * currentNames.length)];
+          elem.textContent = parseInt(numberPrefix) < 10 
+            ? `${numberPrefix}.  ${randomName}` 
+            : `${numberPrefix}. ${randomName}`;
         });
-        startTitleAnimation();
-      }
-    }
-    roll();
-  }
-
-  // Updated displayRandomNames function.
-  function displayRandomNames(numSelections) {
-    if (currentNames.length < numSelections) {
-      alert('Not enough names available. Please upload a larger file.');
-      return;
-    }
-
-    const selected = [];
-    const namesCopy = [...currentNames];
-
-    while (selected.length < numSelections) {
-      const randomIndex = Math.floor(Math.random() * namesCopy.length);
-      selected.push(namesCopy.splice(randomIndex, 1)[0]);
-    }
-
-    const resultsDiv = document.getElementById('results');
-    resultsDiv.innerHTML = `<h2>${createAnimatedTitle()}</h2>`;
-
-    selected.forEach((fullName, index) => {
-      const nameElement = document.createElement('div');
-      nameElement.classList.add('name-entry');
-
-      // Create label with flashing animation and store the final text.
-      const label = document.createElement('label');
-      label.classList.add('flashing-name');
-      label.dataset.finalText = `${index + 1}. ${fullName}`;
-      // Initially display a random name (with the correct number prefix).
-      let randomName = currentNames[Math.floor(Math.random() * currentNames.length)];
-      label.textContent = `${index + 1}. ${randomName}`;
-
-      // Add checkbox.
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.classList.add('name-checkbox');
-      checkbox.id = `name-${index}`;
-      checkbox.addEventListener('change', (e) => {
-        if (e.target.checked) {
-          label.classList.remove('flashing-name');
-          label.classList.add('checked-glow');
+        
+        elapsedTime += currentDelay;
+        if (elapsedTime < totalDuration) {
+          currentDelay += delayIncrement;
+          setTimeout(roll, currentDelay);
         } else {
-          label.classList.remove('checked-glow');
-          label.classList.add('flashing-name');
+          // Final display: show the final text.
+          nameElements.forEach(elem => {
+            elem.textContent = elem.dataset.finalText;
+          });
+          startTitleAnimation();
         }
+      }
+      roll();
+    }
+
+    function displayRandomNames(numSelections) {
+      if (currentNames.length < numSelections) {
+        alert('Not enough names available. Please upload a larger file.');
+        return;
+      }
+
+      // Select random names without duplicates.
+      const selected = [];
+      const namesCopy = [...currentNames];
+      while (selected.length < numSelections) {
+        const randomIndex = Math.floor(Math.random() * namesCopy.length);
+        selected.push(namesCopy.splice(randomIndex, 1)[0]);
+      }
+
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = `<h2>${createAnimatedTitle()}</h2>`;
+
+      // Create a table for displaying winners.
+      const table = document.createElement('table');
+      table.classList.add('winner-table');
+
+      selected.forEach((fullName, index) => {
+        const tr = document.createElement('tr');
+        // Create the cell that contains the name text.
+        const nameCell = document.createElement('td');
+        const nameSpan = document.createElement('span');
+        nameSpan.classList.add('name-text', 'flashing-name');
+        nameSpan.dataset.finalText = formatLabelText(index, fullName);
+        // Initially show a random name (with proper padding).
+        const randomName = currentNames[Math.floor(Math.random() * currentNames.length)];
+        nameSpan.textContent = formatLabelText(index, randomName);
+        nameCell.appendChild(nameSpan);
+        // Create the cell that contains the checkbox.
+        const checkboxCell = document.createElement('td');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.classList.add('name-checkbox');
+        checkbox.id = `name-${index}`;
+        checkbox.addEventListener('change', (e) => {
+          if (e.target.checked) {
+            nameSpan.classList.remove('flashing-name');
+            nameSpan.classList.add('checked-glow');
+          } else {
+            nameSpan.classList.remove('checked-glow');
+            nameSpan.classList.add('flashing-name');
+          }
+        });
+        checkboxCell.appendChild(checkbox);
+        // Append cells to the row.
+        tr.appendChild(nameCell);
+        tr.appendChild(checkboxCell);
+        // Append the row to the table.
+        table.appendChild(tr);
       });
 
-      nameElement.appendChild(label);
-      nameElement.appendChild(checkbox);
-      resultsDiv.appendChild(nameElement);
-    });
-
-    // Start the name-rolling animation:
-    // totalDuration: 3000ms (3 seconds), initial delay: 100ms, and each iteration increases the delay by 20ms.
-    animateNameRolling(3000, 20, 20);
-  }
-
-  // Updated flashLights function with a 3000ms delay and targeting the labels.
-  function flashLights() {
-    const resultsDiv = document.getElementById('results');
-    resultsDiv.classList.remove('flash');
-    void resultsDiv.offsetWidth;
-    resultsDiv.classList.add('flash');
-
-    if (alternatingInterval) {
-      clearInterval(alternatingInterval);
+      resultsDiv.appendChild(table);
+      // Start the rolling animation.
+      animateNameRolling(3000, 20, 20);
     }
 
-    setTimeout(() => {
-      let toggle = false;
-      alternatingInterval = setInterval(() => {
-        toggle = !toggle;
-        const allNames = document.querySelectorAll('#results label');
-        allNames.forEach((el) => el.classList.remove('flash-faster'));
+    function flashLights() {
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.classList.remove('flash');
+      // Force a reflow to restart the animation.
+      void resultsDiv.offsetWidth;
+      resultsDiv.classList.add('flash');
 
-        if (toggle) {
-          for (let i = 0; i < allNames.length; i += 2) {
-            allNames[i].classList.add('flash-faster');
-          }
-        } else {
-          for (let i = 1; i < allNames.length; i += 2) {
-            allNames[i].classList.add('flash-faster');
-          }
-        }
-      }, 250);
-    }, 3000);
-  }
+      if (alternatingInterval) {
+        clearInterval(alternatingInterval);
+      }
 
-  function regenerateNames() {
-    const numSelections = parseInt(
-      document.getElementById('numSelections').value
-    ) || 10;
-    if (currentNames.length === 0) {
-      alert('Please upload a file first.');
-      return;
+      setTimeout(() => {
+        let toggle = false;
+        alternatingInterval = setInterval(() => {
+          toggle = !toggle;
+          const allNameElements = document.querySelectorAll('.name-text');
+          allNameElements.forEach(el => el.classList.remove('flash-faster'));
+
+          if (toggle) {
+            for (let i = 0; i < allNameElements.length; i += 2) {
+              allNameElements[i].classList.add('flash-faster');
+            }
+          } else {
+            for (let i = 1; i < allNameElements.length; i += 2) {
+              allNameElements[i].classList.add('flash-faster');
+            }
+          }
+        }, 250);
+      }, 3000);
     }
 
-    playChaoticSound();
-    displayRandomNames(numSelections);
-    flashLights();
-  }
-</script>
+    function regenerateNames() {
+      const numSelections = parseInt(document.getElementById('numSelections').value) || 10;
+      if (currentNames.length === 0) {
+        alert('Please upload a file first.');
+        return;
+      }
+      playChaoticSound();
+      displayRandomNames(numSelections);
+      flashLights();
+    }
+  </script>
 </head>
 <body>
   <nav>
@@ -561,37 +496,26 @@
   </nav>
 
   <h1>Lottery Machine</h1>
-
   <p>
     Select a CSV or TSV file and specify the number of names to randomly select.
     You can regenerate selections without re-uploading the file.
   </p>
 
-  <input
-    type="file"
-    id="fileInput"
-    accept=".csv,.tsv"
-    onchange="handleFileSelection(event)"
-  />
+  <input type="file" id="fileInput" accept=".csv,.tsv" onchange="handleFileSelection(event)" />
 
   <div class="form-group">
     <label for="numSelections">How many winners?</label>
     <input type="number" id="numSelections" value="10" min="1" />
   </div>
 
-  <button class="btn" onclick="document.getElementById('fileInput').click()">
-    Select File
-  </button>
-  <button class="btn" onclick="regenerateNames()">
-    Regenerate
-  </button>
+  <button class="btn" onclick="document.getElementById('fileInput').click()">Select File</button>
+  <button class="btn" onclick="regenerateNames()">Regenerate</button>
 
   <div id="results" class="results"></div>
 
   <div class="signature">
     join AISI (artificial intelligence student initiative) on buffconnect!
   </div>
-
   <div class="date">
     last updated (reeeaaallly bad gambling styling) January 16, 2025
   </div>
