@@ -130,82 +130,80 @@
     }
     
     .name-entry {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 5px 0;
-}
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 5px 0;
+    }
 
-.flashing-name {
-  color: #FF00FF;
-  text-shadow: 0 0 5px #FF00FF, 0 0 10px #00FFFF, 0 0 15px #FFFFFF;
-  animation: fasterFlash 0.25s alternate infinite;
-}
+    .flashing-name {
+      color: #FF00FF;
+      text-shadow: 0 0 5px #FF00FF, 0 0 10px #00FFFF, 0 0 15px #FFFFFF;
+      animation: fasterFlash 0.25s alternate infinite;
+    }
 
-.name-checkbox {
-  width: 20px;
-  height: 20px;
-  accent-color: #FFD700; /* Checkbox color */
-  cursor: pointer;
-}
+    .name-checkbox {
+      width: 20px;
+      height: 20px;
+      accent-color: #FFD700; /* Checkbox color */
+      cursor: pointer;
+    }
 
-.checked-glow {
-  color: #FFD700;
-  text-shadow: 0 0 10px #FFD700, 0 0 20px #FF4500, 0 0 30px #FF4500;
-}
+    .checked-glow {
+      color: #FFD700;
+      text-shadow: 0 0 10px #FFD700, 0 0 20px #FF4500, 0 0 30px #FF4500;
+    }
 
-@keyframes fasterFlash {
-  0% {
-    color: #FF00FF;
-    text-shadow: 0 0 5px #FF00FF;
-  }
-  50% {
-    color: #00FFFF;
-    text-shadow: 0 0 10px #00FFFF;
-  }
-  100% {
-    color: #FFFFFF;
-    text-shadow: 0 0 15px #FFFFFF;
-  }
-}
-
+    @keyframes fasterFlash {
+      0% {
+        color: #FF00FF;
+        text-shadow: 0 0 5px #FF00FF;
+      }
+      50% {
+        color: #00FFFF;
+        text-shadow: 0 0 10px #00FFFF;
+      }
+      100% {
+        color: #FFFFFF;
+        text-shadow: 0 0 15px #FFFFFF;
+      }
+    }
     
     .name-entry {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 5px 0;
-}
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 5px 0;
+    }
 
-.name-checkbox {
-  -webkit-appearance: none; /* Remove default appearance */
-  appearance: none; /* Remove default appearance */
-  width: 25px;
-  height: 25px;
-  background-color: #222; /* Default background color */
-  border: 3px solid #FFD700;
-  border-radius: 2px; /* Slightly rounded for retro feel */
-  box-shadow: 0 0 10px #FFD700, 0 0 20px #FF4500;
-  cursor: pointer;
-  transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
-}
+    .name-checkbox {
+      -webkit-appearance: none; /* Remove default appearance */
+      appearance: none; /* Remove default appearance */
+      width: 25px;
+      height: 25px;
+      background-color: #222; /* Default background color */
+      border: 3px solid #FFD700;
+      border-radius: 2px; /* Slightly rounded for retro feel */
+      box-shadow: 0 0 10px #FFD700, 0 0 20px #FF4500;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
+    }
 
-.name-checkbox:checked {
-  background-color: #FF4500; /* Bright retro color when checked */
-  box-shadow: 0 0 15px #FF4500, 0 0 25px #FFD700, 0 0 35px #FFD700;
-  border-color: #FF0000;
-}
+    .name-checkbox:checked {
+      background-color: #FF4500; /* Bright retro color when checked */
+      box-shadow: 0 0 15px #FF4500, 0 0 25px #FFD700, 0 0 35px #FFD700;
+      border-color: #FF0000;
+    }
 
-.name-checkbox:hover {
-  transform: scale(1.1);
-  background-color: #444; /* Slightly lighter color on hover */
-}
+    .name-checkbox:hover {
+      transform: scale(1.1);
+      background-color: #444; /* Slightly lighter color on hover */
+    }
 
-
-.checked-glow {
-  color: #FFD700;
-  text-shadow: 0 0 10px #FFD700, 0 0 20px #FF4500, 0 0 30px #FF4500;
-}
+    .checked-glow {
+      color: #FFD700;
+      text-shadow: 0 0 10px #FFD700, 0 0 20px #FF4500, 0 0 30px #FF4500;
+    }
 
     .results {
       margin: 20px auto;
@@ -287,7 +285,6 @@
       text-shadow: 0 0 5px #FF00FF;
     }
 
-
     .date {
       margin: 24px 0;
       font-size: 12px;
@@ -330,254 +327,236 @@
     }
   </style>
 
-  <script>
-    let currentNames = [];
-    const audioSource = 'https://davidcrispell.github.io/GAMBLING.mp3';
-    let alternatingInterval = null;
-    let titleInterval = null;
+<script>
+  let currentNames = [];
+  const audioSource = 'https://davidcrispell.github.io/GAMBLING.mp3';
+  let alternatingInterval = null;
 
-    function createAnimatedTitle() {
-      const title = "WINNERS!";
-      let html = '<div class="animated-title">';
-      
-      for (let i = 0; i < title.length; i++) {
-        html += `<span class="animated-letter ${i % 2 === 0 ? 'even' : 'odd'}">${title[i]}</span>`;
-      }
-      
-      html += '</div>';
-      return html;
+  function createAnimatedTitle() {
+    const title = "WINNERS!";
+    let html = '<div class="animated-title">';
+    for (let i = 0; i < title.length; i++) {
+      html += `<span class="animated-letter ${i % 2 === 0 ? 'even' : 'odd'}">${title[i]}</span>`;
     }
-
-    function startTitleAnimation() {
-      const letters = document.querySelectorAll('.animated-letter');
-      letters.forEach((letter, index) => {
-        if (index % 2 === 0) {
-          letter.style.animation = 'glowEven 0.5s ease-in-out infinite alternate';
-        } else {
-          letter.style.animation = 'glowOdd 0.5s ease-in-out infinite alternate';
-        }
-      });
-    }
-
-    function playChaoticSound() {
-      const newAudio = new Audio(audioSource);
-      newAudio.play().catch(err => {
-        console.warn('Autoplay may be blocked.', err);
-      });
-    }
-
-function handleFileSelection(event) {
-  const file = event.target.files[0];
-  const numSelections = parseInt(
-    document.getElementById('numSelections').value
-  ) || 10;
-
-  if (!file) {
-    alert('Please select a file.');
-    return;
+    html += '</div>';
+    return html;
   }
 
-  const fileExt = file.name.split('.').pop().toLowerCase();
-  const delimiter =
-    fileExt === 'tsv' ? '\t' : fileExt === 'csv' ? ',' : null;
-
-  if (!delimiter) {
-    alert('File must be either .csv or .tsv');
-    return;
-  }
-
-  const reader = new FileReader();
-  reader.onload = () => {
-    const text = reader.result;
-    const lines = text
-      .split('\n')
-      .map((line) => line.trim())
-      .filter((line) => line !== '');
-
-    if (lines.length <= 1) {
-      alert('Not enough data in the file.');
-      return;
-    }
-
-    currentNames = lines.map((line) => line.split(delimiter)[0].trim());
-
-    if (currentNames.length < numSelections) {
-      alert(
-        `File contains only ${currentNames.length} names, but ${numSelections} were requested.`
-      );
-      return;
-    }
-
-    displayRandomNames(numSelections);
-    playChaoticSound();
-    flashLights();
-  };
-
-  reader.readAsText(file);
-}
-
-
-    // Helper function to generate random characters
-function generateRandomChars(length) {
-  const chars = '!@#$%^&*()_+-=[]{}|;:,.<>?ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Modified displayRandomNames function with scrambling
-// Updated displayRandomNames function with checklist functionality
-function displayRandomNames(numSelections) {
-  if (currentNames.length < numSelections) {
-    alert('Not enough names available. Please upload a larger file.');
-    return;
-  }
-
-  const selected = [];
-  const namesCopy = [...currentNames];
-
-  while (selected.length < numSelections) {
-    const randomIndex = Math.floor(Math.random() * namesCopy.length);
-    selected.push(namesCopy.splice(randomIndex, 1)[0]);
-  }
-
-  const resultsDiv = document.getElementById('results');
-  resultsDiv.innerHTML = `<h2>${createAnimatedTitle()}</h2>`;
-
-  selected.forEach((fullName, index) => {
-    const nameElement = document.createElement('div');
-    nameElement.classList.add('name-entry');
-
-    // Create label with flashing animation
-    const label = document.createElement('label');
-    label.classList.add('flashing-name');
-    label.dataset.finalText = `${index + 1}. ${fullName}`;
-    label.innerHTML = `<span class="obfuscated">${generateRandomChars(fullName.length)}</span>`;
-
-    // Add checkbox
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.classList.add('name-checkbox');
-    checkbox.id = `name-${index}`;
-    checkbox.addEventListener('change', (e) => {
-      if (e.target.checked) {
-        label.classList.remove('flashing-name');
-        label.classList.add('checked-glow');
+  function startTitleAnimation() {
+    const letters = document.querySelectorAll('.animated-letter');
+    letters.forEach((letter, index) => {
+      if (index % 2 === 0) {
+        letter.style.animation = 'glowEven 0.5s ease-in-out infinite alternate';
       } else {
-        label.classList.remove('checked-glow');
-        label.classList.add('flashing-name');
+        letter.style.animation = 'glowOdd 0.5s ease-in-out infinite alternate';
       }
     });
+  }
 
-    nameElement.appendChild(label);
-    nameElement.appendChild(checkbox);
-    resultsDiv.appendChild(nameElement);
-  });
-
-  // Start scrambling process
-  let obfuscationInterval = setInterval(() => {
-    const labels = document.querySelectorAll('#results label');
-    labels.forEach((label) => {
-      const finalText = label.dataset.finalText.split('. ')[1];
-      label.innerHTML = `<span class="obfuscated">${generateRandomChars(finalText.length)}</span>`;
+  function playChaoticSound() {
+    const newAudio = new Audio(audioSource);
+    newAudio.play().catch(err => {
+      console.warn('Autoplay may be blocked.', err);
     });
-  }, 100);
+  }
 
-  // After 5 seconds, reveal the real names
-  setTimeout(() => {
-    clearInterval(obfuscationInterval);
-    const labels = document.querySelectorAll('#results label');
-    labels.forEach((label) => {
-      label.textContent = label.dataset.finalText;
-    });
+  function handleFileSelection(event) {
+    const file = event.target.files[0];
+    const numSelections = parseInt(
+      document.getElementById('numSelections').value
+    ) || 10;
 
-    // Start title animation simultaneously
-    startTitleAnimation();
-  }, 6000);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    function flashLights() {
-      const resultsDiv = document.getElementById('results');
-      resultsDiv.classList.remove('flash');
-      void resultsDiv.offsetWidth;
-      resultsDiv.classList.add('flash');
-
-      if (alternatingInterval) {
-        clearInterval(alternatingInterval);
-      }
-
-      setTimeout(() => {
-        let toggle = false;
-        alternatingInterval = setInterval(() => {
-          toggle = !toggle;
-          const allNames = document.querySelectorAll('#results p');
-
-          allNames.forEach((p) => p.classList.remove('flash-faster'));
-
-          if (toggle) {
-            for (let i = 0; i < allNames.length; i += 2) {
-              allNames[i].classList.add('flash-faster');
-            }
-          } else {
-            for (let i = 1; i < allNames.length; i += 2) {
-              allNames[i].classList.add('flash-faster');
-            }
-          }
-        }, 250);
-      }, 6000);
+    if (!file) {
+      alert('Please select a file.');
+      return;
     }
 
-    function regenerateNames() {
-      const numSelections = parseInt(
-        document.getElementById('numSelections').value
-      ) || 10;
-      if (currentNames.length === 0) {
-        alert('Please upload a file first.');
+    const fileExt = file.name.split('.').pop().toLowerCase();
+    const delimiter =
+      fileExt === 'tsv' ? '\t' : fileExt === 'csv' ? ',' : null;
+
+    if (!delimiter) {
+      alert('File must be either .csv or .tsv');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const text = reader.result;
+      const lines = text
+        .split('\n')
+        .map((line) => line.trim())
+        .filter((line) => line !== '');
+
+      if (lines.length <= 1) {
+        alert('Not enough data in the file.');
         return;
       }
 
-      playChaoticSound();
+      currentNames = lines.map((line) => line.split(delimiter)[0].trim());
+
+      if (currentNames.length < numSelections) {
+        alert(
+          `File contains only ${currentNames.length} names, but ${numSelections} were requested.`
+        );
+        return;
+      }
+
       displayRandomNames(numSelections);
+      playChaoticSound();
       flashLights();
+    };
+
+    reader.readAsText(file);
+  }
+
+  // NEW: Animate the rolling with gradually increasing delay.
+  function animateNameRolling(totalDuration, initialDelay, delayIncrement) {
+    let elapsedTime = 0;
+    let currentDelay = initialDelay;
+    
+    function roll() {
+      // Update all labels with a random name while keeping the number prefix.
+      const labels = document.querySelectorAll('#results label');
+      labels.forEach(label => {
+        const parts = label.dataset.finalText.split('. ');
+        const numberPrefix = parts[0];
+        const randomName = currentNames[Math.floor(Math.random() * currentNames.length)];
+        if (parseInt(numberPrefix) <= 9) {
+          label.textContent = `${numberPrefix}.    ${randomName}`;
+        }
+        else {
+          label.textContent = `${numberPrefix}. ${randomName}`;
+        }
+      });
+      
+      // Increase elapsed time by the current delay.
+      elapsedTime += currentDelay;
+      
+      if (elapsedTime < totalDuration) {
+        // Increase the delay to slow down the updates.
+        currentDelay += delayIncrement;
+        setTimeout(roll, currentDelay);
+      } else {
+        // Final display: set each label to its final text.
+        labels.forEach(label => {
+          label.textContent = label.dataset.finalText;
+        });
+        startTitleAnimation();
+      }
     }
-  </script>
+    roll();
+  }
+
+  // Updated displayRandomNames function.
+  function displayRandomNames(numSelections) {
+    if (currentNames.length < numSelections) {
+      alert('Not enough names available. Please upload a larger file.');
+      return;
+    }
+
+    const selected = [];
+    const namesCopy = [...currentNames];
+
+    while (selected.length < numSelections) {
+      const randomIndex = Math.floor(Math.random() * namesCopy.length);
+      selected.push(namesCopy.splice(randomIndex, 1)[0]);
+    }
+
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = `<h2>${createAnimatedTitle()}</h2>`;
+
+    selected.forEach((fullName, index) => {
+      const nameElement = document.createElement('div');
+      nameElement.classList.add('name-entry');
+
+      // Create label with flashing animation and store the final text.
+      const label = document.createElement('label');
+      label.classList.add('flashing-name');
+      label.dataset.finalText = `${index + 1}. ${fullName}`;
+      // Initially display a random name (with the correct number prefix).
+      let randomName = currentNames[Math.floor(Math.random() * currentNames.length)];
+      label.textContent = `${index + 1}. ${randomName}`;
+
+      // Add checkbox.
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.classList.add('name-checkbox');
+      checkbox.id = `name-${index}`;
+      checkbox.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          label.classList.remove('flashing-name');
+          label.classList.add('checked-glow');
+        } else {
+          label.classList.remove('checked-glow');
+          label.classList.add('flashing-name');
+        }
+      });
+
+      nameElement.appendChild(label);
+      nameElement.appendChild(checkbox);
+      resultsDiv.appendChild(nameElement);
+    });
+
+    // Start the name-rolling animation:
+    // totalDuration: 3000ms (3 seconds), initial delay: 100ms, and each iteration increases the delay by 20ms.
+    animateNameRolling(3000, 20, 20);
+  }
+
+  // Updated flashLights function with a 3000ms delay and targeting the labels.
+  function flashLights() {
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.classList.remove('flash');
+    void resultsDiv.offsetWidth;
+    resultsDiv.classList.add('flash');
+
+    if (alternatingInterval) {
+      clearInterval(alternatingInterval);
+    }
+
+    setTimeout(() => {
+      let toggle = false;
+      alternatingInterval = setInterval(() => {
+        toggle = !toggle;
+        const allNames = document.querySelectorAll('#results label');
+        allNames.forEach((el) => el.classList.remove('flash-faster'));
+
+        if (toggle) {
+          for (let i = 0; i < allNames.length; i += 2) {
+            allNames[i].classList.add('flash-faster');
+          }
+        } else {
+          for (let i = 1; i < allNames.length; i += 2) {
+            allNames[i].classList.add('flash-faster');
+          }
+        }
+      }, 250);
+    }, 3000);
+  }
+
+  function regenerateNames() {
+    const numSelections = parseInt(
+      document.getElementById('numSelections').value
+    ) || 10;
+    if (currentNames.length === 0) {
+      alert('Please upload a file first.');
+      return;
+    }
+
+    playChaoticSound();
+    displayRandomNames(numSelections);
+    flashLights();
+  }
+</script>
 </head>
 <body>
   <nav>
     <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="writing.html">Writing</a></li>
-            <li><a href="projects.html">Projects</a></li>
-            <li><a href="contact.html">Contact</a></li>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="writing.html">Writing</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="contact.html">Contact</a></li>
     </ul>
   </nav>
 
