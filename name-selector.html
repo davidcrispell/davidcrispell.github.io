@@ -122,18 +122,16 @@
       margin-top: 10px;
     }
     .winner-table td {
-      text-align: left;  /* default left-align text in table cells */
+      text-align: left;
       vertical-align: middle;
       padding: 5px 10px;
     }
-    /* Right-align checkbox cell */
     .winner-table td:nth-child(2) {
       text-align: right;
     }
-    /* The name text uses a monospace font so spaces are preserved */
     .name-text {
       font-family: 'Press Start 2P', monospace;
-      white-space: pre;  /* preserves extra spaces */
+      white-space: pre;
       font-size: 16px;
     }
     .flashing-name {
@@ -183,43 +181,6 @@
       text-align: center;
       font-size: 24px;
     }
-    /* Animated Title */
-    .animated-title {
-      display: inline-block;
-    }
-    .animated-letter {
-      display: inline-block;
-      color: #FFD700;
-      opacity: 1;
-      transition: all 0.3s ease;
-    }
-    .animated-letter.odd, .animated-letter.even {
-      animation: none;
-    }
-    @keyframes glowOdd {
-      from {
-        color: #FFFFFF;
-        text-shadow: 0 0 5px #FFFFFF,
-                     0 0 10px #FFD700,
-                     0 0 15px #FF4500;
-      }
-      to {
-        color: #FFD700;
-        text-shadow: 0 0 2px #FFD700;
-      }
-    }
-    @keyframes glowEven {
-      from {
-        color: #FFD700;
-        text-shadow: 0 0 2px #FFD700;
-      }
-      to {
-        color: #FFFFFF;
-        text-shadow: 0 0 5px #FFFFFF,
-                     0 0 10px #FFD700,
-                     0 0 15px #FF4500;
-      }
-    }
     .results p {
       margin: 8px 0;
       font-size: 14px;
@@ -266,6 +227,43 @@
         text-shadow: 0 0 10px #00FFFF;
       }
     }
+    /* Animated Title */
+    .animated-title {
+      display: inline-block;
+    }
+    .animated-letter {
+      display: inline-block;
+      color: #FFD700;
+      opacity: 1;
+      transition: all 0.3s ease;
+    }
+    .animated-letter.odd, .animated-letter.even {
+      animation: none;
+    }
+    @keyframes glowOdd {
+      from {
+        color: #FFFFFF;
+        text-shadow: 0 0 5px #FFFFFF,
+                     0 0 10px #FFD700,
+                     0 0 15px #FF4500;
+      }
+      to {
+        color: #FFD700;
+        text-shadow: 0 0 2px #FFD700;
+      }
+    }
+    @keyframes glowEven {
+      from {
+        color: #FFD700;
+        text-shadow: 0 0 2px #FFD700;
+      }
+      to {
+        color: #FFFFFF;
+        text-shadow: 0 0 5px #FFFFFF,
+                     0 0 10px #FFD700,
+                     0 0 15px #FF4500;
+      }
+    }
   </style>
   <script>
     let currentNames = [];
@@ -275,7 +273,6 @@
     // Helper: Returns text with the number prefix and extra spaces for single-digit numbers.
     function formatLabelText(index, name) {
       const number = index + 1;
-      // When number is less than 10, add extra spaces so names align.
       return number < 10 ? `${number}.  ${name}` : `${number}. ${name}`;
     }
 
@@ -355,11 +352,10 @@
       let currentDelay = initialDelay;
       
       function roll() {
-        // Query all name text spans in the table.
         const nameElements = document.querySelectorAll('.name-text');
         nameElements.forEach(elem => {
           const parts = elem.dataset.finalText.split('. ');
-          const numberPrefix = parts[0]; // e.g., "1" or "10"
+          const numberPrefix = parts[0];
           const randomName = currentNames[Math.floor(Math.random() * currentNames.length)];
           elem.textContent = parseInt(numberPrefix) < 10 
             ? `${numberPrefix}.  ${randomName}` 
@@ -387,7 +383,6 @@
         return;
       }
 
-      // Select random names without duplicates.
       const selected = [];
       const namesCopy = [...currentNames];
       while (selected.length < numSelections) {
@@ -398,22 +393,19 @@
       const resultsDiv = document.getElementById('results');
       resultsDiv.innerHTML = `<h2>${createAnimatedTitle()}</h2>`;
 
-      // Create a table for displaying winners.
       const table = document.createElement('table');
       table.classList.add('winner-table');
 
       selected.forEach((fullName, index) => {
         const tr = document.createElement('tr');
-        // Create the cell that contains the name text.
         const nameCell = document.createElement('td');
         const nameSpan = document.createElement('span');
         nameSpan.classList.add('name-text', 'flashing-name');
         nameSpan.dataset.finalText = formatLabelText(index, fullName);
-        // Initially show a random name (with proper padding).
         const randomName = currentNames[Math.floor(Math.random() * currentNames.length)];
         nameSpan.textContent = formatLabelText(index, randomName);
         nameCell.appendChild(nameSpan);
-        // Create the cell that contains the checkbox.
+
         const checkboxCell = document.createElement('td');
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
@@ -429,22 +421,21 @@
           }
         });
         checkboxCell.appendChild(checkbox);
-        // Append cells to the row.
+
         tr.appendChild(nameCell);
         tr.appendChild(checkboxCell);
-        // Append the row to the table.
         table.appendChild(tr);
       });
 
       resultsDiv.appendChild(table);
-      // Start the rolling animation.
-      animateNameRolling(3000, 20, 20);
+      // Change the totalDuration from 3000 ms to 6000 ms
+      animateNameRolling(6000, 20, 20);
     }
 
+    // Modified flashLights function to begin flashing after the scramble is complete (6 seconds).
     function flashLights() {
       const resultsDiv = document.getElementById('results');
       resultsDiv.classList.remove('flash');
-      // Force a reflow to restart the animation.
       void resultsDiv.offsetWidth;
       resultsDiv.classList.add('flash');
 
@@ -452,24 +443,33 @@
         clearInterval(alternatingInterval);
       }
 
+      // Change the delay from 3000 ms to 6000 ms so flashing starts after final names appear.
       setTimeout(() => {
         let toggle = false;
         alternatingInterval = setInterval(() => {
           toggle = !toggle;
           const allNameElements = document.querySelectorAll('.name-text');
-          allNameElements.forEach(el => el.classList.remove('flash-faster'));
+          allNameElements.forEach(el => {
+            if (!el.classList.contains('checked-glow')) {
+              el.classList.remove('flash-faster');
+            }
+          });
 
           if (toggle) {
             for (let i = 0; i < allNameElements.length; i += 2) {
-              allNameElements[i].classList.add('flash-faster');
+              if (!allNameElements[i].classList.contains('checked-glow')) {
+                allNameElements[i].classList.add('flash-faster');
+              }
             }
           } else {
             for (let i = 1; i < allNameElements.length; i += 2) {
-              allNameElements[i].classList.add('flash-faster');
+              if (!allNameElements[i].classList.contains('checked-glow')) {
+                allNameElements[i].classList.add('flash-faster');
+              }
             }
           }
         }, 250);
-      }, 3000);
+      }, 6000);
     }
 
     function regenerateNames() {
