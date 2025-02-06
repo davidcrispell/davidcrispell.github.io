@@ -412,11 +412,12 @@
         checkbox.classList.add('name-checkbox');
         checkbox.id = `name-${index}`;
         checkbox.addEventListener('change', (e) => {
+          // Remove any flashing classes before setting the desired class
           if (e.target.checked) {
-            nameSpan.classList.remove('flashing-name');
+            nameSpan.classList.remove('flashing-name', 'flash-faster');
             nameSpan.classList.add('checked-glow');
           } else {
-            nameSpan.classList.remove('checked-glow');
+            nameSpan.classList.remove('checked-glow', 'flash-faster');
             nameSpan.classList.add('flashing-name');
           }
         });
@@ -428,11 +429,11 @@
       });
 
       resultsDiv.appendChild(table);
-      // Change the totalDuration from 3000 ms to 6000 ms
+      // Set scramble duration to 6000 ms.
       animateNameRolling(6000, 20, 20);
     }
 
-    // Modified flashLights function to begin flashing after the scramble is complete (6 seconds).
+    // Modified flashLights function to remove flash-faster from all name elements before applying it.
     function flashLights() {
       const resultsDiv = document.getElementById('results');
       resultsDiv.classList.remove('flash');
@@ -443,18 +444,17 @@
         clearInterval(alternatingInterval);
       }
 
-      // Change the delay from 3000 ms to 6000 ms so flashing starts after final names appear.
+      // Delay flashing until the final names are displayed (6 seconds).
       setTimeout(() => {
         let toggle = false;
         alternatingInterval = setInterval(() => {
           toggle = !toggle;
           const allNameElements = document.querySelectorAll('.name-text');
+          // Remove flash-faster from all elements on each cycle.
           allNameElements.forEach(el => {
-            if (!el.classList.contains('checked-glow')) {
-              el.classList.remove('flash-faster');
-            }
+            el.classList.remove('flash-faster');
           });
-
+          
           if (toggle) {
             for (let i = 0; i < allNameElements.length; i += 2) {
               if (!allNameElements[i].classList.contains('checked-glow')) {
