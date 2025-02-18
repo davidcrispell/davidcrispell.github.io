@@ -90,6 +90,10 @@
       background-color: #1100dd;
       color: white;
     }
+    #nextButton:disabled {
+      background-color: #999;
+      cursor: not-allowed;
+    }
   </style>
 </head>
 <body>
@@ -103,7 +107,7 @@
     </ul>
   </nav>
 
-  <!-- Instructions read-out text area (left-aligned as original) -->
+  <!-- Instructions read-out text area -->
   <div id="textOutput"></div>
 
   <!-- Centered Start Interview button container -->
@@ -111,7 +115,7 @@
     <button id="startInterview">Start Interview</button>
   </div>
 
-  <!-- Interview Question Container (left-aligned) -->
+  <!-- Interview Question Container -->
   <div id="questionContainer">
     <div id="questionText"></div>
     <textarea id="answerText" placeholder="Record your answer here..."></textarea>
@@ -119,54 +123,79 @@
     <button id="nextButton">Next</button>
   </div>
 
+  <!-- Review Container (hidden until the interview is done) -->
+  <div id="reviewContainer" style="display:none;"></div>
+
   <script>
     /************* READ-OUT INSTRUCTIONS ****************/
-    // The instructions to be read out
     const instructions = "For each open ended question, please use the buttons to navigate your responses and the text area to record your answer";
-    
     const textOutput = document.getElementById("textOutput");
-    // Bullet symbol (●)
     const bulletChar = "●";
-    
+
+    // Global variables to control blinking and store the current base text words
+    let currentBlinkInterval = null;
+    let currentWords = [];
+
     /**
-     * Animate the text into the provided element.
-     * The bullet is rendered inside a fixed-width span so its blinking won't affect alignment.
+     * Animate text into the given element (forward animation).
+     * When complete, stores the full text as an array in currentWords.
      */
     function animateText(element, text, callback) {
+      if (currentBlinkInterval) {
+        clearInterval(currentBlinkInterval);
+        currentBlinkInterval = null;
+      }
       const words = text.split(" ");
       let currentWordIndex = 0;
-      
-      // Clear element and prepare for animation
       element.innerHTML = "";
       
       const wordInterval = setInterval(() => {
         if (currentWordIndex < words.length) {
-          // Create the text portion plus a blinking bullet span
           const baseText = words.slice(0, currentWordIndex + 1).join(" ");
           element.innerHTML = baseText + ' <span class="blinkingBullet">' + bulletChar + '</span>';
           currentWordIndex++;
         } else {
           clearInterval(wordInterval);
-          // After the full text is displayed, start blinking the bullet
+          currentWords = words; // Save for reverse animation.
           let showBullet = true;
           const baseText = words.join(" ");
-          const blinkInterval = setInterval(() => {
+          currentBlinkInterval = setInterval(() => {
             element.innerHTML = baseText + ' <span class="blinkingBullet">' + (showBullet ? bulletChar : "&nbsp;") + '</span>';
             showBullet = !showBullet;
           }, 500);
           if (callback) callback();
         }
-      }, 100);
+      }, 80);
     }
-    
-    // Animate the instructions read-out
+
+    /**
+     * Animate the deletion of text from the given element (reverse animation).
+     * Removes one word at a time until the text is cleared.
+     */
+    function animateTextReverse(element, callback) {
+      if (currentBlinkInterval) {
+        clearInterval(currentBlinkInterval);
+        currentBlinkInterval = null;
+      }
+      let words = currentWords.slice();
+      const reverseInterval = setInterval(() => {
+        if (words.length > 0) {
+          words.pop();
+          element.innerHTML = words.join(" ") + ' <span class="blinkingBullet">' + bulletChar + '</span>';
+        } else {
+          clearInterval(reverseInterval);
+          element.innerHTML = "";
+          if (callback) callback();
+        }
+      }, 30);
+    }
+
+    // Animate the instructions then reveal the Start Interview button.
     animateText(textOutput, instructions, () => {
-      // Once complete, reveal the "Start Interview" button.
       document.getElementById("startInterview").style.display = "inline-block";
     });
-    
+
     /************* INTERVIEW QUESTIONS ****************/
-    // Define questions organized by sections (Good Tech, Bad Tech, Emotions)
     const questions = [
       // Good Tech questions
       { category: "Good Tech", text: "Identify a piece of technology (app, website, software, physical device, operating system, etc) that you like and that you feel comfortable using." },
@@ -218,49 +247,72 @@
     ];
 
     let currentQuestionIndex = 0;
-    const responses = []; // Optionally, store responses
+    const responses = [];
 
     const questionContainer = document.getElementById("questionContainer");
     const questionText = document.getElementById("questionText");
     const answerText = document.getElementById("answerText");
+    const nextButton = document.getElementById("nextButton");
 
-    // Function to display the current question using animated read-out
+    // This function will animate in the current question text and then re-enable the Next button.
     function displayQuestion() {
       if (currentQuestionIndex < questions.length) {
         const q = questions[currentQuestionIndex];
         const fullQuestion = `[${q.category}] ${q.text}`;
-        // Clear previous text and animate the new question
         questionText.innerHTML = "";
-        animateText(questionText, fullQuestion);
-        answerText.value = "";
-      } else {
-        // If no more questions, hide the question container and thank the user.
-        questionContainer.innerHTML = "<h2>Interview Completed. Thank you!</h2>";
+        // Animate text forward; once done, enable the next button.
+        animateText(questionText, fullQuestion, () => {
+          nextButton.disabled = false;
+        });
       }
     }
 
-    // Attach event listener for the Next button
-    const nextButton = document.getElementById("nextButton");
-    nextButton.addEventListener("click", () => {
-      // Record the response without a rating
-      const response = {
-        question: questions[currentQuestionIndex].text,
-        category: questions[currentQuestionIndex].category,
-        answer: answerText.value.trim()
-      };
-      responses.push(response);
+    // Review the responses once the interview is finished.
+    function showReview() {
+      const reviewContainer = document.getElementById("reviewContainer");
+      reviewContainer.style.display = "block";
+      let html = "<h2>Review Your Responses</h2><ul>";
+      responses.forEach(response => {
+        html += `<li><strong>[${response.category}] ${response.question}</strong><br/><em>${response.answer}</em></li>`;
+      });
+      html += "</ul>";
+      reviewContainer.innerHTML = html;
+    }
 
-      // Move to the next question
-      currentQuestionIndex++;
-      displayQuestion();
+    // When Next is clicked, disable the button until the reverse animation completes
+    nextButton.addEventListener("click", () => {
+      // Disable the Next button immediately.
+      nextButton.disabled = true;
+      animateTextReverse(questionText, () => {
+        // Once the text is fully deleted, record the response.
+        const response = {
+          question: questions[currentQuestionIndex].text,
+          category: questions[currentQuestionIndex].category,
+          answer: answerText.value.trim()
+        };
+        responses.push(response);
+        // Clear the answer field.
+        answerText.value = "";
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+          // Animate in the new question and re-enable the Next button once done.
+          displayQuestion();
+        } else {
+          // End of interview: hide the question container and show review.
+          questionContainer.style.display = "none";
+          showReview();
+        }
+      });
     });
 
-    // Start Interview button: hide instructions and show questions
+    // Start Interview: hide instructions, show questions, and animate the first question.
     document.getElementById("startInterview").addEventListener("click", () => {
       document.getElementById("textOutput").style.display = "none";
       document.getElementById("startInterview").style.display = "none";
       document.getElementById("startContainer").style.display = "none";
       questionContainer.style.display = "block";
+      // Disable Next until the first question fully appears.
+      nextButton.disabled = true;
       displayQuestion();
     });
   </script>
