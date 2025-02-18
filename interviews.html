@@ -90,7 +90,12 @@
       background-color: #1100dd;
       color: white;
     }
-    #nextButton:disabled {
+    #endInterview {
+      background-color: #cc0000;
+      color: white;
+    }
+    #nextButton:disabled,
+    #endInterview:disabled {
       background-color: #999;
       cursor: not-allowed;
     }
@@ -121,6 +126,7 @@
     <textarea id="answerText" placeholder="Record your answer here..."></textarea>
     <br />
     <button id="nextButton">Next</button>
+    <button id="endInterview">End Interview</button>
   </div>
 
   <!-- Review Container (hidden until the interview is done) -->
@@ -165,7 +171,7 @@
           }, 500);
           if (callback) callback();
         }
-      }, 80);
+      }, 100);
     }
 
     /**
@@ -187,7 +193,7 @@
           element.innerHTML = "";
           if (callback) callback();
         }
-      }, 30);
+      }, 40);
     }
 
     // Animate the instructions then reveal the Start Interview button.
@@ -253,16 +259,18 @@
     const questionText = document.getElementById("questionText");
     const answerText = document.getElementById("answerText");
     const nextButton = document.getElementById("nextButton");
+    const endInterviewButton = document.getElementById("endInterview");
 
-    // This function will animate in the current question text and then re-enable the Next button.
+    // This function animates in the current question text and then re-enables the Next button.
     function displayQuestion() {
       if (currentQuestionIndex < questions.length) {
         const q = questions[currentQuestionIndex];
         const fullQuestion = `[${q.category}] ${q.text}`;
         questionText.innerHTML = "";
-        // Animate text forward; once done, enable the next button.
+        // Animate text forward; once done, enable the Next and End Interview buttons.
         animateText(questionText, fullQuestion, () => {
           nextButton.disabled = false;
+          endInterviewButton.disabled = false;
         });
       }
     }
@@ -271,7 +279,7 @@
     function showReview() {
       const reviewContainer = document.getElementById("reviewContainer");
       reviewContainer.style.display = "block";
-      let html = "<h2>Review Your Responses</h2><ul>";
+      let html = "<h2>Interview Review</h2><ul>";
       responses.forEach(response => {
         html += `<li><strong>[${response.category}] ${response.question}</strong><br/><em>${response.answer}</em></li>`;
       });
@@ -279,12 +287,13 @@
       reviewContainer.innerHTML = html;
     }
 
-    // When Next is clicked, disable the button until the reverse animation completes
+    // Next button: animate deletion of the current question, record the answer, then show the next question.
     nextButton.addEventListener("click", () => {
-      // Disable the Next button immediately.
+      // Disable buttons immediately.
       nextButton.disabled = true;
+      endInterviewButton.disabled = true;
       animateTextReverse(questionText, () => {
-        // Once the text is fully deleted, record the response.
+        // Record the current response.
         const response = {
           question: questions[currentQuestionIndex].text,
           category: questions[currentQuestionIndex].category,
@@ -295,7 +304,6 @@
         answerText.value = "";
         currentQuestionIndex++;
         if (currentQuestionIndex < questions.length) {
-          // Animate in the new question and re-enable the Next button once done.
           displayQuestion();
         } else {
           // End of interview: hide the question container and show review.
@@ -305,14 +313,36 @@
       });
     });
 
+    // End Interview button: animate deletion, record current answer, then show review immediately.
+    endInterviewButton.addEventListener("click", () => {
+      // Disable buttons immediately.
+      nextButton.disabled = true;
+      endInterviewButton.disabled = true;
+      animateTextReverse(questionText, () => {
+        // Record the current response.
+        const response = {
+          question: questions[currentQuestionIndex].text,
+          category: questions[currentQuestionIndex].category,
+          answer: answerText.value.trim()
+        };
+        responses.push(response);
+        // Clear the answer field.
+        answerText.value = "";
+        // Hide the question container and show review.
+        questionContainer.style.display = "none";
+        showReview();
+      });
+    });
+
     // Start Interview: hide instructions, show questions, and animate the first question.
     document.getElementById("startInterview").addEventListener("click", () => {
       document.getElementById("textOutput").style.display = "none";
       document.getElementById("startInterview").style.display = "none";
       document.getElementById("startContainer").style.display = "none";
       questionContainer.style.display = "block";
-      // Disable Next until the first question fully appears.
+      // Disable Next and End Interview until the first question fully appears.
       nextButton.disabled = true;
+      endInterviewButton.disabled = true;
       displayQuestion();
     });
   </script>
