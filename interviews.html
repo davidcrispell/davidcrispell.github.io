@@ -134,7 +134,7 @@
 
   <script>
     /************* READ-OUT INSTRUCTIONS ****************/
-    const instructions = "For each open ended question, please use the buttons to navigate your responses and the text area to record your answer";
+    const instructions = "For each open-ended question, please use the buttons to navigate your responses and the text area to record your answer.";
     const textOutput = document.getElementById("textOutput");
     const bulletChar = "●";
 
@@ -202,18 +202,35 @@
     });
 
     /************* INTERVIEW QUESTIONS ****************/
+    // Interview Questions without any categories.
     const questions = [
-      // Good Tech questions
-      { category: "Good Tech", text: "Identify a piece of technology (app, website, software, physical device, operating system, etc) that you like and that you feel comfortable using." },
-
-      
-      // Bad Tech questions
-      { category: "Bad Tech", text: "Identify a piece of technology that they don't like and that they don't feel comfortable using." },
-
-      
-      // Emotions questions
-      { category: "Emotions", text: "How does the prospect of having to use new tech make them feel?" },
-
+      {
+        text: "1. Have you ever used an AI chatbot, such as ChatGPT? \n   - If yes: What motivated you to try it out (e.g., recommendation, curiosity, a specific need)? \n   - If no: What has held you back from trying it?"
+      },
+      {
+        text: "2. Thinking back to your first experience with ChatGPT, would you say it was easy to get started or was there a learning curve? \n   - If it was easy, what features made it user-friendly? \n   - If it was challenging, what obstacles did you encounter?"
+      },
+      {
+        text: "3. Can you describe a positive experience where ChatGPT helped you or made a task easier? Please provide some context."
+      },
+      {
+        text: "4. Is there any part of ChatGPT that you find confusing or that doesn’t work as expected? \n   - If yes, what improvements would you suggest?"
+      },
+      {
+        text: "5. How do you prefer to learn new technology (e.g., step-by-step tutorials, written instructions, videos, or in-person guidance), and does ChatGPT’s introduction align with your preferred learning style?"
+      },
+      {
+        text: "6. How do you feel about using AI technologies like ChatGPT? Please explain your emotional response."
+      },
+      {
+        text: "7. If you could change one thing about ChatGPT to improve its usability, what would it be and why?"
+      },
+      {
+        text: "8. Have you used any other similar technologies? If so, how do they compare to ChatGPT in terms of ease of use and functionality?"
+      },
+      {
+        text: "9. Looking ahead, do you see yourself using more AI-driven tools in your daily life? What factors would influence your decision?"
+      }
     ];
 
     let currentQuestionIndex = 0;
@@ -229,10 +246,10 @@
     function displayQuestion() {
       if (currentQuestionIndex < questions.length) {
         const q = questions[currentQuestionIndex];
-        const fullQuestion = `[${q.category}] ${q.text}`;
+        // Clear previous question text.
         questionText.innerHTML = "";
-        // Animate text forward; once done, enable the Next and End Interview buttons.
-        animateText(questionText, fullQuestion, () => {
+        // Animate the question text.
+        animateText(questionText, q.text, () => {
           nextButton.disabled = false;
           endInterviewButton.disabled = false;
         });
@@ -245,7 +262,7 @@
       reviewContainer.style.display = "block";
       let html = "<h2>Interview Review</h2><ul>";
       responses.forEach(response => {
-        html += `<li><strong>[${response.category}] ${response.question}</strong><br/><em>${response.answer}</em></li>`;
+        html += `<li><strong>${response.question}</strong><br/><em>${response.answer}</em></li>`;
       });
       html += "</ul>";
       reviewContainer.innerHTML = html;
@@ -260,7 +277,6 @@
         // Record the current response.
         const response = {
           question: questions[currentQuestionIndex].text,
-          category: questions[currentQuestionIndex].category,
           answer: answerText.value.trim()
         };
         responses.push(response);
@@ -286,7 +302,6 @@
         // Record the current response.
         const response = {
           question: questions[currentQuestionIndex].text,
-          category: questions[currentQuestionIndex].category,
           answer: answerText.value.trim()
         };
         responses.push(response);
@@ -312,3 +327,5 @@
   </script>
 </body>
 </html>
+
+
