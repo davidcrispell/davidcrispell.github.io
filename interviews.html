@@ -6,61 +6,73 @@
   <title>Interviews</title>
   <style>
     @import url('https://fonts.cdnfonts.com/css/charter');
+    
     body {
       font-family: Charter, 'Bitstream Charter', serif;
-      background: #fff;
-      color: #1a1a1a;
+      background: #000;
+      color: #fff;
       line-height: 1.5;
       max-width: 650px;
       margin: 40px auto;
       padding: 0 20px;
     }
+    
     nav {
       margin-bottom: 20px;
     }
+    
     nav ul {
       list-style-type: none;
       padding: 0;
       display: flex;
       gap: 15px;
     }
+    
     nav ul li {
       display: inline;
     }
+    
     nav ul li a {
       text-decoration: none;
-      color: #0066cc;
+      color: #fff;
     }
+    
     nav ul li a:hover {
       text-decoration: underline;
     }
+    
     /* Tagline header */
     #tagline {
       font-size: 24px;
       margin-bottom: 20px;
     }
+    
     /* Container for the read-out text */
     #textOutput, #questionText {
       font-size: 20px;
       white-space: pre-wrap;
       margin-top: 20px;
     }
+    
     /* Styling for the blinking bullet span to reserve fixed space */
     .blinkingBullet {
       display: inline-block;
       width: 1em; /* Reserve space so layout doesn't shift */
     }
+    
     /* Center the Start Interview button container */
     #startContainer {
       text-align: center;
       margin-top: 20px;
     }
+    
     /* Interview question container */
     #questionContainer {
       display: none;
       margin-top: 40px; /* moves the response area down */
       text-align: left; /* Align text to the left */
     }
+    
     /* Style for the answer text area */
     #answerText {
       width: 100%;
@@ -69,35 +81,48 @@
       font-size: 16px;
       margin-top: 20px;
       margin-bottom: 20px;
-      border: 1px solid #ccc;
+      border: 1px solid #444;
       border-radius: 4px;
+      background-color: #000;
+      color: #fff;
     }
+    
     /* Style for buttons */
     button {
       padding: 10px 15px;
       font-size: 16px;
       margin: 5px;
-      border: none;
+      border: 2px solid #fff;
       border-radius: 4px;
       cursor: pointer;
-    }
-    #startInterview {
-      background-color: #0066cc;
+      background: transparent;
       color: #fff;
+      transition: background 0.3s, color 0.3s;
+    }
+    
+    button:hover {
+      background: #fff;
+      color: #000;
+    }
+    
+    button:disabled {
+      border-color: #555;
+      color: #555;
+      cursor: not-allowed;
+    }
+    
+    #startInterview {
       display: none;
     }
-    #nextButton {
-      background-color: #1100dd;
-      color: white;
-    }
-    #endInterview {
-      background-color: #cc0000;
-      color: white;
-    }
-    #nextButton:disabled,
-    #endInterview:disabled {
-      background-color: #999;
-      cursor: not-allowed;
+    
+    /* Optional: style for review container */
+    #reviewContainer {
+      display: none;
+      background-color: #111;
+      padding: 20px;
+      border: 1px solid #444;
+      border-radius: 4px;
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -130,7 +155,7 @@
   </div>
 
   <!-- Review Container (hidden until the interview is done) -->
-  <div id="reviewContainer" style="display:none;"></div>
+  <div id="reviewContainer"></div>
 
   <script>
     /************* READ-OUT INSTRUCTIONS ****************/
@@ -171,7 +196,7 @@
           }, 500);
           if (callback) callback();
         }
-      }, 100);
+      }, 80);
     }
 
     /**
@@ -193,7 +218,7 @@
           element.innerHTML = "";
           if (callback) callback();
         }
-      }, 40);
+      }, 30);
     }
 
     // Animate the instructions then reveal the Start Interview button.
@@ -327,5 +352,3 @@
   </script>
 </body>
 </html>
-
-
