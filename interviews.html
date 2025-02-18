@@ -157,21 +157,30 @@
   <!-- Review Container (hidden until the interview is done) -->
   <div id="reviewContainer"></div>
 
+  <!-- Include jsPDF from CDN for exporting PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <script>
+    /************* GLOBAL VARIABLES FOR ANIMATION CONTROL ****************/
+    const bulletChar = "●";
+    let currentBlinkInterval = null;
+    let currentWords = [];
+    let isAnimating = false;      // Tracks if an animation is in progress
+    let currentSkipFunction = null; // Function to immediately finish the current animation
+    let animationType = "";       // "forward" for displaying text; "reverse" for deleting text
+
     /************* READ-OUT INSTRUCTIONS ****************/
     const instructions = "For each open-ended question, please use the buttons to navigate your responses and the text area to record your answer.";
     const textOutput = document.getElementById("textOutput");
-    const bulletChar = "●";
-
-    // Global variables to control blinking and store the current base text words
-    let currentBlinkInterval = null;
-    let currentWords = [];
 
     /**
      * Animate text into the given element (forward animation).
      * When complete, stores the full text as an array in currentWords.
+     * If the animation is skipped via currentSkipFunction, it immediately displays the full text.
      */
     function animateText(element, text, callback) {
+      isAnimating = true;
+      animationType = "forward";
       if (currentBlinkInterval) {
         clearInterval(currentBlinkInterval);
         currentBlinkInterval = null;
@@ -180,7 +189,7 @@
       let currentWordIndex = 0;
       element.innerHTML = "";
       
-      const wordInterval = setInterval(() => {
+      let wordInterval = setInterval(() => {
         if (currentWordIndex < words.length) {
           const baseText = words.slice(0, currentWordIndex + 1).join(" ");
           element.innerHTML = baseText + ' <span class="blinkingBullet">' + bulletChar + '</span>';
@@ -194,31 +203,68 @@
             element.innerHTML = baseText + ' <span class="blinkingBullet">' + (showBullet ? bulletChar : "&nbsp;") + '</span>';
             showBullet = !showBullet;
           }, 500);
+          isAnimating = false;
+          currentSkipFunction = null;
+          animationType = "";
           if (callback) callback();
         }
-      }, 80);
+      }, 100);
+      
+      // Allow skipping the forward animation:
+      currentSkipFunction = function() {
+        clearInterval(wordInterval);
+        if (currentBlinkInterval) { clearInterval(currentBlinkInterval); currentBlinkInterval = null; }
+        currentWords = words;
+        let showBullet = true;
+        const baseText = words.join(" ");
+        currentBlinkInterval = setInterval(() => {
+          element.innerHTML = baseText + ' <span class="blinkingBullet">' + (showBullet ? bulletChar : "&nbsp;") + '</span>';
+          showBullet = !showBullet;
+        }, 500);
+        element.innerHTML = baseText + ' <span class="blinkingBullet">' + bulletChar + '</span>';
+        isAnimating = false;
+        currentSkipFunction = null;
+        animationType = "";
+        if (callback) callback();
+      };
     }
 
     /**
      * Animate the deletion of text from the given element (reverse animation).
      * Removes one word at a time until the text is cleared.
+     * If the animation is skipped, it immediately clears the text.
      */
     function animateTextReverse(element, callback) {
+      isAnimating = true;
+      animationType = "reverse";
       if (currentBlinkInterval) {
         clearInterval(currentBlinkInterval);
         currentBlinkInterval = null;
       }
       let words = currentWords.slice();
-      const reverseInterval = setInterval(() => {
+      let reverseInterval = setInterval(() => {
         if (words.length > 0) {
           words.pop();
           element.innerHTML = words.join(" ") + ' <span class="blinkingBullet">' + bulletChar + '</span>';
         } else {
           clearInterval(reverseInterval);
           element.innerHTML = "";
+          isAnimating = false;
+          currentSkipFunction = null;
+          animationType = "";
           if (callback) callback();
         }
-      }, 30);
+      }, 40);
+      
+      // Allow skipping the reverse animation:
+      currentSkipFunction = function() {
+        clearInterval(reverseInterval);
+        element.innerHTML = "";
+        isAnimating = false;
+        currentSkipFunction = null;
+        animationType = "";
+        if (callback) callback();
+      };
     }
 
     // Animate the instructions then reveal the Start Interview button.
@@ -227,7 +273,7 @@
     });
 
     /************* INTERVIEW QUESTIONS ****************/
-    // Interview Questions without any categories.
+    // Interview Questions array.
     const questions = [
       {
         text: "1. Have you ever used an AI chatbot, such as ChatGPT? \n   - If yes: What motivated you to try it out (e.g., recommendation, curiosity, a specific need)? \n   - If no: What has held you back from trying it?"
@@ -267,21 +313,24 @@
     const nextButton = document.getElementById("nextButton");
     const endInterviewButton = document.getElementById("endInterview");
 
-    // This function animates in the current question text and then re-enables the Next button.
+    /**
+     * Displays the current question using animateText.
+     */
     function displayQuestion() {
       if (currentQuestionIndex < questions.length) {
         const q = questions[currentQuestionIndex];
-        // Clear previous question text.
         questionText.innerHTML = "";
-        // Animate the question text.
         animateText(questionText, q.text, () => {
-          nextButton.disabled = false;
-          endInterviewButton.disabled = false;
+          // (Callback could be used to enable further UI actions.)
         });
       }
     }
 
-    // Review the responses once the interview is finished.
+    /**
+     * Displays the interview review with two new buttons:
+     * - New Interview: resets the app back to the initial prompt.
+     * - Export to PDF: uses jsPDF to export the responses.
+     */
     function showReview() {
       const reviewContainer = document.getElementById("reviewContainer");
       reviewContainer.style.display = "block";
@@ -290,63 +339,110 @@
         html += `<li><strong>${response.question}</strong><br/><em>${response.answer}</em></li>`;
       });
       html += "</ul>";
+      html += '<br/><button id="newInterview">New Interview</button>';
+      html += '<button id="exportPDF">Export to PDF</button>';
       reviewContainer.innerHTML = html;
+      
+      // When "New Interview" is clicked, reset the state and show the initial prompt.
+      document.getElementById("newInterview").addEventListener("click", () => {
+        currentQuestionIndex = 0;
+        responses.length = 0;
+        answerText.value = "";
+        questionText.innerHTML = "";
+        reviewContainer.style.display = "none";
+        questionContainer.style.display = "none";
+        // Show the initial instructions and start button.
+        textOutput.style.display = "block";
+        document.getElementById("startContainer").style.display = "block";
+        textOutput.innerHTML = "";
+        animateText(textOutput, instructions, () => {
+          document.getElementById("startInterview").style.display = "inline-block";
+        });
+      });
+      
+      // Export the responses to a PDF file using jsPDF.
+      document.getElementById("exportPDF").addEventListener("click", () => {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.setFontSize(16);
+        doc.text("Interview Review", 10, 20);
+        let y = 30;
+        responses.forEach(response => {
+          doc.setFontSize(12);
+          doc.text(response.question, 10, y);
+          y += 10;
+          doc.text(response.answer || "No response provided", 10, y);
+          y += 20;
+        });
+        doc.save("interview_review.pdf");
+      });
     }
 
-    // Next button: animate deletion of the current question, record the answer, then show the next question.
+    /************* BUTTON EVENT HANDLERS ****************/
+    // Next button: if an animation is in progress, skip it.
     nextButton.addEventListener("click", () => {
-      // Disable buttons immediately.
-      nextButton.disabled = true;
-      endInterviewButton.disabled = true;
+      if (isAnimating && currentSkipFunction) {
+        // Skip any ongoing animation.
+        currentSkipFunction();
+        return;
+      }
+      // Animate deletion of the current question text, record the answer, then move on.
       animateTextReverse(questionText, () => {
-        // Record the current response.
         const response = {
           question: questions[currentQuestionIndex].text,
           answer: answerText.value.trim()
         };
         responses.push(response);
-        // Clear the answer field.
         answerText.value = "";
         currentQuestionIndex++;
         if (currentQuestionIndex < questions.length) {
           displayQuestion();
         } else {
-          // End of interview: hide the question container and show review.
+          // End of interview.
           questionContainer.style.display = "none";
           showReview();
         }
       });
     });
 
-    // End Interview button: animate deletion, record current answer, then show review immediately.
+    // End Interview button: if an animation is in progress, skip it.
     endInterviewButton.addEventListener("click", () => {
-      // Disable buttons immediately.
-      nextButton.disabled = true;
-      endInterviewButton.disabled = true;
+      if (isAnimating && currentSkipFunction) {
+        currentSkipFunction();
+        // If the question was still animating in (forward), then immediately start deletion.
+        if (animationType === "forward") {
+          animateTextReverse(questionText, () => {
+            const response = {
+              question: questions[currentQuestionIndex].text,
+              answer: answerText.value.trim()
+            };
+            responses.push(response);
+            answerText.value = "";
+            questionContainer.style.display = "none";
+            showReview();
+          });
+        }
+        return;
+      }
+      // Otherwise, animate deletion and end the interview.
       animateTextReverse(questionText, () => {
-        // Record the current response.
         const response = {
           question: questions[currentQuestionIndex].text,
           answer: answerText.value.trim()
         };
         responses.push(response);
-        // Clear the answer field.
         answerText.value = "";
-        // Hide the question container and show review.
         questionContainer.style.display = "none";
         showReview();
       });
     });
 
-    // Start Interview: hide instructions, show questions, and animate the first question.
+    // Start Interview: hide instructions and show the first question.
     document.getElementById("startInterview").addEventListener("click", () => {
-      document.getElementById("textOutput").style.display = "none";
+      textOutput.style.display = "none";
       document.getElementById("startInterview").style.display = "none";
       document.getElementById("startContainer").style.display = "none";
       questionContainer.style.display = "block";
-      // Disable Next and End Interview until the first question fully appears.
-      nextButton.disabled = true;
-      endInterviewButton.disabled = true;
       displayQuestion();
     });
   </script>
