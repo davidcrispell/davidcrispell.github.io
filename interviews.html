@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interviews</title>
+  <style>
+    @import url('https://fonts.cdnfonts.com/css/charter');
+    body {
+      font-family: Charter, 'Bitstream Charter', serif;
+      background: #fff;
+      color: #1a1a1a;
+      line-height: 1.5;
+      max-width: 650px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    nav {
+      margin-bottom: 20px;
+    }
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+      display: flex;
+      gap: 15px;
+    }
+    nav ul li {
+      display: inline;
+    }
+    nav ul li a {
+      text-decoration: none;
+      color: #0066cc;
+    }
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
+    /* Tagline header */
+    #tagline {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    /* Container for the read-out text */
+    #textOutput, #questionText {
+      font-size: 20px;
+      white-space: pre-wrap;
+      margin-top: 20px;
+    }
+    /* Styling for the blinking bullet span to reserve fixed space */
+    .blinkingBullet {
+      display: inline-block;
+      width: 1em; /* Reserve space so layout doesn't shift */
+    }
+    /* Center the Start Interview button container */
+    #startContainer {
+      text-align: center;
+      margin-top: 20px;
+    }
+    /* Interview question container */
+    #questionContainer {
+      display: none;
+      margin-top: 40px; /* moves the response area down */
+      text-align: left; /* Align text to the left */
+    }
+    /* Style for the answer text area */
+    #answerText {
+      width: 100%;
+      max-width: 650px;
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    /* Style for buttons */
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      margin: 5px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #startInterview {
+      background-color: #0066cc;
+      color: #fff;
+      display: none;
+    }
+    #nextButton {
+      background-color: #1100dd;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="interviews.html">Interviews</a></li>
+      <li><a href="writing.html">Writing</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Instructions read-out text area (left-aligned as original) -->
+  <div id="textOutput"></div>
+
+  <!-- Centered Start Interview button container -->
+  <div id="startContainer">
+    <button id="startInterview">Start Interview</button>
+  </div>
+
+  <!-- Interview Question Container (left-aligned) -->
+  <div id="questionContainer">
+    <div id="questionText"></div>
+    <textarea id="answerText" placeholder="Record your answer here..."></textarea>
+    <br />
+    <button id="nextButton">Next</button>
+  </div>
+
+  <script>
+    /************* READ-OUT INSTRUCTIONS ****************/
+    // The instructions to be read out
+    const instructions = "For each open ended question, please use the buttons to navigate your responses and the text area to record your answer";
+    
+    const textOutput = document.getElementById("textOutput");
+    // Bullet symbol (●)
+    const bulletChar = "●";
+    
+    /**
+     * Animate the text into the provided element.
+     * The bullet is rendered inside a fixed-width span so its blinking won't affect alignment.
+     */
+    function animateText(element, text, callback) {
+      const words = text.split(" ");
+      let currentWordIndex = 0;
+      
+      // Clear element and prepare for animation
+      element.innerHTML = "";
+      
+      const wordInterval = setInterval(() => {
+        if (currentWordIndex < words.length) {
+          // Create the text portion plus a blinking bullet span
+          const baseText = words.slice(0, currentWordIndex + 1).join(" ");
+          element.innerHTML = baseText + ' <span class="blinkingBullet">' + bulletChar + '</span>';
+          currentWordIndex++;
+        } else {
+          clearInterval(wordInterval);
+          // After the full text is displayed, start blinking the bullet
+          let showBullet = true;
+          const baseText = words.join(" ");
+          const blinkInterval = setInterval(() => {
+            element.innerHTML = baseText + ' <span class="blinkingBullet">' + (showBullet ? bulletChar : "&nbsp;") + '</span>';
+            showBullet = !showBullet;
+          }, 500);
+          if (callback) callback();
+        }
+      }, 100);
+    }
+    
+    // Animate the instructions read-out
+    animateText(textOutput, instructions, () => {
+      // Once complete, reveal the "Start Interview" button.
+      document.getElementById("startInterview").style.display = "inline-block";
+    });
+    
+    /************* INTERVIEW QUESTIONS ****************/
+    // Define questions organized by sections (Good Tech, Bad Tech, Emotions)
+    const questions = [
+      // Good Tech questions
+      { category: "Good Tech", text: "Identify a piece of technology (app, website, software, physical device, operating system, etc) that you like and that you feel comfortable using." },
+      { category: "Good Tech", text: "Did they like using it right away, or did the positive feelings grow over time?" },
+      { category: "Good Tech", text: "Was it easy to learn and start using?" },
+      { category: "Good Tech", text: "If so, what about it made it 'friendly' for beginners?" },
+      { category: "Good Tech", text: "Was it confusing at first, and took time to get used to?" },
+      { category: "Good Tech", text: "If so, what about it made it 'unfriendly' for beginners?" },
+      { category: "Good Tech", text: "Did it replace something that performed the same function?" },
+      { category: "Good Tech", text: "If so, what was that thing, and how do they compare?" },
+      { category: "Good Tech", text: "If not, what was the problem that it solves that made them want to try a new technology?" },
+      { category: "Good Tech", text: "Is there some element of the technology that they don't like as much, or haven't figured out, or confuses them, or that they feel doesn't work the way it should?" },
+      { category: "Good Tech", text: "Is there something missing?" },
+      { category: "Good Tech", text: "If so, what would that missing thing do and how do they think it should work?" },
+      { category: "Good Tech", text: "Is there too much functionality?" },
+      { category: "Good Tech", text: "If so, what would they take away? Would they make it less prominent or remove it entirely?" },
+      
+      // Bad Tech questions
+      { category: "Bad Tech", text: "Identify a piece of technology that they don't like and that they don't feel comfortable using." },
+      { category: "Bad Tech", text: "Did they not like using it right away, or did the negative feelings grow over time?" },
+      { category: "Bad Tech", text: "Was it easy to learn and start using?" },
+      { category: "Bad Tech", text: "If so, what about it made it 'friendly' for beginners?" },
+      { category: "Bad Tech", text: "Was it confusing at first, and took time to get used to?" },
+      { category: "Bad Tech", text: "If so, what about it made it 'unfriendly' for beginners?" },
+      { category: "Bad Tech", text: "Did it replace something that performed the same function?" },
+      { category: "Bad Tech", text: "If so, what was that thing, and how do they compare?" },
+      { category: "Bad Tech", text: "If not, what was the problem that it solves that made them want to try a new technology?" },
+      { category: "Bad Tech", text: "Is there something missing?" },
+      { category: "Bad Tech", text: "If so, what would that missing thing do and how do they think it should work?" },
+      { category: "Bad Tech", text: "Is there too much functionality?" },
+      { category: "Bad Tech", text: "If so, what would they take away? Would they make it less prominent or remove it entirely?" },
+      { category: "Bad Tech", text: "Is there some element of the technology that they actually like?" },
+      
+      // Emotions questions
+      { category: "Emotions", text: "How does the prospect of having to use new tech make them feel?" },
+      { category: "Emotions", text: "Why do they think they feel that way?" },
+      { category: "Emotions", text: "What was the best technology they can remember ever having used?" },
+      { category: "Emotions", text: "Why did they like it so much?" },
+      { category: "Emotions", text: "How did it work?" },
+      { category: "Emotions", text: "Do they still use it?" },
+      { category: "Emotions", text: "Does it still exist?" },
+      { category: "Emotions", text: "If it doesn't, why do they think that's the case?" },
+      { category: "Emotions", text: "What was the worst technology they can remember ever having used?" },
+      { category: "Emotions", text: "Why did they dislike it so much?" },
+      { category: "Emotions", text: "How did it work?" },
+      { category: "Emotions", text: "Do they still use it?" },
+      { category: "Emotions", text: "Does it still exist?" },
+      { category: "Emotions", text: "If it doesn't, why do they think that's the case?" }
+    ];
+
+    let currentQuestionIndex = 0;
+    const responses = []; // Optionally, store responses
+
+    const questionContainer = document.getElementById("questionContainer");
+    const questionText = document.getElementById("questionText");
+    const answerText = document.getElementById("answerText");
+
+    // Function to display the current question using animated read-out
+    function displayQuestion() {
+      if (currentQuestionIndex < questions.length) {
+        const q = questions[currentQuestionIndex];
+        const fullQuestion = `[${q.category}] ${q.text}`;
+        // Clear previous text and animate the new question
+        questionText.innerHTML = "";
+        animateText(questionText, fullQuestion);
+        answerText.value = "";
+      } else {
+        // If no more questions, hide the question container and thank the user.
+        questionContainer.innerHTML = "<h2>Interview Completed. Thank you!</h2>";
+      }
+    }
+
+    // Attach event listener for the Next button
+    const nextButton = document.getElementById("nextButton");
+    nextButton.addEventListener("click", () => {
+      // Record the response without a rating
+      const response = {
+        question: questions[currentQuestionIndex].text,
+        category: questions[currentQuestionIndex].category,
+        answer: answerText.value.trim()
+      };
+      responses.push(response);
+
+      // Move to the next question
+      currentQuestionIndex++;
+      displayQuestion();
+    });
+
+    // Start Interview button: hide instructions and show questions
+    document.getElementById("startInterview").addEventListener("click", () => {
+      document.getElementById("textOutput").style.display = "none";
+      document.getElementById("startInterview").style.display = "none";
+      document.getElementById("startContainer").style.display = "none";
+      questionContainer.style.display = "block";
+      displayQuestion();
+    });
+  </script>
+</body>
+</html>
