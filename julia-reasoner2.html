@@ -539,10 +539,14 @@ void main() {
     /*************** INITIAL START-UP ***************/
     window.addEventListener("load", () => {
       setTimeout(() => {
-        // Use typeOutText to animate the initial greeting with a blinking bullet.
-        typeOutText(initialBubble, "Hi, I'm Julia, your new reasoning model.", 50).then(() => {
-          canClickAvatar = true;
-        });
+        // Add "speaking" to enlarge the avatar during the initial greeting.
+        avatar.classList.add("speaking");
+        typeOutText(initialBubble, "Hi, I'm Julia, your new reasoning model.", 50)
+          .then(() => {
+            // Remove the "speaking" class once the message is fully typed.
+            avatar.classList.remove("speaking");
+            canClickAvatar = true;
+          });
       }, 2000);
     });
   </script>
