@@ -345,6 +345,7 @@ void main() {
           let tokensToAdd = Math.floor(elapsed / tokenDelay);
           lastTime = now;
           while (tokensToAdd > 0 && currentTokenIndex < tokens.length) {
+            // For static text we force a space between tokens.
             if (currentTokenIndex > 0) element.innerHTML += " ";
             element.innerHTML += tokens[currentTokenIndex];
             currentTokenIndex++;
@@ -394,9 +395,28 @@ void main() {
     }
 
     /**
+     * Helper function to append a token to an element without forcefully adding spaces.
+     * It checks if a space is needed based on the last character of the current text and the first of the token.
+     */
+    function appendToken(element, token) {
+      // Remove the blinking bullet from the current text.
+      let currentText = element.innerHTML.replace(/<span class="blinkingBullet">.*?<\/span>/, "");
+      let addSpace = false;
+      if (currentText.length > 0) {
+        const lastChar = currentText.slice(-1);
+        const firstChar = token.charAt(0);
+        // If lastChar is not whitespace or punctuation and token doesn't start with punctuation, add a space.
+        if (!/\s|[.,!?;:]/.test(lastChar) && !/^[.,!?;:]/.test(firstChar)) {
+          addSpace = true;
+        }
+      }
+      element.innerHTML = currentText + (addSpace ? " " : "") + token + ' <span class="blinkingBullet">' + bulletChar + '</span>';
+    }
+
+    /**
      * Stream the model response token-by-token.
      * This function parses each streamed line, extracts only the token (delta.content),
-     * and passes it to onToken without adding extra spaces.
+     * and uses appendToken to update the element.
      */
     async function fetchModelResponse(userText, onToken, onComplete) {
       try {
@@ -461,15 +481,14 @@ void main() {
     }
 
     /**
-     * Append tokens to the given element exactly as received (without adding spaces).
+     * Append tokens to the given element as they arrive.
+     * Uses appendToken to conditionally add spaces.
      */
     function streamModelResponse(userText, element) {
       element.innerHTML = "";
       fetchModelResponse(userText, (token) => {
         element.innerHTML = element.innerHTML.replace(/<span class="blinkingBullet">.*?<\/span>/, "");
-        // Append the token exactly as received.
-        element.innerHTML += token;
-        element.innerHTML += ' <span class="blinkingBullet">' + bulletChar + '</span>';
+        appendToken(element, token);
         chatContainer.scrollTop = chatContainer.scrollHeight;
       }, () => {
         if (currentBlinkInterval) clearInterval(currentBlinkInterval);
