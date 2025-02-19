@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Interactive Fluid Circle with Color Controls</title>
+  <title>Non-Interactive Fluid Simulation</title>
   <style>
     html, body {
       height: 100%;
@@ -13,43 +13,24 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
-      color: #fff;
-      font-family: sans-serif;
     }
     .viewport {
       width: 300px;
       height: 300px;
       border-radius: 50%;
       overflow: hidden;
-      position: relative;
-      cursor: pointer;
       box-shadow: 0 0 15px rgba(0,0,0,0.5);
-      transition: width 0.2s ease, height 0.2s ease;
     }
     canvas {
       display: block;
       width: 100%;
       height: 100%;
     }
-    #colorSliders {
-      margin-top: 20px;
-      text-align: center;
-    }
-    #colorSliders label {
-      margin: 0 10px;
-    }
   </style>
 </head>
 <body>
-  <div class="viewport" id="viewport">
+  <div class="viewport">
     <canvas id="fluidCanvas"></canvas>
-  </div>
-  <div id="colorSliders">
-    <label for="color1">Base Color:</label>
-    <input type="color" id="color1" value="#4d99ff">
-    <label for="color2">Highlight Color:</label>
-    <input type="color" id="color2" value="#ffffff">
   </div>
 
   <script>
@@ -61,7 +42,7 @@
         return;
       }
 
-      // Resize canvas to match container.
+      // Resize canvas to match the container.
       function resizeCanvas() {
         canvas.width = canvas.clientWidth;
         canvas.height = canvas.clientHeight;
@@ -78,24 +59,27 @@
         }
       `;
 
-      // Fragment shader with two color uniforms.
+      // Fragment shader.
+      // This shader creates a flowing noise field.
+      // Since there is no user interaction, u_mouse is fixed at the center
+      // and u_click (the interactive repulsion) is set to zero.
       const fsSource = `
         precision mediump float;
         uniform float u_time;
         uniform vec2 u_resolution;
         uniform vec2 u_mouse;
-        uniform float u_click;  // 1.0 while pressed; decays after release.
-        uniform vec3 u_color1;  // Base color.
-        uniform vec3 u_color2;  // Highlight color.
+        uniform float u_click;
+        uniform vec3 u_color1;
+        uniform vec3 u_color2;
         varying vec2 v_uv;
         
         // Pseudo-random function.
-        float random (in vec2 st) {
+        float random(in vec2 st) {
           return fract(sin(dot(st, vec2(12.9898,78.233))) * 43758.5453123);
         }
         
         // 2D noise function.
-        float noise (in vec2 st) {
+        float noise(in vec2 st) {
           vec2 i = floor(st);
           vec2 f = fract(st);
           float a = random(i);
@@ -108,8 +92,8 @@
                  (d - b) * u.x * u.y;
         }
         
-        void main(){
-          // Expand UV for simulation space.
+        void main() {
+          // Expand UV coordinates for simulation space.
           vec2 st = v_uv * 3.0;
           
           // Add drifting offset.
@@ -126,19 +110,18 @@
           // Base noise mask.
           float baseMask = smoothstep(0.35, 0.65, combinedNoise);
           
-          // Integrated interactive effect.
+          // Interactive effect is removed: u_click is zero.
           float d = distance(v_uv, u_mouse);
-          float interactiveBoost = smoothstep(0.3, 0.0, d) * u_click * 0.3;
-          float mixFactor = clamp(baseMask + interactiveBoost, 0.0, 1.0);
+          float interactiveRepel = (1.0 - smoothstep(0.0, 0.3, d)) * u_click * 0.3;
+          float mixFactor = clamp(baseMask - interactiveRepel, 0.0, 1.0);
           
-          // Mix the two colors.
+          // Final color: blend the base and highlight colors.
           vec3 finalColor = mix(u_color1, u_color2, mixFactor);
-          
           gl_FragColor = vec4(finalColor, 1.0);
         }
       `;
 
-      // Shader compilation helper.
+      // Shader helper.
       function createShader(gl, type, source) {
         const shader = gl.createShader(type);
         gl.shaderSource(shader, source);
@@ -165,7 +148,7 @@
       }
       gl.useProgram(program);
 
-      // Full-screen quad.
+      // Set up a full-screen quad.
       const positionBuffer = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
       const positions = [
@@ -183,74 +166,35 @@
       gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
       // Uniform locations.
-      const u_timeLoc     = gl.getUniformLocation(program, "u_time");
+      const u_timeLoc = gl.getUniformLocation(program, "u_time");
       const u_resolutionLoc = gl.getUniformLocation(program, "u_resolution");
-      const u_mouseLoc    = gl.getUniformLocation(program, "u_mouse");
-      const u_clickLoc    = gl.getUniformLocation(program, "u_click");
-      const u_color1Loc   = gl.getUniformLocation(program, "u_color1");
-      const u_color2Loc   = gl.getUniformLocation(program, "u_color2");
+      const u_mouseLoc = gl.getUniformLocation(program, "u_mouse");
+      const u_clickLoc = gl.getUniformLocation(program, "u_click");
+      const u_color1Loc = gl.getUniformLocation(program, "u_color1");
+      const u_color2Loc = gl.getUniformLocation(program, "u_color2");
 
       let startTime = Date.now();
-      let lastReleaseTime = 0;
-      let mousePos = [0.5, 0.5];
-      let mouseDown = false;
-      const baseSize = 300; // Base diameter in px.
-
-      // Get references to the color inputs.
-      const color1El = document.getElementById('color1');
-      const color2El = document.getElementById('color2');
-
-      // Helper: Convert hex color string to [r, g, b] in [0,1].
-      function hexToRgb(hex) {
-          const bigint = parseInt(hex.slice(1), 16);
-          const r = ((bigint >> 16) & 255) / 255;
-          const g = ((bigint >> 8) & 255) / 255;
-          const b = (bigint & 255) / 255;
-          return [r, g, b];
-      }
-
-      // Interaction: update mouse info.
-      const viewport = document.getElementById("viewport");
-      viewport.addEventListener("mousedown", function(event) {
-        mouseDown = true;
-        const rect = canvas.getBoundingClientRect();
-        const x = (event.clientX - rect.left) / rect.width;
-        const y = 1 - (event.clientY - rect.top) / rect.height;
-        mousePos = [x, y];
-      });
-      viewport.addEventListener("mouseup", function() {
-        mouseDown = false;
-        lastReleaseTime = (Date.now() - startTime) / 1000;
-      });
-      viewport.addEventListener("mousemove", function(event) {
-        if (mouseDown) {
-          const rect = canvas.getBoundingClientRect();
-          const x = (event.clientX - rect.left) / rect.width;
-          const y = 1 - (event.clientY - rect.top) / rect.height;
-          mousePos = [x, y];
-        }
-      });
 
       // Render loop.
       function render() {
         resizeCanvas();
         const currentTime = (Date.now() - startTime) / 1000;
-        const clickVal = mouseDown ? 1.0 : Math.max(0, 1.0 - (currentTime - lastReleaseTime));
+
+        // Since there are no user interactions:
+        // - u_mouse is set to the center (0.5, 0.5)
+        // - u_click is 0.
         gl.uniform1f(u_timeLoc, currentTime);
         gl.uniform2f(u_resolutionLoc, canvas.width, canvas.height);
-        gl.uniform2f(u_mouseLoc, mousePos[0], mousePos[1]);
-        gl.uniform1f(u_clickLoc, clickVal);
+        gl.uniform2f(u_mouseLoc, 0.5, 0.5);
+        gl.uniform1f(u_clickLoc, 0.0);
 
-        // Set colors from sliders.
-        const baseColor = hexToRgb(color1El.value);
-        const highlightColor = hexToRgb(color2El.value);
-        gl.uniform3f(u_color1Loc, baseColor[0], baseColor[1], baseColor[2]);
-        gl.uniform3f(u_color2Loc, highlightColor[0], highlightColor[1], highlightColor[2]);
+        // Set constant colors:
+        // Base color: #4d99ff (approximately [0.302, 0.6, 1.0])
+        // Highlight color: white.
+        gl.uniform3f(u_color1Loc, 0.302, 0.6, 1.0);
+        gl.uniform3f(u_color2Loc, 1.0, 1.0, 1.0);
 
         gl.drawArrays(gl.TRIANGLES, 0, 6);
-
-
-
         requestAnimationFrame(render);
       }
       requestAnimationFrame(render);
