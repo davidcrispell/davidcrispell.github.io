@@ -80,6 +80,9 @@
       flex-direction: column;
       gap: 10px;
       padding: 10px;
+      /* Enable scrolling when needed */
+      max-height: 60vh;
+      overflow-y: auto;
     }
     .message {
       padding: 10px 15px;
@@ -218,18 +221,15 @@
           gl_Position = vec4(a_position, 0.0, 1.0);
         }
       `;
-      // New function to fetch the actual model response
-
-
       const fsSource = `
 precision mediump float;
 uniform float u_time;
 uniform vec2 u_resolution;
 uniform vec2 u_mouse;
 uniform float u_click;
-uniform vec3 u_color1;  // Original color 1 (e.g. dark blue)
-uniform vec3 u_color2;  // Original color 2 (e.g. light blue)
-uniform vec3 u_color3;  // Light purple for bubble refracting effect
+uniform vec3 u_color1;
+uniform vec3 u_color2;
+uniform vec3 u_color3;
 varying vec2 v_uv;
 
 float random(in vec2 st) {
@@ -265,20 +265,12 @@ void main() {
   float interactiveRepel = (1.0 - smoothstep(0.0, 0.3, d)) * u_click * 0.3;
   float mixFactor = clamp(baseMask - interactiveRepel, 0.0, 1.0);
 
-  // First blend the two primary colors.
   vec3 baseColor = mix(u_color1, u_color2, mixFactor);
-
-  // Compute a weight that peaks near the midpoint (mixFactor ~ 0.5)
-  // Adjust the 0.05 to change the width of the refracting effect.
   float bubbleWeight = exp(-pow((mixFactor - 0.5) / 0.05, 2.0));
-
-  // Blend in the light purple using the computed weight.
   vec3 finalColor = mix(baseColor, u_color3, bubbleWeight);
 
   gl_FragColor = vec4(finalColor, 1.0);
 }
-
-
       `;
 
       function createShader(gl, type, source) {
@@ -328,8 +320,7 @@ void main() {
       const u_clickLoc      = gl.getUniformLocation(program, "u_click");
       const u_color1Loc     = gl.getUniformLocation(program, "u_color1");
       const u_color2Loc     = gl.getUniformLocation(program, "u_color2");
-      const u_color3Loc = gl.getUniformLocation(program, "u_color3");
-
+      const u_color3Loc     = gl.getUniformLocation(program, "u_color3");
 
       let startTime = Date.now();
 
@@ -338,29 +329,23 @@ void main() {
         const currentTime = (Date.now() - startTime) / 1000;
         gl.uniform1f(u_timeLoc, currentTime);
         gl.uniform2f(u_resolutionLoc, canvas.width, canvas.height);
-
-        // Hard-coded placeholders
         gl.uniform2f(u_mouseLoc, 0.5, 0.5);
         gl.uniform1f(u_clickLoc, 0.0);
-
-        // Colors
-gl.uniform3f(u_color1Loc, 0.512, 0.71, 1.0);
-gl.uniform3f(u_color2Loc, 0.202, 0.3, 0.8);
-gl.uniform3f(u_color3Loc, 0.502, 0.7, 1.0);  // <-- New lighter blue
-
-
-
+        gl.uniform3f(u_color1Loc, 0.512, 0.71, 1.0);
+        gl.uniform3f(u_color2Loc, 0.202, 0.3, 0.8);
+        gl.uniform3f(u_color3Loc, 0.502, 0.7, 1.0);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
         requestAnimationFrame(render);
       }
       requestAnimationFrame(render);
     })();
 
-    /*************** TEXT & BLINK SYNC ***************/
+    /*************** TEXT & BLINK SYNC (Token-Wise Animation with Auto-Scroll) ***************/
     const bulletChar = "●";
     let currentBlinkInterval = null;
     let isAnimating = false;
     let currentSkipFunction = null;
+    let currentAnimationFrame = null;
 
     // Controls for enabling/disabling avatar click
     let canClickAvatar = false;         // Must be false during initial message or transitions
@@ -371,63 +356,87 @@ gl.uniform3f(u_color3Loc, 0.502, 0.7, 1.0);  // <-- New lighter blue
     const initialBubble = document.getElementById("initialMessageBubble");
     const chatContainer = document.getElementById("chatContainer");
 
-    // Animate text at a certain speed
+    /**
+     * animateText now performs token-wise animation and updates the chat scroll.
+     * It uses a time-based loop (with Date.now()) so that if the user switches tabs,
+     * the elapsed time “catches up” and tokens are added accordingly.
+     */
     function animateText(element, text, callback) {
       isAnimating = true;
       avatar.classList.add("speaking");
 
-      const chars = text.split("");
-      let currentCharIndex = 0;
+      // Split the text into tokens (words)
+      const tokens = text.split(" ");
+      let currentTokenIndex = 0;
       element.innerHTML = "";
-
+      
       // Clear any old blinking intervals
       if (currentBlinkInterval) {
         clearInterval(currentBlinkInterval);
         currentBlinkInterval = null;
       }
-
-      const charInterval = setInterval(() => {
-        if (currentCharIndex < chars.length) {
-          const baseText = chars.slice(0, currentCharIndex + 1).join("");
-          element.innerHTML = baseText + ' <span class="blinkingBullet">' + bulletChar + '</span>';
-          currentCharIndex++;
+      
+      let lastTime = Date.now();
+      const tokenDelay = 200; // delay in milliseconds per token
+      
+      function step() {
+        const now = Date.now();
+        const elapsed = now - lastTime;
+        if (elapsed >= tokenDelay) {
+          // Determine how many tokens to add based on elapsed time.
+          let tokensToAdd = Math.floor(elapsed / tokenDelay);
+          lastTime = now;
+          while (tokensToAdd > 0 && currentTokenIndex < tokens.length) {
+            if (currentTokenIndex > 0) {
+              element.innerHTML += " ";
+            }
+            element.innerHTML += tokens[currentTokenIndex];
+            currentTokenIndex++;
+            tokensToAdd--;
+          }
+          // Update the element with a blinking bullet at the end.
+          element.innerHTML = element.innerHTML.replace(/<span class="blinkingBullet">.*?<\/span>/, "");
+          element.innerHTML += ' <span class="blinkingBullet">' + bulletChar + '</span>';
+          // Update the scroll position so the new content is visible.
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        if (currentTokenIndex < tokens.length) {
+          currentAnimationFrame = requestAnimationFrame(step);
         } else {
-          // Typing done
-          clearInterval(charInterval);
-          let showBullet = true;
-          const baseText = chars.join("");
-
-          // Start blinking bullet
+          if (currentBlinkInterval) clearInterval(currentBlinkInterval);
           currentBlinkInterval = setInterval(() => {
-            element.innerHTML = baseText + ' <span class="blinkingBullet">'
-              + (showBullet ? bulletChar : '\u00A0') + '</span>';
-
-            // Prompt toggles (but won't shift since #blinkPrompt has fixed width)
-            blinkPrompt.textContent = showBullet ? '>' : '\u00A0';
-
+            const baseText = element.innerHTML.replace(/<span class="blinkingBullet">.*?<\/span>/, "");
+            let showBullet = element.getAttribute("data-showBullet") === "true";
             showBullet = !showBullet;
+            element.setAttribute("data-showBullet", showBullet ? "true" : "false");
+            element.innerHTML = baseText + ' <span class="blinkingBullet">' + (showBullet ? bulletChar : '\u00A0') + '</span>';
+            blinkPrompt.textContent = showBullet ? '>' : '\u00A0';
           }, 500);
-
-          // Stop "speaking" scale
+          
           avatar.classList.remove("speaking");
-
           isAnimating = false;
           currentSkipFunction = null;
           if (callback) callback();
         }
-      }, 50);
+      }
+      
+      currentAnimationFrame = requestAnimationFrame(step);
 
-      // Allow skipping the typing animation
+      // Allow skipping the animation.
       currentSkipFunction = function() {
-        clearInterval(charInterval);
-        if (currentBlinkInterval) {
-          clearInterval(currentBlinkInterval);
-          currentBlinkInterval = null;
-        }
-        const baseText = chars.join("");
-        element.innerHTML = baseText + ' <span class="blinkingBullet">' + bulletChar + '</span>';
-        blinkPrompt.textContent = '>';
-
+        if (currentAnimationFrame) cancelAnimationFrame(currentAnimationFrame);
+        element.innerHTML = text + ' <span class="blinkingBullet">' + bulletChar + '</span>';
+        if (currentBlinkInterval) clearInterval(currentBlinkInterval);
+        currentBlinkInterval = setInterval(() => {
+          const baseText = text;
+          let showBullet = element.getAttribute("data-showBullet") === "true";
+          showBullet = !showBullet;
+          element.setAttribute("data-showBullet", showBullet ? "true" : "false");
+          element.innerHTML = baseText + ' <span class="blinkingBullet">' + (showBullet ? bulletChar : '\u00A0') + '</span>';
+          blinkPrompt.textContent = showBullet ? '>' : '\u00A0';
+        }, 500);
+        // Ensure the final text is visible.
+        chatContainer.scrollTop = chatContainer.scrollHeight;
         avatar.classList.remove("speaking");
         isAnimating = false;
         currentSkipFunction = null;
@@ -436,7 +445,7 @@ gl.uniform3f(u_color3Loc, 0.502, 0.7, 1.0);  // <-- New lighter blue
     }
 
     function addModelResponse(userText) {
-      // Remove blinking bullet from old messages
+      // Remove blinking bullets from previous model messages.
       document.querySelectorAll(".model-message .blinkingBullet").forEach(el => {
         el.style.display = "none";
       });
@@ -445,9 +454,12 @@ gl.uniform3f(u_color3Loc, 0.502, 0.7, 1.0);  // <-- New lighter blue
       modelBubble.className = "message model-message";
       chatContainer.appendChild(modelBubble);
 
-      // Animate a dummy response
-      animateText(modelBubble, "This is a dummy response to: " + userText);
-      modelBubble.scrollIntoView({ behavior: "smooth" });
+      // Fetch the actual response and animate it token by token.
+      fetchModelResponse(userText).then(modelReply => {
+        animateText(modelBubble, modelReply);
+        // Immediately scroll to the new message.
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      });
     }
 
     function addUserMessage(message) {
@@ -455,7 +467,7 @@ gl.uniform3f(u_color3Loc, 0.502, 0.7, 1.0);  // <-- New lighter blue
       userBubble.className = "message user-message";
       userBubble.textContent = message;
       chatContainer.appendChild(userBubble);
-      userBubble.scrollIntoView({ behavior: "smooth" });
+      chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
     function setupUserInput() {
@@ -469,11 +481,7 @@ gl.uniform3f(u_color3Loc, 0.502, 0.7, 1.0);  // <-- New lighter blue
 
         addUserMessage(message);
         userInput.value = "";
-
-        // Simulate model reply
-        setTimeout(() => {
-          addModelResponse(message);
-        }, 500);
+        addModelResponse(message);
       });
 
       userInput.addEventListener("keydown", (e) => {
@@ -485,8 +493,6 @@ gl.uniform3f(u_color3Loc, 0.502, 0.7, 1.0);  // <-- New lighter blue
     }
 
     /*************** TRANSITION MODES ***************/
-
-    // Move Julia to top-left
     function enterDialogueMode() {
       transitionInProgress = true;
       canClickAvatar = false;
@@ -494,119 +500,72 @@ gl.uniform3f(u_color3Loc, 0.502, 0.7, 1.0);  // <-- New lighter blue
       avatar.classList.add("dialogue");
     }
 
-    // Move Julia back to center
     function enterCenterMode() {
       transitionInProgress = true;
       canClickAvatar = false;
-
-      // Immediately clear chat so no bubble remains
       chatContainer.innerHTML = "";
-
-      // Hide input
       document.body.classList.remove("dialogue-mode");
       avatar.classList.remove("dialogue");
     }
 
-    // Check when the avatar finishes transitioning
     avatar.addEventListener("transitionend", () => {
       if (!transitionInProgress) return;
       transitionInProgress = false;
-
-      // If we are center mode => we just finished the reverse animation
       if (!document.body.classList.contains("dialogue-mode")) {
-        // Wait 2 seconds, then spawn the greeting bubble
         setTimeout(() => {
           const newInitialBubble = document.createElement("div");
           newInitialBubble.id = "initialMessageBubble";
           newInitialBubble.className = "message model-message center";
           chatContainer.appendChild(newInitialBubble);
-
-          // Now animate the greeting
-          animateText(
-            newInitialBubble,
-            "Hi, I'm Julia, your new reasoning model.",
-            () => {
-              canClickAvatar = true; // re-enable click after greeting
-            }
-          );
+          animateText(newInitialBubble, "Hi, I'm Julia, your new reasoning model.", () => {
+            canClickAvatar = true;
+          });
         }, 2000);
       } else {
-        // We are in dialogue mode => enable user input & allow user to click again
         setupUserInput();
         canClickAvatar = true;
       }
     });
 
-    // Toggle function for avatar clicks
     function onAvatarClick() {
       if (!canClickAvatar || transitionInProgress) return;
-
-      // If we are in dialogue mode, go back to center
       if (document.body.classList.contains("dialogue-mode")) {
         enterCenterMode();
       } else {
-        // Otherwise, go to dialogue mode
         enterDialogueMode();
       }
     }
+
     async function fetchModelResponse(userText) {
-      // Replace '/model-api' with your actual API endpoint
       try {
-        const response = await fetch('/model-api', {
+        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt: userText })
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer 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' 
+          },
+          body: JSON.stringify({
+            model: "llama3-8b-8192",
+            messages: [{ role: "user", content: userText }]
+          })
         });
         const data = await response.json();
-        // Assume your API returns a JSON object with a "response" property
-        return data.response;
+        return data.choices[0].message.content;
       } catch (error) {
         console.error("Error fetching model response:", error);
         return "Sorry, something went wrong retrieving the response.";
       }
     }
 
-    // Modified function to add the model response to the chat
-    async function addModelResponse(userText) {
-      // Remove blinking bullet from old messages
-      document.querySelectorAll(".model-message .blinkingBullet").forEach(el => {
-        el.style.display = "none";
-      });
-
-      const modelBubble = document.createElement("div");
-      modelBubble.className = "message model-message";
-      chatContainer.appendChild(modelBubble);
-
-      // Fetch the actual response and animate it as it appears
-      const modelReply = await fetchModelResponse(userText);
-      animateText(modelBubble, modelReply);
-      modelBubble.scrollIntoView({ behavior: "smooth" });
-    }
-
-    // In your user input handler, replace the dummy timeout with a direct call:
-    sendButton.addEventListener("click", async () => {
-      if (isAnimating) return;
-      const message = userInput.value.trim();
-      if (message === "") return;
-
-      addUserMessage(message);
-      userInput.value = "";
-
-      // Fetch and display the actual model response
-      addModelResponse(message);
-    });
-    // Attach the click handler (checks canClickAvatar each time)
     avatar.addEventListener("click", onAvatarClick);
 
     /*************** INITIAL START-UP ***************/
     window.addEventListener("load", () => {
-      // Delay 2 seconds, then type out the initial greeting
       setTimeout(() => {
         animateText(
           initialBubble,
           "Hi, I'm Julia, a new reasoning assistant.",
           () => {
-            // Once done typing, user can click to go to dialogue
             canClickAvatar = true;
           }
         );
