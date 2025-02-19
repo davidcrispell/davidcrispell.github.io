@@ -3,37 +3,66 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Non-Interactive Fluid Simulation</title>
+  <title>Julia - Your New Reasoning Model</title>
   <style>
+    /* General Page Styles */
     html, body {
       height: 100%;
       margin: 0;
       overflow: hidden;
-      background: #111;
+      background: #000;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
     }
+
+    /* Fluid Simulation (WebGL) Container */
     .viewport {
       width: 300px;
       height: 300px;
       border-radius: 50%;
       overflow: hidden;
       box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      margin-bottom: 20px;
+      transition: width 0.2s ease, height 0.2s ease;
+    }
+    .viewport.active {
+      width: 315px;  /* 5% larger */
+      height: 315px;
     }
     canvas {
       display: block;
       width: 100%;
       height: 100%;
     }
+
+    /* Animated Text Styles */
+    #textOutput {
+      font-family: Charter, 'Bitstream Charter', serif;
+      font-size: 24px;
+      color: #fff;
+      white-space: pre-wrap;
+      text-align: center;
+      margin-top: 20px; /* Moved down to avoid collision with the circle */
+    }
+    .blinkingBullet {
+      display: inline-block;
+      width: 1em; /* Reserve space to avoid layout shifts */
+    }
   </style>
 </head>
 <body>
+  <!-- Fluid simulation viewport -->
   <div class="viewport">
     <canvas id="fluidCanvas"></canvas>
   </div>
 
+  <!-- Text output container for the animated message -->
+  <div id="textOutput"></div>
+
   <script>
+    /***************** WEBGL FLUID SIMULATION *****************/
     (function () {
       const canvas = document.getElementById("fluidCanvas");
       const gl = canvas.getContext("webgl");
@@ -42,7 +71,7 @@
         return;
       }
 
-      // Resize canvas to match the container.
+      // Resize the canvas to match its container.
       function resizeCanvas() {
         canvas.width = canvas.clientWidth;
         canvas.height = canvas.clientHeight;
@@ -60,9 +89,6 @@
       `;
 
       // Fragment shader.
-      // This shader creates a flowing noise field.
-      // Since there is no user interaction, u_mouse is fixed at the center
-      // and u_click (the interactive repulsion) is set to zero.
       const fsSource = `
         precision mediump float;
         uniform float u_time;
@@ -93,10 +119,9 @@
         }
         
         void main() {
-          // Expand UV coordinates for simulation space.
           vec2 st = v_uv * 3.0;
           
-          // Add drifting offset.
+          // Create a drifting effect.
           vec2 drift;
           drift.x = noise(vec2(u_time * 0.4, st.y)) - 0.5;
           drift.y = noise(vec2(st.x, u_time * 0.4)) - 0.5;
@@ -107,21 +132,21 @@
           float n2 = noise(st * 1.5 - u_time * 0.3);
           float combinedNoise = mix(n1, n2, 0.5);
           
-          // Base noise mask.
+          // Create a base noise mask.
           float baseMask = smoothstep(0.35, 0.65, combinedNoise);
           
-          // Interactive effect is removed: u_click is zero.
+          // Since there is no interactivity, these values remain fixed.
           float d = distance(v_uv, u_mouse);
           float interactiveRepel = (1.0 - smoothstep(0.0, 0.3, d)) * u_click * 0.3;
           float mixFactor = clamp(baseMask - interactiveRepel, 0.0, 1.0);
           
-          // Final color: blend the base and highlight colors.
+          // Blend the two colors.
           vec3 finalColor = mix(u_color1, u_color2, mixFactor);
           gl_FragColor = vec4(finalColor, 1.0);
         }
       `;
 
-      // Shader helper.
+      // Helper function to compile a shader.
       function createShader(gl, type, source) {
         const shader = gl.createShader(type);
         gl.shaderSource(shader, source);
@@ -165,7 +190,7 @@
       gl.enableVertexAttribArray(positionLocation);
       gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
-      // Uniform locations.
+      // Get uniform locations.
       const u_timeLoc = gl.getUniformLocation(program, "u_time");
       const u_resolutionLoc = gl.getUniformLocation(program, "u_resolution");
       const u_mouseLoc = gl.getUniformLocation(program, "u_mouse");
@@ -175,30 +200,96 @@
 
       let startTime = Date.now();
 
-      // Render loop.
       function render() {
         resizeCanvas();
         const currentTime = (Date.now() - startTime) / 1000;
-
-        // Since there are no user interactions:
-        // - u_mouse is set to the center (0.5, 0.5)
-        // - u_click is 0.
         gl.uniform1f(u_timeLoc, currentTime);
         gl.uniform2f(u_resolutionLoc, canvas.width, canvas.height);
-        gl.uniform2f(u_mouseLoc, 0.5, 0.5);
-        gl.uniform1f(u_clickLoc, 0.0);
-
-        // Set constant colors:
-        // Base color: #4d99ff (approximately [0.302, 0.6, 1.0])
-        // Highlight color: white.
+        gl.uniform2f(u_mouseLoc, 0.5, 0.5);  // Fixed center value.
+        gl.uniform1f(u_clickLoc, 0.0);         // No interactive click.
+        // Set the colors.
         gl.uniform3f(u_color1Loc, 0.502, 0.7, 1.0);
-        gl.uniform3f(u_color2Loc, .2, 0, 0.8);
-
+        gl.uniform3f(u_color2Loc, 0.2, 0, 0.8);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
         requestAnimationFrame(render);
       }
       requestAnimationFrame(render);
     })();
+
+    /***************** TEXT ANIMATION & CIRCLE RESIZING *****************/
+    const bulletChar = "●";
+    let currentBlinkInterval = null;
+    let isAnimating = false;
+    let currentSkipFunction = null;
+    let currentWords = [];
+    let textGenerationTimer;
+
+    // Function to enlarge the circle during active text generation
+    function enlargeCircle() {
+      const viewport = document.querySelector('.viewport');
+      viewport.classList.add('active');
+      if (textGenerationTimer) clearTimeout(textGenerationTimer);
+      textGenerationTimer = setTimeout(() => {
+        viewport.classList.remove('active');
+      }, 500); // 500ms pause triggers shrink back to normal size
+    }
+
+    function animateText(element, text, callback) {
+      isAnimating = true;
+      let chars = text.split("");
+      let currentCharIndex = 0;
+      element.innerHTML = "";
+      if (currentBlinkInterval) {
+        clearInterval(currentBlinkInterval);
+        currentBlinkInterval = null;
+      }
+      let charInterval = setInterval(() => {
+        if (currentCharIndex < chars.length) {
+          const baseText = chars.slice(0, currentCharIndex + 1).join("");
+          element.innerHTML = baseText + ' <span class="blinkingBullet">' + bulletChar + '</span>';
+          currentCharIndex++;
+          // Each time a character is added, enlarge the circle.
+          enlargeCircle();
+        } else {
+          clearInterval(charInterval);
+          currentWords = chars;
+          let showBullet = true;
+          const baseText = chars.join("");
+          currentBlinkInterval = setInterval(() => {
+            element.innerHTML = baseText + ' <span class="blinkingBullet">' + (showBullet ? bulletChar : "&nbsp;") + '</span>';
+            showBullet = !showBullet;
+          }, 500);
+          isAnimating = false;
+          currentSkipFunction = null;
+          if (callback) callback();
+        }
+      }, 50); // Adjust typing speed as desired.
+      
+      // Function to immediately complete the animation.
+      currentSkipFunction = function() {
+        clearInterval(charInterval);
+        if (currentBlinkInterval) { clearInterval(currentBlinkInterval); currentBlinkInterval = null; }
+        currentWords = chars;
+        let showBullet = true;
+        const baseText = chars.join("");
+        currentBlinkInterval = setInterval(() => {
+          element.innerHTML = baseText + ' <span class="blinkingBullet">' + (showBullet ? bulletChar : "&nbsp;") + '</span>';
+          showBullet = !showBullet;
+        }, 500);
+        element.innerHTML = baseText + ' <span class="blinkingBullet">' + bulletChar + '</span>';
+        isAnimating = false;
+        currentSkipFunction = null;
+        if (callback) callback();
+      };
+    }
+
+    // Start the animated text 3 seconds after the page loads.
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        const textOutput = document.getElementById("textOutput");
+        animateText(textOutput, "Hi, I'm Julia, your new reasoning model.");
+      }, 300);
+    });
   </script>
 </body>
 </html>
