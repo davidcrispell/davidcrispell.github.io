@@ -1,308 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interactive Fluid Circle</title>
   <style>
-    /* Import Charter font */
-    @import url('https://fonts.cdnfonts.com/css/charter');
-
-    body {
-      font-family: Charter, 'Bitstream Charter', serif;
-      line-height: 1.5;
-      max-width: 650px;
-      margin: 40px auto;
-      padding: 0 20px;
-      color: #1a1a1a;
-      background: #000; /* matches simulation background */
-      text-align: center;
+    /* Ensure no scrollbars appear and center content */
+    html, body {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-
-    /* Circular canvas with a subtle glow */
-    canvas {
+    /* Circular viewport container */
+    .viewport {
+      width: 300px;
+      height: 300px;
       border-radius: 50%;
-      box-shadow: 0 0 25px rgba(255,255,255,0.3);
+      overflow: hidden;
+      position: relative;
+      transition: width 0.2s ease, height 0.2s ease;
       cursor: pointer;
-      margin: 20px auto;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    }
+    /* The WebGL canvas fills the container */
+    canvas {
       display: block;
+      width: 100%;
+      height: 100%;
     }
   </style>
 </head>
 <body>
-  <canvas id="glCanvas" width="300" height="300"></canvas>
+  <!-- Circular viewport container -->
+  <div class="viewport" id="viewport">
+    <canvas id="fluidCanvas"></canvas>
+  </div>
+
   <script>
-    // Get a WebGL2 context
-    const canvas = document.getElementById('glCanvas');
-    const gl = canvas.getContext('webgl2');
-    if (!gl) {
-      alert("WebGL2 not supported in your browser.");
-    }
-
-    // --- Utility functions to compile shaders and link programs ---
-    function compileShader(src, type) {
-      const shader = gl.createShader(type);
-      gl.shaderSource(shader, src);
-      gl.compileShader(shader);
-      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        console.error("Shader compile error:", gl.getShaderInfoLog(shader));
-        gl.deleteShader(shader);
-        return null;
+    (function () {
+      const canvas = document.getElementById("fluidCanvas");
+      const gl = canvas.getContext("webgl");
+      if (!gl) {
+        console.error("WebGL not supported");
+        return;
       }
-      return shader;
-    }
 
-    function createProgram(vertexSrc, fragmentSrc) {
-      const vertexShader = compileShader(vertexSrc, gl.VERTEX_SHADER);
-      const fragmentShader = compileShader(fragmentSrc, gl.FRAGMENT_SHADER);
+      // Ensure the canvas matches the container size.
+      function resizeCanvas() {
+        canvas.width = canvas.clientWidth;
+        canvas.height = canvas.clientHeight;
+        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+      }
+
+      // Vertex shader: passes through positions and UV coordinates.
+      const vsSource = `
+        attribute vec2 a_position;
+        varying vec2 v_uv;
+        void main() {
+          v_uv = a_position * 0.5 + 0.5;
+          gl_Position = vec4(a_position, 0.0, 1.0);
+        }
+      `;
+
+      // Fragment shader: creates a more random, gaseous blue/white fluid effect.
+      const fsSource = `
+        precision mediump float;
+        uniform float u_time;
+        uniform vec2 u_resolution;
+        uniform vec2 u_mouse;
+        uniform float u_click;  // 1.0 while pressed; decays after release.
+        varying vec2 v_uv;
+
+        // Pseudo-random function.
+        float random (in vec2 st) {
+          return fract(sin(dot(st, vec2(12.9898,78.233))) * 43758.5453123);
+        }
+
+        // 2D noise function.
+        float noise (in vec2 st) {
+          vec2 i = floor(st);
+          vec2 f = fract(st);
+          float a = random(i);
+          float b = random(i + vec2(1.0, 0.0));
+          float c = random(i + vec2(0.0, 1.0));
+          float d = random(i + vec2(1.0, 1.0));
+          vec2 u = smoothstep(0.0, 1.0, f);
+          return mix(a, b, u.x) +
+                 (c - a) * u.y * (1.0 - u.x) +
+                 (d - b) * u.x * u.y;
+        }
+
+        void main(){
+          // Map UV to a larger simulation space.
+          vec2 st = v_uv * 3.0;
+
+          // Add a drifting offset for extra randomness.
+          vec2 drift;
+          drift.x = noise(vec2(u_time * 0.4, st.y)) - 0.5;
+          drift.y = noise(vec2(st.x, u_time * 0.4)) - 0.5;
+          st += drift * 0.3;
+
+          // Blend two noise layers for a more chaotic fluid texture.
+          float n1 = noise(st + u_time * 0.2);
+          float n2 = noise(st * 1.5 - u_time * 0.3);
+          float combinedNoise = mix(n1, n2, 0.5);
+          
+          // Generate a base mask from the noise.
+          float t = smoothstep(0.35, 0.65, combinedNoise);
+
+          // Base colors: a deep blue and pure white.
+          vec3 blue = vec3(0.3, 0.6, 0.9);
+          vec3 white = vec3(1.0, 1.0, 1.0);
+          vec3 baseColor = mix(blue, white, t);
+
+          // Interactive gaseous effect:
+          // Create a gentle white overlay that is centered on u_mouse.
+          float d = distance(v_uv, u_mouse);
+          float gasNoise = noise((st + u_time) * 2.0);
+          float gasMask = smoothstep(0.2, 0.5, gasNoise);
+          float radial = 1.0 - smoothstep(0.0, 0.6, d);
+          float gasEffect = gasMask * radial * u_click;
+          
+          // Blend the base fluid with the white gaseous overlay.
+          vec3 finalColor = mix(baseColor, white, gasEffect);
+
+          gl_FragColor = vec4(finalColor, 1.0);
+        }
+      `;
+
+      // Helper: compile shader.
+      function createShader(gl, type, source) {
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+          console.error("Shader compile error:", gl.getShaderInfoLog(shader));
+          gl.deleteShader(shader);
+          return null;
+        }
+        return shader;
+      }
+
+      const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
+      const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+
+      // Link shaders into a program.
       const program = gl.createProgram();
       gl.attachShader(program, vertexShader);
       gl.attachShader(program, fragmentShader);
       gl.linkProgram(program);
       if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-        console.error("Program link error:", gl.getProgramInfoLog(program));
-        gl.deleteProgram(program);
-        return null;
+        console.error("Program failed to link:", gl.getProgramInfoLog(program));
+        return;
       }
-      return program;
-    }
+      gl.useProgram(program);
 
-    // --- Vertex Shader (shared by simulation and render passes) ---
-    const vertexShaderSrc = `#version 300 es
-      precision mediump float;
-      in vec2 a_position;
-      in vec2 a_texCoord;
-      out vec2 v_texCoord;
-      void main() {
-        v_texCoord = a_texCoord;
-        gl_Position = vec4(a_position, 0.0, 1.0);
-      }
-    `;
+      // Setup a full-screen quad.
+      const positionBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+      const positions = [
+        -1, -1,
+         1, -1,
+        -1,  1,
+        -1,  1,
+         1, -1,
+         1,  1,
+      ];
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
-    // --- Simulation Fragment Shader ---
-    const simFragmentShaderSrc = `#version 300 es
-      precision highp float;
-      in vec2 v_texCoord;
-      out float outDensity;
+      const positionLocation = gl.getAttribLocation(program, "a_position");
+      gl.enableVertexAttribArray(positionLocation);
+      gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
-      uniform sampler2D u_density;
-      uniform float u_dt;
-      uniform float u_decay;
-      uniform vec2 u_resolution;
-      uniform float u_time;
+      // Uniform locations.
+      const u_timeLoc = gl.getUniformLocation(program, "u_time");
+      const u_resolutionLoc = gl.getUniformLocation(program, "u_resolution");
+      const u_mouseLoc = gl.getUniformLocation(program, "u_mouse");
+      const u_clickLoc = gl.getUniformLocation(program, "u_click");
 
-      void main() {
-        vec2 uv = v_texCoord;
-        vec2 center = vec2(0.5, 0.5);
-        vec2 pos = uv - center;
-        float speed = 0.4 + 0.2 * sin(u_time * 2.0);
-        vec2 velocity = vec2(-pos.y, pos.x) * speed;
-        vec2 prevPos = uv - velocity * u_dt;
-        prevPos = clamp(prevPos, 0.0, 1.0);
-        float density = texture(u_density, prevPos).r;
-        density *= u_decay;
-        float radius = length(uv - center);
-        float source = smoothstep(0.15, 0.0, radius);
-        density = max(density, source);
-        outDensity = density;
-      }
-    `;
+      let startTime = Date.now();
+      let lastReleaseTime = 0;
+      let mousePos = [0.5, 0.5];
+      let mouseDown = false;
 
-    // --- Render Fragment Shader ---
-    const renderFragmentShaderSrc = `#version 300 es
-      precision highp float;
-      in vec2 v_texCoord;
-      out vec4 outColor;
+      // Use mousedown/up/move events to sustain the effect while held.
+      const viewport = document.getElementById("viewport");
 
-      uniform sampler2D u_density;
-      void main() {
-        float density = pow(texture(u_density, v_texCoord).r, 0.5);
-        vec3 lightBlue = vec3(173.0, 216.0, 230.0) / 255.0;
-        vec3 color = mix(lightBlue, vec3(1.0), density * 1.5);
-        outColor = vec4(color, 1.0);
-      }
-    `;
+      viewport.addEventListener("mousedown", function(event) {
+        mouseDown = true;
+        // Update mouse position relative to the canvas.
+        const rect = canvas.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width;
+        const y = 1 - (event.clientY - rect.top) / rect.height;
+        mousePos = [x, y];
+        // Briefly expand the viewport.
+        viewport.style.width = '330px';
+        viewport.style.height = '330px';
+      });
 
-    const simProgram = createProgram(vertexShaderSrc, simFragmentShaderSrc);
-    const renderProgram = createProgram(vertexShaderSrc, renderFragmentShaderSrc);
+      viewport.addEventListener("mouseup", function() {
+        mouseDown = false;
+        lastReleaseTime = (Date.now() - startTime) / 1000;
+        viewport.style.width = '300px';
+        viewport.style.height = '300px';
+      });
 
-    // --- Full-screen quad ---
-    const quadVertices = new Float32Array([
-      -1, -1,   0, 0,
-       1, -1,   1, 0,
-      -1,  1,   0, 1,
-      -1,  1,   0, 1,
-       1, -1,   1, 0,
-       1,  1,   1, 1
-    ]);
-    const quadVBO = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, quadVBO);
-    gl.bufferData(gl.ARRAY_BUFFER, quadVertices, gl.STATIC_DRAW);
-
-    // Setup VAO for simulation pass
-    const simVAO = gl.createVertexArray();
-    gl.bindVertexArray(simVAO);
-    const posLocSim = gl.getAttribLocation(simProgram, 'a_position');
-    const texLocSim = gl.getAttribLocation(simProgram, 'a_texCoord');
-    gl.enableVertexAttribArray(posLocSim);
-    gl.vertexAttribPointer(posLocSim, 2, gl.FLOAT, false, 4 * 4, 0);
-    gl.enableVertexAttribArray(texLocSim);
-    gl.vertexAttribPointer(texLocSim, 2, gl.FLOAT, false, 4 * 4, 2 * 4);
-    gl.bindVertexArray(null);
-
-    // Setup VAO for render pass
-    const renderVAO = gl.createVertexArray();
-    gl.bindVertexArray(renderVAO);
-    const posLocRender = gl.getAttribLocation(renderProgram, 'a_position');
-    const texLocRender = gl.getAttribLocation(renderProgram, 'a_texCoord');
-    gl.enableVertexAttribArray(posLocRender);
-    gl.vertexAttribPointer(posLocRender, 2, gl.FLOAT, false, 4 * 4, 0);
-    gl.enableVertexAttribArray(texLocRender);
-    gl.vertexAttribPointer(texLocRender, 2, gl.FLOAT, false, 4 * 4, 2 * 4);
-    gl.bindVertexArray(null);
-
-    // --- Create simulation textures and FBOs ---
-    const simWidth = 256, simHeight = 256;
-    function createTexture() {
-      const tex = gl.createTexture();
-      gl.bindTexture(gl.TEXTURE_2D, tex);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.R32F, simWidth, simHeight, 0, gl.RED, gl.FLOAT, null);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      return tex;
-    }
-    const densityTexA = createTexture();
-    const densityTexB = createTexture();
-
-    function createFBO(tex) {
-      const fbo = gl.createFramebuffer();
-      gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
-      if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) {
-        console.error("Framebuffer not complete");
-      }
-      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-      return fbo;
-    }
-    const fboA = createFBO(densityTexA);
-    const fboB = createFBO(densityTexB);
-
-    // Smoothstep helper for initial density
-    function smoothstep(e0, e1, x) {
-      if (e0 > e1) {
-        return 1 - smoothstep(e1, e0, x);
-      }
-      let t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0)));
-      return t * t * (3 - 2 * t);
-    }
-
-    // Initialize simulation density
-    {
-      const initialData = new Float32Array(simWidth * simHeight);
-      for (let y = 0; y < simHeight; y++) {
-        for (let x = 0; x < simWidth; x++) {
-          const u = x / simWidth;
-          const v = y / simHeight;
-          const dx = u - 0.5;
-          const dy = v - 0.5;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          initialData[x + y * simWidth] = smoothstep(0.15, 0.05, dist);
+      viewport.addEventListener("mousemove", function(event) {
+        if (mouseDown) {
+          const rect = canvas.getBoundingClientRect();
+          const x = (event.clientX - rect.left) / rect.width;
+          const y = 1 - (event.clientY - rect.top) / rect.height;
+          mousePos = [x, y];
         }
+      });
+
+      // Render loop.
+      function render() {
+        resizeCanvas();
+        const currentTime = (Date.now() - startTime) / 1000;
+        // If held, the effect stays at 1.0; when released, it decays over 1 second.
+        const clickVal = mouseDown ? 1.0 : Math.max(0, 1.0 - (currentTime - lastReleaseTime));
+        gl.uniform1f(u_timeLoc, currentTime);
+        gl.uniform2f(u_resolutionLoc, canvas.width, canvas.height);
+        gl.uniform2f(u_mouseLoc, mousePos[0], mousePos[1]);
+        gl.uniform1f(u_clickLoc, clickVal);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        requestAnimationFrame(render);
       }
-      gl.bindTexture(gl.TEXTURE_2D, densityTexA);
-      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, simWidth, simHeight, gl.RED, gl.FLOAT, initialData);
-      gl.bindTexture(gl.TEXTURE_2D, densityTexB);
-      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, simWidth, simHeight, gl.RED, gl.FLOAT, initialData);
-    }
-
-    // --- Simulation Variables ---
-    let dt = 0.016;
-    let decay = 0.998;
-    let simTime = 0;
-    let ping = true;
-
-    // Simulation step: update density field
-    function stepSimulation() {
-      gl.useProgram(simProgram);
-      gl.bindVertexArray(simVAO);
-      gl.uniform1f(gl.getUniformLocation(simProgram, 'u_dt'), dt);
-      gl.uniform1f(gl.getUniformLocation(simProgram, 'u_decay'), decay);
-      gl.uniform2f(gl.getUniformLocation(simProgram, 'u_resolution'), simWidth, simHeight);
-      gl.uniform1f(gl.getUniformLocation(simProgram, 'u_time'), simTime);
-
-      gl.activeTexture(gl.TEXTURE0);
-      const inputTex = ping ? densityTexA : densityTexB;
-      gl.bindTexture(gl.TEXTURE_2D, inputTex);
-      gl.uniform1i(gl.getUniformLocation(simProgram, 'u_density'), 0);
-
-      const outputFBO = ping ? fboB : fboA;
-      gl.bindFramebuffer(gl.FRAMEBUFFER, outputFBO);
-      gl.viewport(0, 0, simWidth, simHeight);
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
-
-      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-      ping = !ping;
-      simTime += dt;
-    }
-
-    // Render the current density texture to the canvas
-    function render() {
-      gl.useProgram(renderProgram);
-      gl.bindVertexArray(renderVAO);
-      gl.viewport(0, 0, canvas.width, canvas.height);
-      gl.activeTexture(gl.TEXTURE0);
-      const densityTex = ping ? densityTexB : densityTexA;
-      gl.bindTexture(gl.TEXTURE_2D, densityTex);
-      gl.uniform1i(gl.getUniformLocation(renderProgram, 'u_density'), 0);
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
-    }
-
-    // Main loop: simulation step + render
-    let lastTime = 0;
-    function loop(currentTime) {
-      if (!lastTime) lastTime = currentTime;
-      dt = (currentTime - lastTime) / 1000;
-      dt = Math.min(dt, 0.033);
-      lastTime = currentTime;
-
-      stepSimulation();
-      render();
-      requestAnimationFrame(loop);
-    }
-    requestAnimationFrame(loop);
-
-    // --- Interactivity: Add a density "blob" on mouse click ---
-    canvas.addEventListener('mousedown', function(e) {
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = canvas.height - (e.clientY - rect.top);
-      const simX = Math.floor((x / canvas.width) * simWidth);
-      const simY = Math.floor((y / canvas.height) * simHeight);
-      const blobData = new Float32Array(simWidth * simHeight);
-      gl.bindTexture(gl.TEXTURE_2D, (ping ? densityTexB : densityTexA));
-      gl.readPixels(0, 0, simWidth, simHeight, gl.RED, gl.FLOAT, blobData);
-
-      const radius = Math.floor(0.08 * simWidth);
-      for (let j = -radius; j <= radius; j++) {
-        for (let i = -radius; i <= radius; i++) {
-          const newX = simX + i;
-          const newY = simY + j;
-          if (newX >= 0 && newX < simWidth && newY >= 0 && newY < simHeight) {
-            const dist = Math.sqrt(i * i + j * j) / radius;
-            if (dist <= 1.0) {
-              const idx = newX + newY * simWidth;
-              blobData[idx] = Math.max(blobData[idx], 1.0 - dist);
-            }
-          }
-        }
-      }
-      gl.bindTexture(gl.TEXTURE_2D, densityTexA);
-      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, simWidth, simHeight, gl.RED, gl.FLOAT, blobData);
-      gl.bindTexture(gl.TEXTURE_2D, densityTexB);
-      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, simWidth, simHeight, gl.RED, gl.FLOAT, blobData);
-    });
+      requestAnimationFrame(render);
+    })();
   </script>
 </body>
 </html>
