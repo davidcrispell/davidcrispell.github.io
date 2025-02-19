@@ -29,19 +29,15 @@
       overflow: hidden;
       box-shadow: 0 0 15px rgba(0,0,0,0.5);
       transition: all 1s ease; /* Smooth transitions for transforms / size */
-      cursor: default; /* Will become pointer only after initial message */
+      cursor: default;
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
     }
-    /* While typing the initial message, scale up the avatar. */
-    .viewport.speakingInitial {
+    /* While model is speaking, scale to 1.1 in center */
+    .viewport.speaking {
       transform: translate(-50%, -50%) scale(1.1);
-    }
-    /* For subsequent messages, a slight "speaking" bump. */
-    .viewport.speakingSubsequent {
-      transform: translate(-50%, -50%) scale(1.05);
     }
 
     /* Dialogue mode: smaller avatar in top-left corner */
@@ -49,10 +45,14 @@
       position: fixed;
       top: 20px;
       left: 20px;
-      transform: none; 
+      transform: none;
       width: 80px;
       height: 80px;
       margin: 0;
+    }
+    /* While speaking in top-left, also scale to 1.1 (overrides transform: none) */
+    .viewport.dialogue.speaking {
+      transform: scale(1.1);
     }
 
     canvas {
@@ -242,8 +242,8 @@
           float d = random(i + vec2(1.0, 1.0));
           vec2 u = smoothstep(0.0, 1.0, f);
           return mix(a, b, u.x) +
-                 (c - a) * u.y * (1.0 - u.x) +
-                 (d - b) * u.x * u.y;
+                 (c - a)* u.y * (1.0 - u.x) +
+                 (d - b)* u.x * u.y;
         }
 
         void main() {
@@ -258,7 +258,6 @@
           float combinedNoise = mix(n1, n2, 0.5);
           float baseMask = smoothstep(0.35, 0.65, combinedNoise);
 
-          // Example "interaction" placeholders
           float d = distance(v_uv, u_mouse);
           float interactiveRepel = (1.0 - smoothstep(0.0, 0.3, d)) * u_click * 0.3;
           float mixFactor = clamp(baseMask - interactiveRepel, 0.0, 1.0);
@@ -324,7 +323,7 @@
         gl.uniform1f(u_timeLoc, currentTime);
         gl.uniform2f(u_resolutionLoc, canvas.width, canvas.height);
 
-        // Hard-coded placeholders for the "mouse" and "click"
+        // Hard-coded placeholders
         gl.uniform2f(u_mouseLoc, 0.5, 0.5);
         gl.uniform1f(u_clickLoc, 0.0);
 
@@ -344,26 +343,25 @@
     let isAnimating = false;
     let currentSkipFunction = null;
 
+    // Controls for enabling/disabling avatar click
+    let canClickAvatar = false;         // Must be false during initial message or transitions
+    let transitionInProgress = false;   // True while CSS transitions run
+
     const avatar = document.getElementById("avatarViewport");
     const blinkPrompt = document.getElementById("blinkPrompt");
+    const initialBubble = document.getElementById("initialMessageBubble");
+    const chatContainer = document.getElementById("chatContainer");
 
-    // Animate text with optional "initial" parameter
-    function animateText(element, text, callback, isInitial = false) {
+    // Animate text at a certain speed
+    function animateText(element, text, callback) {
       isAnimating = true;
-
-      // If this is the initial message, enlarge more
-      if (isInitial) {
-        avatar.classList.add("speakingInitial");
-      } else {
-        // For subsequent model messages, do a slight scale
-        avatar.classList.add("speakingSubsequent");
-      }
+      avatar.classList.add("speaking");
 
       const chars = text.split("");
       let currentCharIndex = 0;
       element.innerHTML = "";
 
-      // If there's a blinking interval running, clear it
+      // Clear any old blinking intervals
       if (currentBlinkInterval) {
         clearInterval(currentBlinkInterval);
         currentBlinkInterval = null;
@@ -380,24 +378,19 @@
           let showBullet = true;
           const baseText = chars.join("");
 
-          // Start blinking bullet and prompt in sync
+          // Start blinking bullet
           currentBlinkInterval = setInterval(() => {
-            // Bullet toggles
             element.innerHTML = baseText + ' <span class="blinkingBullet">'
               + (showBullet ? bulletChar : '\u00A0') + '</span>';
 
-            // Prompt toggles (but doesn't shift because #blinkPrompt has fixed width)
+            // Prompt toggles (but won't shift since #blinkPrompt has fixed width)
             blinkPrompt.textContent = showBullet ? '>' : '\u00A0';
 
             showBullet = !showBullet;
           }, 500);
 
-          // Remove "speaking" classes
-          if (isInitial) {
-            avatar.classList.remove("speakingInitial");
-          } else {
-            avatar.classList.remove("speakingSubsequent");
-          }
+          // Stop "speaking" scale
+          avatar.classList.remove("speaking");
 
           isAnimating = false;
           currentSkipFunction = null;
@@ -416,46 +409,29 @@
         element.innerHTML = baseText + ' <span class="blinkingBullet">' + bulletChar + '</span>';
         blinkPrompt.textContent = '>';
 
-        // Remove "speaking" classes
-        if (isInitial) {
-          avatar.classList.remove("speakingInitial");
-        } else {
-          avatar.classList.remove("speakingSubsequent");
-        }
-
+        avatar.classList.remove("speaking");
         isAnimating = false;
         currentSkipFunction = null;
         if (callback) callback();
       };
     }
 
-    // Transition to dialogue mode: smaller avatar top-left
-    function enterDialogueMode() {
-      document.body.classList.add("dialogue-mode");
-      avatar.classList.add("dialogue");
-      avatar.style.cursor = "default"; // no longer pointer
-    }
-
-    // Model response example
     function addModelResponse(userText) {
       // Remove blinking bullet from old messages
       document.querySelectorAll(".model-message .blinkingBullet").forEach(el => {
         el.style.display = "none";
       });
 
-      const chatContainer = document.getElementById("chatContainer");
       const modelBubble = document.createElement("div");
       modelBubble.className = "message model-message";
       chatContainer.appendChild(modelBubble);
 
       // Animate a dummy response
-      animateText(modelBubble, "This is a dummy response to: " + userText, null, false);
+      animateText(modelBubble, "This is a dummy response to: " + userText);
       modelBubble.scrollIntoView({ behavior: "smooth" });
     }
 
-    // User message bubble
     function addUserMessage(message) {
-      const chatContainer = document.getElementById("chatContainer");
       const userBubble = document.createElement("div");
       userBubble.className = "message user-message";
       userBubble.textContent = message;
@@ -463,12 +439,10 @@
       userBubble.scrollIntoView({ behavior: "smooth" });
     }
 
-    // Initialize send button / input
     function setupUserInput() {
       const sendButton = document.getElementById("sendButton");
       const userInput = document.getElementById("userInput");
 
-      // Prevent sending messages if the model is typing
       sendButton.addEventListener("click", () => {
         if (isAnimating) return;
         const message = userInput.value.trim();
@@ -491,29 +465,86 @@
       });
     }
 
-    // Click behavior for the avatar (to move to dialogue mode)
-    function enableAvatarClick() {
-      avatar.style.cursor = "pointer";
-      avatar.addEventListener("click", () => {
-        // Once clicked, shrink and move to top-left corner
-        enterDialogueMode();
-        setupUserInput();
-      }, { once: true });
+    /*************** TRANSITION MODES ***************/
+
+    // Move Julia to top-left
+    function enterDialogueMode() {
+      transitionInProgress = true;
+      canClickAvatar = false;
+      document.body.classList.add("dialogue-mode");
+      avatar.classList.add("dialogue");
     }
 
-    // Wait 2 seconds on load, then type out the initial greeting
-    window.addEventListener("load", () => {
-      const initialBubble = document.getElementById("initialMessageBubble");
+    // Move Julia back to center
+    function enterCenterMode() {
+      transitionInProgress = true;
+      canClickAvatar = false;
 
+      // Immediately clear chat so no bubble remains
+      chatContainer.innerHTML = "";
+
+      // Hide input
+      document.body.classList.remove("dialogue-mode");
+      avatar.classList.remove("dialogue");
+    }
+
+    // Check when the avatar finishes transitioning
+    avatar.addEventListener("transitionend", () => {
+      if (!transitionInProgress) return;
+      transitionInProgress = false;
+
+      // If we are center mode => we just finished the reverse animation
+      if (!document.body.classList.contains("dialogue-mode")) {
+        // Wait 2 seconds, then spawn the greeting bubble
+        setTimeout(() => {
+          const newInitialBubble = document.createElement("div");
+          newInitialBubble.id = "initialMessageBubble";
+          newInitialBubble.className = "message model-message center";
+          chatContainer.appendChild(newInitialBubble);
+
+          // Now animate the greeting
+          animateText(
+            newInitialBubble,
+            "Hi, I'm Julia, your new reasoning model.",
+            () => {
+              canClickAvatar = true; // re-enable click after greeting
+            }
+          );
+        }, 2000);
+      } else {
+        // We are in dialogue mode => enable user input & allow user to click again
+        setupUserInput();
+        canClickAvatar = true;
+      }
+    });
+
+    // Toggle function for avatar clicks
+    function onAvatarClick() {
+      if (!canClickAvatar || transitionInProgress) return;
+
+      // If we are in dialogue mode, go back to center
+      if (document.body.classList.contains("dialogue-mode")) {
+        enterCenterMode();
+      } else {
+        // Otherwise, go to dialogue mode
+        enterDialogueMode();
+      }
+    }
+
+    // Attach the click handler (checks canClickAvatar each time)
+    avatar.addEventListener("click", onAvatarClick);
+
+    /*************** INITIAL START-UP ***************/
+    window.addEventListener("load", () => {
+      // Delay 2 seconds, then type out the initial greeting
       setTimeout(() => {
         animateText(
           initialBubble,
           "Hi, I'm Julia, your new reasoning model.",
-          // After done typing, enable click on the avatar
           () => {
-            enableAvatarClick();
-          },
-          true // isInitial = true -> bigger scale
+            // Once done typing, user can click to go to dialogue
+            canClickAvatar = true;
+          }
         );
       }, 2000);
     });
