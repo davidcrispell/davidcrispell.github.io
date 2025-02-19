@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WebGL Light Blue Fluid Simulation</title>
+  <style>
+    /* Center the canvas on a black background and clip it into a circle */
+    body {
+      margin: 0; 
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000;
+      height: 100vh;
+    }
+    canvas {
+      border-radius: 50%;
+      box-shadow: 0 0 25px rgba(255,255,255,0.3);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="glCanvas" width="300" height="300"></canvas>
+  <script>
+    // Get a WebGL2 context
+    const canvas = document.getElementById('glCanvas');
+    const gl = canvas.getContext('webgl2');
+    if (!gl) {
+      alert("WebGL2 not supported in your browser.");
+    }
+
+    // --- Utility functions to compile shaders and link programs ---
+    function compileShader(src, type) {
+      const shader = gl.createShader(type);
+      gl.shaderSource(shader, src);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.error("Shader compile error:", gl.getShaderInfoLog(shader));
+        gl.deleteShader(shader);
+        return null;
+      }
+      return shader;
+    }
+
+    function createProgram(vertexSrc, fragmentSrc) {
+      const vertexShader = compileShader(vertexSrc, gl.VERTEX_SHADER);
+      const fragmentShader = compileShader(fragmentSrc, gl.FRAGMENT_SHADER);
+      const program = gl.createProgram();
+      gl.attachShader(program, vertexShader);
+      gl.attachShader(program, fragmentShader);
+      gl.linkProgram(program);
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        console.error("Program link error:", gl.getProgramInfoLog(program));
+        gl.deleteProgram(program);
+        return null;
+      }
+      return program;
+    }
+
+    // --- Vertex Shader (shared by simulation and render passes) ---
+    const vertexShaderSrc = `#version 300 es
+      precision mediump float;
+      in vec2 a_position;
+      in vec2 a_texCoord;
+      out vec2 v_texCoord;
+      void main() {
+        v_texCoord = a_texCoord;
+        gl_Position = vec4(a_position, 0.0, 1.0);
+      }
+    `;
+
+    // --- Simulation Fragment Shader ---
+    // This shader “advects” the density field using a swirling velocity field.
+    const simFragmentShaderSrc = `#version 300 es
+      precision highp float;
+      in vec2 v_texCoord;
+      out float outDensity;
+
+      uniform sampler2D u_density;
+      uniform float u_dt;
+      uniform float u_decay;   // slight decay/diffusion per step
+      uniform vec2 u_resolution;
+      uniform float u_time;
+
+      void main() {
+        vec2 uv = v_texCoord;
+        
+        // Create a swirling velocity field based on distance from center
+        vec2 center = vec2(0.5, 0.5);
+        vec2 pos = uv - center;
+        // Increased swirling speed with time variation:
+        float speed = 0.4 + 0.2 * sin(u_time * 2.0);
+        vec2 velocity = vec2(-pos.y, pos.x) * speed;
+
+        // Backtrace to sample where the fluid came from
+        vec2 prevPos = uv - velocity * u_dt;
+        prevPos = clamp(prevPos, 0.0, 1.0);
+
+        // Sample the previous density field
+        float density = texture(u_density, prevPos).r;
+        density *= u_decay; // apply decay (simulates diffusion losses)
+
+        // Always inject a white blob source at the center (a fixed source)
+        float radius = length(uv - center);
+        float source = smoothstep(0.15, 0.0, radius);
+        density = max(density, source);
+
+        outDensity = density;
+      }
+    `;
+
+    // --- Render Fragment Shader ---
+    // This shader renders the density texture over a light blue background.
+    const renderFragmentShaderSrc = `#version 300 es
+      precision highp float;
+      in vec2 v_texCoord;
+      out vec4 outColor;
+
+      uniform sampler2D u_density;
+      void main() {
+        // Apply a power curve for better contrast
+        float density = pow(texture(u_density, v_texCoord).r, 0.5);
+        // Light blue background (e.g., #ADD8E6)
+        vec3 lightBlue = vec3(173.0, 216.0, 230.0) / 255.0;
+        // Blend white into a slightly darkened light blue based on density
+        vec3 color = mix(lightBlue * 0.7, vec3(1.0), density * 1.5);
+        outColor = vec4(color, 1.0);
+      }
+    `;
+
+    // --- Create shader programs ---
+    const simProgram = createProgram(vertexShaderSrc, simFragmentShaderSrc);
+    const renderProgram = createProgram(vertexShaderSrc, renderFragmentShaderSrc);
+
+    // --- Set up a full-screen quad (covering clip space) ---
+    const quadVertices = new Float32Array([
+      //  x,    y,    u,   v
+      -1, -1,   0, 0,
+       1, -1,   1, 0,
+      -1,  1,   0, 1,
+      -1,  1,   0, 1,
+       1, -1,   1, 0,
+       1,  1,   1, 1
+    ]);
+    const quadVBO = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, quadVBO);
+    gl.bufferData(gl.ARRAY_BUFFER, quadVertices, gl.STATIC_DRAW);
+
+    // --- Set up VAO for simulation pass ---
+    const simVAO = gl.createVertexArray();
+    gl.bindVertexArray(simVAO);
+    const posLocSim = gl.getAttribLocation(simProgram, 'a_position');
+    const texLocSim = gl.getAttribLocation(simProgram, 'a_texCoord');
+    gl.enableVertexAttribArray(posLocSim);
+    gl.vertexAttribPointer(posLocSim, 2, gl.FLOAT, false, 4 * 4, 0);
+    gl.enableVertexAttribArray(texLocSim);
+    gl.vertexAttribPointer(texLocSim, 2, gl.FLOAT, false, 4 * 4, 2 * 4);
+    gl.bindVertexArray(null);
+
+    // --- Set up VAO for render pass ---
+    const renderVAO = gl.createVertexArray();
+    gl.bindVertexArray(renderVAO);
+    const posLocRender = gl.getAttribLocation(renderProgram, 'a_position');
+    const texLocRender = gl.getAttribLocation(renderProgram, 'a_texCoord');
+    gl.enableVertexAttribArray(posLocRender);
+    gl.vertexAttribPointer(posLocRender, 2, gl.FLOAT, false, 4 * 4, 0);
+    gl.enableVertexAttribArray(texLocRender);
+    gl.vertexAttribPointer(texLocRender, 2, gl.FLOAT, false, 4 * 4, 2 * 4);
+    gl.bindVertexArray(null);
+
+    // --- Create two textures (and FBOs) for ping–pong simulation ---
+    // Increased simulation resolution for better detail
+    const simWidth = 256, simHeight = 256;
+    function createTexture() {
+      const tex = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.R32F, simWidth, simHeight, 0, gl.RED, gl.FLOAT, null);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      return tex;
+    }
+    const densityTexA = createTexture();
+    const densityTexB = createTexture();
+
+    function createFBO(tex) {
+      const fbo = gl.createFramebuffer();
+      gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+      if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) {
+        console.error("Framebuffer not complete");
+      }
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      return fbo;
+    }
+    const fboA = createFBO(densityTexA);
+    const fboB = createFBO(densityTexB);
+
+    // --- Helper: smoothstep function for initial density setup ---
+    function smoothstep(e0, e1, x) {
+      if (e0 > e1) {
+        return 1 - smoothstep(e1, e0, x);
+      }
+      let t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0)));
+      return t * t * (3 - 2 * t);
+    }
+
+    // --- Initialize the density textures with a smoother white blob at the center ---
+    {
+      const initialData = new Float32Array(simWidth * simHeight);
+      for (let y = 0; y < simHeight; y++) {
+        for (let x = 0; x < simWidth; x++) {
+          const u = x / simWidth;
+          const v = y / simHeight;
+          const dx = u - 0.5;
+          const dy = v - 0.5;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          // Use smoothstep for a gradual falloff (blob peaks at center)
+          initialData[x + y * simWidth] = smoothstep(0.15, 0.05, dist);
+        }
+      }
+      // Upload initial data to both textures
+      gl.bindTexture(gl.TEXTURE_2D, densityTexA);
+      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, simWidth, simHeight, gl.RED, gl.FLOAT, initialData);
+      gl.bindTexture(gl.TEXTURE_2D, densityTexB);
+      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, simWidth, simHeight, gl.RED, gl.FLOAT, initialData);
+    }
+
+    // --- Simulation parameters ---
+    let dt = 0.016;
+    // Reduced decay to preserve density longer
+    let decay = 0.998;
+    let simTime = 0;
+    let ping = true; // used to swap FBOs
+
+    // --- Simulation step: render the quad into the offscreen FBO ---
+    function stepSimulation() {
+      gl.useProgram(simProgram);
+      gl.bindVertexArray(simVAO);
+      gl.uniform1f(gl.getUniformLocation(simProgram, 'u_dt'), dt);
+      gl.uniform1f(gl.getUniformLocation(simProgram, 'u_decay'), decay);
+      gl.uniform2f(gl.getUniformLocation(simProgram, 'u_resolution'), simWidth, simHeight);
+      gl.uniform1f(gl.getUniformLocation(simProgram, 'u_time'), simTime);
+
+      // Bind the input density texture
+      gl.activeTexture(gl.TEXTURE0);
+      const inputTex = ping ? densityTexA : densityTexB;
+      gl.bindTexture(gl.TEXTURE_2D, inputTex);
+      gl.uniform1i(gl.getUniformLocation(simProgram, 'u_density'), 0);
+
+      // Render to the output FBO
+      const outputFBO = ping ? fboB : fboA;
+      gl.bindFramebuffer(gl.FRAMEBUFFER, outputFBO);
+      gl.viewport(0, 0, simWidth, simHeight);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      ping = !ping;
+      simTime += dt;
+    }
+
+    // --- Render step: draw the current density texture to the canvas ---
+    function render() {
+      gl.useProgram(renderProgram);
+      gl.bindVertexArray(renderVAO);
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      gl.activeTexture(gl.TEXTURE0);
+      // Use the texture that was last rendered into
+      const densityTex = ping ? densityTexB : densityTexA;
+      gl.bindTexture(gl.TEXTURE_2D, densityTex);
+      gl.uniform1i(gl.getUniformLocation(renderProgram, 'u_density'), 0);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+    }
+
+    // --- Animation Loop with dynamic time step ---
+    let lastTime = 0;
+    function loop(currentTime) {
+      if (!lastTime) lastTime = currentTime;
+      dt = (currentTime - lastTime) / 1000;
+      // Cap dt to avoid large time steps
+      dt = Math.min(dt, 0.033);
+      lastTime = currentTime;
+
+      stepSimulation();
+      render();
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+
+    // --- Enhanced Mouse Interaction ---
+    canvas.addEventListener('mousedown', function(e) {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = canvas.height - (e.clientY - rect.top);
+      const simX = Math.floor((x / canvas.width) * simWidth);
+      const simY = Math.floor((y / canvas.height) * simHeight);
+      const blobData = new Float32Array(simWidth * simHeight);
+      // Read back the current density (for simplicity)
+      gl.bindTexture(gl.TEXTURE_2D, (ping ? densityTexB : densityTexA));
+      gl.readPixels(0, 0, simWidth, simHeight, gl.RED, gl.FLOAT, blobData);
+
+      const radius = Math.floor(0.08 * simWidth);
+      for (let j = -radius; j <= radius; j++) {
+        for (let i = -radius; i <= radius; i++) {
+          const newX = simX + i;
+          const newY = simY + j;
+          // Make sure the indices are valid
+          if (newX >= 0 && newX < simWidth && newY >= 0 && newY < simHeight) {
+            const dist = Math.sqrt(i * i + j * j) / radius;
+            if (dist <= 1.0) {
+              const idx = newX + newY * simWidth;
+              blobData[idx] = Math.max(blobData[idx], 1.0 - dist);
+            }
+          }
+        }
+      }
+      // Update both textures with the new blob
+      gl.bindTexture(gl.TEXTURE_2D, densityTexA);
+      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, simWidth, simHeight, gl.RED, gl.FLOAT, blobData);
+      gl.bindTexture(gl.TEXTURE_2D, densityTexB);
+      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, simWidth, simHeight, gl.RED, gl.FLOAT, blobData);
+    });
+  </script>
+</body>
+</html>
