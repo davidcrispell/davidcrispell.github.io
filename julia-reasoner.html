@@ -222,63 +222,51 @@
 
 
       const fsSource = `
-precision mediump float;
-uniform float u_time;
-uniform vec2 u_resolution;
-uniform vec2 u_mouse;
-uniform float u_click;
-uniform vec3 u_color1;  // Original color 1 (e.g. dark blue)
-uniform vec3 u_color2;  // Original color 2 (e.g. light blue)
-uniform vec3 u_color3;  // Light purple for bubble refracting effect
-varying vec2 v_uv;
+        precision mediump float;
+        uniform float u_time;
+        uniform vec2 u_resolution;
+        uniform vec2 u_mouse;
+        uniform float u_click;
+        uniform vec3 u_color1;
+        uniform vec3 u_color2;
+        varying vec2 v_uv;
 
-float random(in vec2 st) {
-  return fract(sin(dot(st, vec2(12.9898,78.233))) * 43758.5453123);
-}
+        float random(in vec2 st) {
+          return fract(sin(dot(st, vec2(12.9898,78.233))) * 43758.5453123);
+        }
 
-float noise(in vec2 st) {
-  vec2 i = floor(st);
-  vec2 f = fract(st);
-  float a = random(i);
-  float b = random(i + vec2(1.0, 0.0));
-  float c = random(i + vec2(0.0, 1.0));
-  float d = random(i + vec2(1.0, 1.0));
-  vec2 u = smoothstep(0.0, 1.0, f);
-  return mix(a, b, u.x) +
-         (c - a) * u.y * (1.0 - u.x) +
-         (d - b) * u.x * u.y;
-}
+        float noise(in vec2 st) {
+          vec2 i = floor(st);
+          vec2 f = fract(st);
+          float a = random(i);
+          float b = random(i + vec2(1.0, 0.0));
+          float c = random(i + vec2(0.0, 1.0));
+          float d = random(i + vec2(1.0, 1.0));
+          vec2 u = smoothstep(0.0, 1.0, f);
+          return mix(a, b, u.x) +
+                 (c - a)* u.y * (1.0 - u.x) +
+                 (d - b)* u.x * u.y;
+        }
 
-void main() {
-  vec2 st = v_uv * 3.0;
-  vec2 drift;
-  drift.x = noise(vec2(u_time * 0.4, st.y)) - 0.5;
-  drift.y = noise(vec2(st.x, u_time * 0.4)) - 0.5;
-  st += drift * 0.3;
+        void main() {
+          vec2 st = v_uv * 3.0;
+          vec2 drift;
+          drift.x = noise(vec2(u_time * 0.4, st.y)) - 0.5;
+          drift.y = noise(vec2(st.x, u_time * 0.4)) - 0.5;
+          st += drift * 0.3;
 
-  float n1 = noise(st + u_time * 0.2);
-  float n2 = noise(st * 1.5 - u_time * 0.3);
-  float combinedNoise = mix(n1, n2, 0.5);
-  float baseMask = smoothstep(0.35, 0.65, combinedNoise);
+          float n1 = noise(st + u_time * 0.2);
+          float n2 = noise(st * 1.5 - u_time * 0.3);
+          float combinedNoise = mix(n1, n2, 0.5);
+          float baseMask = smoothstep(0.35, 0.65, combinedNoise);
 
-  float d = distance(v_uv, u_mouse);
-  float interactiveRepel = (1.0 - smoothstep(0.0, 0.3, d)) * u_click * 0.3;
-  float mixFactor = clamp(baseMask - interactiveRepel, 0.0, 1.0);
+          float d = distance(v_uv, u_mouse);
+          float interactiveRepel = (1.0 - smoothstep(0.0, 0.3, d)) * u_click * 0.3;
+          float mixFactor = clamp(baseMask - interactiveRepel, 0.0, 1.0);
 
-  // First blend the two primary colors.
-  vec3 baseColor = mix(u_color1, u_color2, mixFactor);
-
-  // Compute a weight that peaks near the midpoint (mixFactor ~ 0.5)
-  // Adjust the 0.05 to change the width of the refracting effect.
-  float bubbleWeight = exp(-pow((mixFactor - 0.5) / 0.05, 2.0));
-
-  // Blend in the light purple using the computed weight.
-  vec3 finalColor = mix(baseColor, u_color3, bubbleWeight);
-
-  gl_FragColor = vec4(finalColor, 1.0);
-}
-
-
+          vec3 finalColor = mix(u_color1, u_color2, mixFactor);
+          gl_FragColor = vec4(finalColor, 1.0);
+        }
       `;
 
       function createShader(gl, type, source) {
@@ -328,8 +316,6 @@ void main() {
       const u_clickLoc      = gl.getUniformLocation(program, "u_click");
       const u_color1Loc     = gl.getUniformLocation(program, "u_color1");
       const u_color2Loc     = gl.getUniformLocation(program, "u_color2");
-      const u_color3Loc = gl.getUniformLocation(program, "u_color3");
-
 
       let startTime = Date.now();
 
@@ -344,11 +330,8 @@ void main() {
         gl.uniform1f(u_clickLoc, 0.0);
 
         // Colors
-gl.uniform3f(u_color1Loc, 0.512, 0.71, 1.0);
-gl.uniform3f(u_color2Loc, 0.202, 0.3, 0.8);
-gl.uniform3f(u_color3Loc, 0.502, 0.7, 1.0);  // <-- New lighter blue
-
-
+        gl.uniform3f(u_color1Loc, 0.502, 0.7, 1.0);
+        gl.uniform3f(u_color2Loc, 0.2, 0, 0.8);
 
         gl.drawArrays(gl.TRIANGLES, 0, 6);
         requestAnimationFrame(render);
@@ -552,17 +535,14 @@ gl.uniform3f(u_color3Loc, 0.502, 0.7, 1.0);  // <-- New lighter blue
     async function fetchModelResponse(userText) {
       // Replace '/model-api' with your actual API endpoint
       try {
-        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        const response = await fetch('/model-api', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json',
-            'Authorization': 'Bearer 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' },
-          body: JSON.stringify({
-            model: "llama3-8b-8192",
-            messages: [{ role: "user", content: userText }] })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: userText })
         });
         const data = await response.json();
         // Assume your API returns a JSON object with a "response" property
-        return data.choices[0].message.content;
+        return data.response;
       } catch (error) {
         console.error("Error fetching model response:", error);
         return "Sorry, something went wrong retrieving the response.";
