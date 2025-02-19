@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Avatar Color Tester</title>
+  <style>
+    /* Page Layout: Black background, center the circular avatar */
+    html, body {
+      margin: 0; 
+      padding: 0;
+      width: 100%; 
+      height: 100%;
+      background: #000;
+      font-family: sans-serif;
+      overflow: hidden;
+      position: relative;
+      color: #fff;
+    }
+
+    /* Circular avatar container */
+    .viewport {
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Make the canvas fill the container */
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Panel for color controls */
+    #colorControls {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      width: 260px;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    #colorControls label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+    #colorControls input[type="range"] {
+      width: 130px;
+      margin-left: 8px;
+    }
+    .color-block {
+      margin-bottom: 10px;
+      border-bottom: 1px solid #aaa;
+      padding-bottom: 10px;
+    }
+    .color-block:last-of-type {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Circular Avatar -->
+  <div class="viewport">
+    <canvas id="fluidCanvas"></canvas>
+  </div>
+
+  <!-- Color Controls Panel -->
+  <div id="colorControls">
+    <h3>Avatar Color Tester</h3>
+
+    <!-- Color 1 -->
+    <div class="color-block">
+      <h4>Color 1</h4>
+      <label>R <input id="color1R" type="range" min="0" max="1" step="0.01" value="0.512"></label>
+      <label>G <input id="color1G" type="range" min="0" max="1" step="0.01" value="0.71"></label>
+      <label>B <input id="color1B" type="range" min="0" max="1" step="0.01" value="1.0"></label>
+      <label>A <input id="alpha1"  type="range" min="0" max="1" step="0.01" value="1.0"></label>
+    </div>
+
+    <!-- Color 2 -->
+    <div class="color-block">
+      <h4>Color 2</h4>
+      <label>R <input id="color2R" type="range" min="0" max="1" step="0.01" value="0.202"></label>
+      <label>G <input id="color2G" type="range" min="0" max="1" step="0.01" value="0.3"></label>
+      <label>B <input id="color2B" type="range" min="0" max="1" step="0.01" value="0.8"></label>
+      <label>A <input id="alpha2"  type="range" min="0" max="1" step="0.01" value="1.0"></label>
+    </div>
+
+    <!-- Color 3 -->
+    <div class="color-block">
+      <h4>Color 3</h4>
+      <label>R <input id="color3R" type="range" min="0" max="1" step="0.01" value="0.502"></label>
+      <label>G <input id="color3G" type="range" min="0" max="1" step="0.01" value="0.7"></label>
+      <label>B <input id="color3B" type="range" min="0" max="1" step="0.01" value="1.0"></label>
+      <label>A <input id="alpha3"  type="range" min="0" max="1" step="0.01" value="1.0"></label>
+    </div>
+  </div>
+
+  <script>
+    /********************************************************
+     *     WEBGL FLUID SIMULATION (BASIC NOISE & COLORS)    *
+     ********************************************************/
+    (function () {
+      const canvas = document.getElementById("fluidCanvas");
+      const gl = canvas.getContext("webgl", { premultipliedAlpha: false });
+      if (!gl) {
+        console.error("WebGL not supported");
+        return;
+      }
+
+      function resizeCanvas() {
+        // Match drawing buffer with the displayed size
+        canvas.width  = canvas.clientWidth;
+        canvas.height = canvas.clientHeight;
+        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+      }
+
+      // Vertex shader: just pass position & compute UV
+      const vsSource = `
+        attribute vec2 a_position;
+        varying vec2 v_uv;
+        void main() {
+          v_uv = a_position * 0.5 + 0.5;
+          gl_Position = vec4(a_position, 0.0, 1.0);
+        }
+      `;
+
+      // Fragment shader: noise-based fluid effect, with 3 colors & alpha
+      const fsSource = `
+precision mediump float;
+uniform float u_time;
+uniform vec2  u_resolution;
+uniform vec2  u_mouse;
+uniform float u_click;
+
+/* Colors + alpha channels */
+uniform vec3  u_color1;
+uniform float u_alpha1;
+
+uniform vec3  u_color2;
+uniform float u_alpha2;
+
+uniform vec3  u_color3;
+uniform float u_alpha3;
+
+varying vec2 v_uv;
+
+/* Simple random & noise functions */
+float random(in vec2 st) {
+  return fract(sin(dot(st, vec2(12.9898,78.233))) * 43758.5453123);
+}
+
+float noise(in vec2 st) {
+  vec2 i = floor(st);
+  vec2 f = fract(st);
+  float a = random(i);
+  float b = random(i + vec2(1.0, 0.0));
+  float c = random(i + vec2(0.0, 1.0));
+  float d = random(i + vec2(1.0, 1.0));
+  vec2 u = smoothstep(0.0, 1.0, f);
+  return mix(a, b, u.x) +
+         (c - a) * u.y * (1.0 - u.x) +
+         (d - b) * u.x * u.y;
+}
+
+void main() {
+  // Scale up coordinates for noise
+  vec2 st = v_uv * 3.0;
+
+  // Add some drifting
+  vec2 drift;
+  drift.x = noise(vec2(u_time * 0.4, st.y)) - 0.5;
+  drift.y = noise(vec2(st.x, u_time * 0.4)) - 0.5;
+  st += drift * 0.3;
+
+  // Two noise layers
+  float n1 = noise(st + u_time * 0.2);
+  float n2 = noise(st * 1.5 - u_time * 0.3);
+  float combinedNoise = mix(n1, n2, 0.5);
+
+  // Make a smooth gradient
+  float baseMask = smoothstep(0.35, 0.65, combinedNoise);
+
+  // Minimal interactivity for demonstration
+  float d = distance(v_uv, u_mouse);
+  float interactiveRepel = (1.0 - smoothstep(0.0, 0.3, d)) * u_click * 0.3;
+  float mixFactor = clamp(baseMask - interactiveRepel, 0.0, 1.0);
+
+  // Blend color1 <-> color2, also alpha1 <-> alpha2
+  vec3 baseColor = mix(u_color1, u_color2, mixFactor);
+  float baseAlpha = mix(u_alpha1, u_alpha2, mixFactor);
+
+  // "Bubble" effect with color3
+  float bubbleWeight = exp(-pow((mixFactor - 0.5) / 0.05, 2.0));
+  vec3 finalColor  = mix(baseColor,  u_color3,  bubbleWeight);
+  float finalAlpha = mix(baseAlpha,  u_alpha3,  bubbleWeight);
+
+  gl_FragColor = vec4(finalColor, finalAlpha);
+}
+      `;
+
+      // Compile & link the shaders
+      function createShader(gl, type, source) {
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+          console.error("Shader compile error:", gl.getShaderInfoLog(shader));
+          gl.deleteShader(shader);
+          return null;
+        }
+        return shader;
+      }
+      const vertexShader   = createShader(gl, gl.VERTEX_SHADER, vsSource);
+      const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+
+      const program = gl.createProgram();
+      gl.attachShader(program, vertexShader);
+      gl.attachShader(program, fragmentShader);
+      gl.linkProgram(program);
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        console.error("Program link error:", gl.getProgramInfoLog(program));
+        return;
+      }
+      gl.useProgram(program);
+
+      // Fullscreen quad
+      const positionBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+      const positions = [
+        -1, -1,   1, -1,   -1,  1,
+        -1,  1,   1, -1,    1,  1
+      ];
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+
+      const a_positionLoc = gl.getAttribLocation(program, "a_position");
+      gl.enableVertexAttribArray(a_positionLoc);
+      gl.vertexAttribPointer(a_positionLoc, 2, gl.FLOAT, false, 0, 0);
+
+      // Uniform locations
+      const u_timeLoc       = gl.getUniformLocation(program, "u_time");
+      const u_resolutionLoc = gl.getUniformLocation(program, "u_resolution");
+      const u_mouseLoc      = gl.getUniformLocation(program, "u_mouse");
+      const u_clickLoc      = gl.getUniformLocation(program, "u_click");
+
+      const u_color1Loc     = gl.getUniformLocation(program, "u_color1");
+      const u_alpha1Loc     = gl.getUniformLocation(program, "u_alpha1");
+      const u_color2Loc     = gl.getUniformLocation(program, "u_color2");
+      const u_alpha2Loc     = gl.getUniformLocation(program, "u_alpha2");
+      const u_color3Loc     = gl.getUniformLocation(program, "u_color3");
+      const u_alpha3Loc     = gl.getUniformLocation(program, "u_alpha3");
+
+      // Default color objects (matching initial slider values)
+      let color1 = { r: 0.512, g: 0.71, b: 1.0, a: 1.0 };
+      let color2 = { r: 0.202, g: 0.3,  b: 0.8, a: 1.0 };
+      let color3 = { r: 0.502, g: 0.7,  b: 1.0, a: 1.0 };
+
+      let startTime = Date.now();
+
+      // Render loop
+      function render() {
+        resizeCanvas();
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
+        const time = (Date.now() - startTime) / 1000.0;
+        gl.uniform1f(u_timeLoc, time);
+        gl.uniform2f(u_resolutionLoc, canvas.width, canvas.height);
+
+        // Hard-coded placeholders for mouse & click
+        gl.uniform2f(u_mouseLoc, 0.5, 0.5);
+        gl.uniform1f(u_clickLoc, 0.0);
+
+        // Update color uniforms
+        gl.uniform3f(u_color1Loc, color1.r, color1.g, color1.b);
+        gl.uniform1f(u_alpha1Loc, color1.a);
+
+        gl.uniform3f(u_color2Loc, color2.r, color2.g, color2.b);
+        gl.uniform1f(u_alpha2Loc, color2.a);
+
+        gl.uniform3f(u_color3Loc, color3.r, color3.g, color3.b);
+        gl.uniform1f(u_alpha3Loc, color3.a);
+
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+        requestAnimationFrame(render);
+      }
+      requestAnimationFrame(render);
+
+      /****************************************************
+       * Setup color sliders to update the color objects  *
+       ****************************************************/
+      function setupColorControls() {
+        const sliders = {
+          color1R: document.getElementById("color1R"),
+          color1G: document.getElementById("color1G"),
+          color1B: document.getElementById("color1B"),
+          alpha1:  document.getElementById("alpha1"),
+
+          color2R: document.getElementById("color2R"),
+          color2G: document.getElementById("color2G"),
+          color2B: document.getElementById("color2B"),
+          alpha2:  document.getElementById("alpha2"),
+
+          color3R: document.getElementById("color3R"),
+          color3G: document.getElementById("color3G"),
+          color3B: document.getElementById("color3B"),
+          alpha3:  document.getElementById("alpha3"),
+        };
+
+        // Update color objects whenever sliders change
+        function updateColors() {
+          color1.r = parseFloat(sliders.color1R.value);
+          color1.g = parseFloat(sliders.color1G.value);
+          color1.b = parseFloat(sliders.color1B.value);
+          color1.a = parseFloat(sliders.alpha1.value);
+
+          color2.r = parseFloat(sliders.color2R.value);
+          color2.g = parseFloat(sliders.color2G.value);
+          color2.b = parseFloat(sliders.color2B.value);
+          color2.a = parseFloat(sliders.alpha2.value);
+
+          color3.r = parseFloat(sliders.color3R.value);
+          color3.g = parseFloat(sliders.color3G.value);
+          color3.b = parseFloat(sliders.color3B.value);
+          color3.a = parseFloat(sliders.alpha3.value);
+        }
+
+        // Attach "input" event listeners
+        for (let key in sliders) {
+          sliders[key].addEventListener("input", updateColors);
+        }
+      }
+
+      setupColorControls();
+    })();
+  </script>
+</body>
+</html>
