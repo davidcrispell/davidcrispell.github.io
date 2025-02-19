@@ -106,22 +106,22 @@
       color: #000;
       align-self: flex-end;
     }
-    /* Blinking bullet animation */
     .blinkingBullet {
-      display: inline-block;
-      width: 1em;
-      text-align: center;
-      color: #fff;
-      font-size: 18px;
-      font-family: monospace;
-      margin-left: 5px;
-      animation: blink 1s infinite;
-    }
-    @keyframes blink {
-      0% { opacity: 1; }
-      50% { opacity: 0; }
-      100% { opacity: 1; }
-    }
+  display: inline-block;
+  width: 1em;
+  text-align: center;
+  color: #fff;
+  font-size: 18px;
+  font-family: monospace;
+  margin-left: 5px;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 49.99% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
 
     /* User Input at Bottom */
     #userInputContainer {
@@ -343,12 +343,18 @@ void main() {
       requestAnimationFrame(render);
     })();
 
-    /*************** TYPEWRITER & BLINKING BULLET FUNCTIONS ***************/
+    /*************** AVATAR & TYPEWRITER SETUP ***************/
+    // Grab the avatar element
+    const avatar = document.getElementById("avatarViewport");
     const bulletChar = "●";
 
-    // Types out text character by character and appends a blinking bullet at the end.
-    function typeOutText(element, text, interval) {
+    // Types out text character by character and appends a blinking bullet.
+    // The fourth parameter 'animate' (default false) determines whether the avatar should enlarge.
+    function typeOutText(element, text, interval, animate = false) {
       return new Promise(resolve => {
+        if (animate) {
+          avatar.classList.add("speaking");
+        }
         element.textContent = "";
         const bulletSpan = document.createElement("span");
         bulletSpan.className = "blinkingBullet";
@@ -361,6 +367,9 @@ void main() {
             i++;
             setTimeout(addChar, interval);
           } else {
+            if (animate) {
+              avatar.classList.remove("speaking");
+            }
             resolve();
           }
         }
@@ -369,20 +378,14 @@ void main() {
     }
 
     /*************** STREAMING RESPONSE DISPLAY ***************/
-    const avatar = document.getElementById("avatarViewport");
     const blinkPrompt = document.getElementById("blinkPrompt");
     const initialBubble = document.getElementById("initialMessageBubble");
     const chatContainer = document.getElementById("chatContainer");
 
-    /**
-     * streamModelResponse now processes streaming chunks as they arrive.
-     * The response is appended to a dedicated content span while a blinking bullet span remains at the end.
-     */
     async function streamModelResponse(userText, contentElement, bulletElement) {
       try {
         // Immediately add the speaking class so the avatar scales as in the bottom version.
         avatar.classList.add("speaking");
-        // Optionally wait a short moment.
         await new Promise(resolve => setTimeout(resolve, 100));
     
         const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -418,7 +421,6 @@ void main() {
                 const parsed = JSON.parse(jsonStr);
                 const token = parsed.choices[0].delta?.content || "";
                 contentElement.textContent += token;
-                // Ensure the bullet remains appended.
                 if (!bulletElement.parentNode) {
                   contentElement.parentNode.appendChild(bulletElement);
                 }
@@ -440,7 +442,6 @@ void main() {
       }
     }
     
-    // Creates a new model response message with a content span and a blinking bullet span.
     function addModelResponse(userText) {
       // Hide previous blinking bullets.
       document.querySelectorAll(".model-message .blinkingBullet").forEach(el => {
@@ -515,8 +516,8 @@ void main() {
           newInitialBubble.className = "message model-message center";
           chatContainer.appendChild(newInitialBubble);
           newInitialBubble.textContent = "";
-          // Type out the greeting character by character.
-          typeOutText(newInitialBubble, "Hi, I'm Julia, your new reasoning model.", 50);
+          // Type out the greeting with the writing animation (and avatar enlargement).
+          typeOutText(newInitialBubble, "Hi, I'm Julia, your new reasoning model.", 50, true);
           canClickAvatar = true;
         }, 2000);
       } else {
@@ -539,12 +540,9 @@ void main() {
     /*************** INITIAL START-UP ***************/
     window.addEventListener("load", () => {
       setTimeout(() => {
-        // Add "speaking" to enlarge the avatar during the initial greeting.
-        avatar.classList.add("speaking");
-        typeOutText(initialBubble, "Hi, I'm Julia, your new reasoning model.", 50)
+        // Use the animate flag so that the initial greeting triggers the increased size animation.
+        typeOutText(initialBubble, "Hi, I'm Julia, your new reasoning model.", 50, true)
           .then(() => {
-            // Remove the "speaking" class once the message is fully typed.
-            avatar.classList.remove("speaking");
             canClickAvatar = true;
           });
       }, 2000);
