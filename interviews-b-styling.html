@@ -3,200 +3,256 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Interviews</title>
+  <title>Julia - Your New Reasoning Model</title>
   <style>
-    @import url('https://fonts.cdnfonts.com/css/charter');
-    
-    body {
-      font-family: Charter, 'Bitstream Charter', serif;
+    /* General Page Styles */
+    html, body {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
       background: #000;
-      color: #fff;
-      line-height: 1.5;
-      max-width: 650px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
-    
-    nav {
-      margin-bottom: 20px;
-    }
-    
-    nav ul {
-      list-style-type: none;
-      padding: 0;
       display: flex;
-      gap: 15px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
-    
-    nav ul li {
-      display: inline;
-    }
-    
-    nav ul li a {
-      text-decoration: none;
-      color: #fff;
-    }
-    
-    nav ul li a:hover {
-      text-decoration: underline;
-    }
-    
-    /* Tagline header */
-    #tagline {
-      font-size: 24px;
+
+    /* Fluid Simulation (WebGL) Container */
+    .viewport {
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
       margin-bottom: 20px;
+      transition: width 0.2s ease, height 0.2s ease;
     }
-    
-    /* Container for the read-out text */
-    #textOutput, #questionText {
-      font-size: 20px;
+    .viewport.active {
+      width: 315px;  /* 5% larger */
+      height: 315px;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Animated Text Styles */
+    #textOutput {
+      font-family: Charter, 'Bitstream Charter', serif;
+      font-size: 24px;
+      color: #fff;
       white-space: pre-wrap;
-      margin-top: 20px;
+      text-align: center;
+      margin-top: 20px; /* Moved down to avoid collision with the circle */
     }
-    
-    /* Styling for the blinking bullet span to reserve fixed space */
     .blinkingBullet {
       display: inline-block;
-      width: 1em; /* Reserve space so layout doesn't shift */
-    }
-    
-    /* Center the Start Interview button container */
-    #startContainer {
-      text-align: center;
-      margin-top: 20px;
-    }
-    
-    /* Interview question container */
-    #questionContainer {
-      display: none;
-      margin-top: 40px; /* moves the response area down */
-      text-align: left; /* Align text to the left */
-    }
-    
-    /* Style for the answer text area */
-    #answerText {
-      width: 100%;
-      max-width: 650px;
-      padding: 10px;
-      font-size: 16px;
-      margin-top: 20px;
-      margin-bottom: 20px;
-      border: 1px solid #444;
-      border-radius: 4px;
-      background-color: #000;
-      color: #fff;
-    }
-    
-    /* Style for buttons */
-    button {
-      padding: 10px 15px;
-      font-size: 16px;
-      margin: 5px;
-      border: 2px solid #fff;
-      border-radius: 4px;
-      cursor: pointer;
-      background: transparent;
-      color: #fff;
-      transition: background 0.3s, color 0.3s;
-    }
-    
-    button:hover {
-      background: #fff;
-      color: #000;
-    }
-    
-    button:disabled {
-      border-color: #555;
-      color: #555;
-      cursor: not-allowed;
-    }
-    
-    #startInterview {
-      display: none;
-    }
-    
-    /* Optional: style for review container */
-    #reviewContainer {
-      display: none;
-      background-color: #111;
-      padding: 20px;
-      border: 1px solid #444;
-      border-radius: 4px;
-      margin-top: 20px;
+      width: 1em; /* Reserve space to avoid layout shifts */
     }
   </style>
 </head>
 <body>
-  <nav>
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="interviews.html">Interviews</a></li>
-      <li><a href="writing.html">Writing</a></li>
-      <li><a href="projects.html">Projects</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-  </nav>
+  <!-- Fluid simulation viewport -->
+  <div class="viewport">
+    <canvas id="fluidCanvas"></canvas>
+  </div>
 
-  <!-- Instructions read-out text area -->
+  <!-- Text output container for the animated message -->
   <div id="textOutput"></div>
 
-  <!-- Centered Start Interview button container -->
-  <div id="startContainer">
-    <button id="startInterview">Start Interview</button>
-  </div>
-
-  <!-- Interview Question Container -->
-  <div id="questionContainer">
-    <div id="questionText"></div>
-    <textarea id="answerText" placeholder="Record your answer here..."></textarea>
-    <br />
-    <button id="nextButton">Next</button>
-    <button id="endInterview">End Interview</button>
-  </div>
-
-  <!-- Review Container (hidden until the interview is done) -->
-  <div id="reviewContainer"></div>
-
-  <!-- Include jsPDF from CDN for exporting PDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
   <script>
-    /************* GLOBAL VARIABLES FOR ANIMATION CONTROL ****************/
+    /***************** WEBGL FLUID SIMULATION *****************/
+    (function () {
+      const canvas = document.getElementById("fluidCanvas");
+      const gl = canvas.getContext("webgl");
+      if (!gl) {
+        console.error("WebGL not supported");
+        return;
+      }
+
+      // Resize the canvas to match its container.
+      function resizeCanvas() {
+        canvas.width = canvas.clientWidth;
+        canvas.height = canvas.clientHeight;
+        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+      }
+
+      // Vertex shader.
+      const vsSource = `
+        attribute vec2 a_position;
+        varying vec2 v_uv;
+        void main() {
+          v_uv = a_position * 0.5 + 0.5;
+          gl_Position = vec4(a_position, 0.0, 1.0);
+        }
+      `;
+
+      // Fragment shader.
+      const fsSource = `
+        precision mediump float;
+        uniform float u_time;
+        uniform vec2 u_resolution;
+        uniform vec2 u_mouse;
+        uniform float u_click;
+        uniform vec3 u_color1;
+        uniform vec3 u_color2;
+        varying vec2 v_uv;
+        
+        // Pseudo-random function.
+        float random(in vec2 st) {
+          return fract(sin(dot(st, vec2(12.9898,78.233))) * 43758.5453123);
+        }
+        
+        // 2D noise function.
+        float noise(in vec2 st) {
+          vec2 i = floor(st);
+          vec2 f = fract(st);
+          float a = random(i);
+          float b = random(i + vec2(1.0, 0.0));
+          float c = random(i + vec2(0.0, 1.0));
+          float d = random(i + vec2(1.0, 1.0));
+          vec2 u = smoothstep(0.0, 1.0, f);
+          return mix(a, b, u.x) +
+                 (c - a) * u.y * (1.0 - u.x) +
+                 (d - b) * u.x * u.y;
+        }
+        
+        void main() {
+          vec2 st = v_uv * 3.0;
+          
+          // Create a drifting effect.
+          vec2 drift;
+          drift.x = noise(vec2(u_time * 0.4, st.y)) - 0.5;
+          drift.y = noise(vec2(st.x, u_time * 0.4)) - 0.5;
+          st += drift * 0.3;
+          
+          // Blend two noise layers.
+          float n1 = noise(st + u_time * 0.2);
+          float n2 = noise(st * 1.5 - u_time * 0.3);
+          float combinedNoise = mix(n1, n2, 0.5);
+          
+          // Create a base noise mask.
+          float baseMask = smoothstep(0.35, 0.65, combinedNoise);
+          
+          // Since there is no interactivity, these values remain fixed.
+          float d = distance(v_uv, u_mouse);
+          float interactiveRepel = (1.0 - smoothstep(0.0, 0.3, d)) * u_click * 0.3;
+          float mixFactor = clamp(baseMask - interactiveRepel, 0.0, 1.0);
+          
+          // Blend the two colors.
+          vec3 finalColor = mix(u_color1, u_color2, mixFactor);
+          gl_FragColor = vec4(finalColor, 1.0);
+        }
+      `;
+
+      // Helper function to compile a shader.
+      function createShader(gl, type, source) {
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+          console.error("Shader compile error:", gl.getShaderInfoLog(shader));
+          gl.deleteShader(shader);
+          return null;
+        }
+        return shader;
+      }
+
+      const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
+      const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+
+      // Create and link the program.
+      const program = gl.createProgram();
+      gl.attachShader(program, vertexShader);
+      gl.attachShader(program, fragmentShader);
+      gl.linkProgram(program);
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        console.error("Program failed to link:", gl.getProgramInfoLog(program));
+        return;
+      }
+      gl.useProgram(program);
+
+      // Set up a full-screen quad.
+      const positionBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+      const positions = [
+        -1, -1,
+         1, -1,
+        -1,  1,
+        -1,  1,
+         1, -1,
+         1,  1,
+      ];
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+
+      const positionLocation = gl.getAttribLocation(program, "a_position");
+      gl.enableVertexAttribArray(positionLocation);
+      gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+      // Get uniform locations.
+      const u_timeLoc = gl.getUniformLocation(program, "u_time");
+      const u_resolutionLoc = gl.getUniformLocation(program, "u_resolution");
+      const u_mouseLoc = gl.getUniformLocation(program, "u_mouse");
+      const u_clickLoc = gl.getUniformLocation(program, "u_click");
+      const u_color1Loc = gl.getUniformLocation(program, "u_color1");
+      const u_color2Loc = gl.getUniformLocation(program, "u_color2");
+
+      let startTime = Date.now();
+
+      function render() {
+        resizeCanvas();
+        const currentTime = (Date.now() - startTime) / 1000;
+        gl.uniform1f(u_timeLoc, currentTime);
+        gl.uniform2f(u_resolutionLoc, canvas.width, canvas.height);
+        gl.uniform2f(u_mouseLoc, 0.5, 0.5);  // Fixed center value.
+        gl.uniform1f(u_clickLoc, 0.0);         // No interactive click.
+        // Set the colors.
+        gl.uniform3f(u_color1Loc, 0.502, 0.7, 1.0);
+        gl.uniform3f(u_color2Loc, 0.2, 0, 0.8);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        requestAnimationFrame(render);
+      }
+      requestAnimationFrame(render);
+    })();
+
+    /***************** TEXT ANIMATION & CIRCLE RESIZING *****************/
     const bulletChar = "●";
     let currentBlinkInterval = null;
-    let currentWords = []; // Now stores an array of characters
-    let isAnimating = false;      // Tracks if an animation is in progress
-    let currentSkipFunction = null; // Function to immediately finish the current animation
-    let animationType = "";       // "forward" for displaying text; "reverse" for deleting text
+    let isAnimating = false;
+    let currentSkipFunction = null;
+    let currentWords = [];
+    let textGenerationTimer;
 
-    /************* READ-OUT INSTRUCTIONS ****************/
-    const instructions = "For each open-ended question, please use the buttons to navigate your responses and the text area to record your answer.";
-    const textOutput = document.getElementById("textOutput");
+    // Function to enlarge the circle during active text generation
+    function enlargeCircle() {
+      const viewport = document.querySelector('.viewport');
+      viewport.classList.add('active');
+      if (textGenerationTimer) clearTimeout(textGenerationTimer);
+      textGenerationTimer = setTimeout(() => {
+        viewport.classList.remove('active');
+      }, 500); // 500ms pause triggers shrink back to normal size
+    }
 
-    /**
-     * Animate text into the given element (forward animation) one character at a time.
-     * When complete, stores the full text as an array in currentWords.
-     * If the animation is skipped via currentSkipFunction, it immediately displays the full text.
-     */
     function animateText(element, text, callback) {
       isAnimating = true;
-      animationType = "forward";
+      let chars = text.split("");
+      let currentCharIndex = 0;
+      element.innerHTML = "";
       if (currentBlinkInterval) {
         clearInterval(currentBlinkInterval);
         currentBlinkInterval = null;
       }
-      const chars = text.split(""); // Split text into individual characters.
-      let currentCharIndex = 0;
-      element.innerHTML = "";
-      
       let charInterval = setInterval(() => {
         if (currentCharIndex < chars.length) {
           const baseText = chars.slice(0, currentCharIndex + 1).join("");
           element.innerHTML = baseText + ' <span class="blinkingBullet">' + bulletChar + '</span>';
           currentCharIndex++;
+          // Each time a character is added, enlarge the circle.
+          enlargeCircle();
         } else {
           clearInterval(charInterval);
-          currentWords = chars; // Save for reverse animation.
+          currentWords = chars;
           let showBullet = true;
           const baseText = chars.join("");
           currentBlinkInterval = setInterval(() => {
@@ -205,12 +261,11 @@
           }, 500);
           isAnimating = false;
           currentSkipFunction = null;
-          animationType = "";
           if (callback) callback();
         }
-      }, 10);  // Adjusted for a smoother, character-by-character effect.
+      }, 50); // Adjust typing speed as desired.
       
-      // Allow skipping the forward animation:
+      // Function to immediately complete the animation.
       currentSkipFunction = function() {
         clearInterval(charInterval);
         if (currentBlinkInterval) { clearInterval(currentBlinkInterval); currentBlinkInterval = null; }
@@ -224,226 +279,16 @@
         element.innerHTML = baseText + ' <span class="blinkingBullet">' + bulletChar + '</span>';
         isAnimating = false;
         currentSkipFunction = null;
-        animationType = "";
         if (callback) callback();
       };
     }
 
-    /**
-     * Animate the deletion of text from the given element (reverse animation)
-     * one character at a time until the text is cleared.
-     * If the animation is skipped, it immediately clears the text.
-     */
-    function animateTextReverse(element, callback) {
-      isAnimating = true;
-      animationType = "reverse";
-      if (currentBlinkInterval) {
-        clearInterval(currentBlinkInterval);
-        currentBlinkInterval = null;
-      }
-      let chars = currentWords.slice();
-      let reverseInterval = setInterval(() => {
-        if (chars.length > 0) {
-          chars.pop();
-          element.innerHTML = chars.join("") + ' <span class="blinkingBullet">' + bulletChar + '</span>';
-        } else {
-          clearInterval(reverseInterval);
-          element.innerHTML = "";
-          isAnimating = false;
-          currentSkipFunction = null;
-          animationType = "";
-          if (callback) callback();
-        }
-      }, 2);  // Faster interval for deletion.
-      
-      // Allow skipping the reverse animation:
-      currentSkipFunction = function() {
-        clearInterval(reverseInterval);
-        element.innerHTML = "";
-        isAnimating = false;
-        currentSkipFunction = null;
-        animationType = "";
-        if (callback) callback();
-      };
-    }
-
-    // Animate the instructions then reveal the Start Interview button.
-    animateText(textOutput, instructions, () => {
-      document.getElementById("startInterview").style.display = "inline-block";
-    });
-
-    /************* INTERVIEW QUESTIONS ****************/
-    // Interview Questions array.
-    const questions = [
-      {
-        text: "1. Have you ever used an AI chatbot, such as ChatGPT? \n   - If yes: What motivated you to try it out (e.g., recommendation, curiosity, a specific need)? \n   - If no: What has held you back from trying it?"
-      },
-      {
-        text: "2. Thinking back to your first experience with ChatGPT, would you say it was easy to get started or was there a learning curve? \n   - If it was easy, what features made it user-friendly? \n   - If it was challenging, what obstacles did you encounter?"
-      },
-      {
-        text: "3. Can you describe a positive experience where ChatGPT helped you or made a task easier? Please provide some context."
-      },
-      {
-        text: "4. Is there any part of ChatGPT that you find confusing or that doesn’t work as expected? \n   - If yes, what improvements would you suggest?"
-      },
-      {
-        text: "5. How do you prefer to learn new technology (e.g., step-by-step tutorials, written instructions, videos, or in-person guidance), and does ChatGPT’s introduction align with your preferred learning style?"
-      },
-      {
-        text: "6. How do you feel about using AI technologies like ChatGPT? Please explain your emotional response."
-      },
-      {
-        text: "7. If you could change one thing about ChatGPT to improve its usability, what would it be and why?"
-      },
-      {
-        text: "8. Have you used any other similar technologies? If so, how do they compare to ChatGPT in terms of ease of use and functionality?"
-      },
-      {
-        text: "9. Looking ahead, do you see yourself using more AI-driven tools in your daily life? What factors would influence your decision?"
-      }
-    ];
-
-    let currentQuestionIndex = 0;
-    const responses = [];
-
-    const questionContainer = document.getElementById("questionContainer");
-    const questionText = document.getElementById("questionText");
-    const answerText = document.getElementById("answerText");
-    const nextButton = document.getElementById("nextButton");
-    const endInterviewButton = document.getElementById("endInterview");
-
-    /**
-     * Displays the current question using animateText.
-     */
-    function displayQuestion() {
-      if (currentQuestionIndex < questions.length) {
-        const q = questions[currentQuestionIndex];
-        questionText.innerHTML = "";
-        animateText(questionText, q.text, () => {
-          // (Callback could be used to enable further UI actions.)
-        });
-      }
-    }
-
-    /**
-     * Displays the interview review with two new buttons:
-     * - New Interview: resets the app back to the initial prompt.
-     * - Export to PDF: uses jsPDF to export the responses.
-     */
-    function showReview() {
-      const reviewContainer = document.getElementById("reviewContainer");
-      reviewContainer.style.display = "block";
-      let html = "<h2>Interview Review</h2><ul>";
-      responses.forEach(response => {
-        html += `<li><strong>${response.question}</strong><br/><em>${response.answer}</em></li>`;
-      });
-      html += "</ul>";
-      html += '<br/><button id="newInterview">New Interview</button>';
-      html += '<button id="exportPDF">Export to PDF</button>';
-      reviewContainer.innerHTML = html;
-      
-      // When "New Interview" is clicked, reset the state and show the initial prompt.
-      document.getElementById("newInterview").addEventListener("click", () => {
-        currentQuestionIndex = 0;
-        responses.length = 0;
-        answerText.value = "";
-        questionText.innerHTML = "";
-        reviewContainer.style.display = "none";
-        questionContainer.style.display = "none";
-        // Show the initial instructions and start button.
-        textOutput.style.display = "block";
-        document.getElementById("startContainer").style.display = "block";
-        textOutput.innerHTML = "";
-        animateText(textOutput, instructions, () => {
-          document.getElementById("startInterview").style.display = "inline-block";
-        });
-      });
-      
-      // Export the responses to a PDF file using jsPDF.
-      document.getElementById("exportPDF").addEventListener("click", () => {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        doc.setFontSize(16);
-        doc.text("Interview Review", 10, 20);
-        let y = 30;
-        responses.forEach(response => {
-          doc.setFontSize(12);
-          doc.text(response.question, 10, y);
-          y += 10;
-          doc.text(response.answer || "No response provided", 10, y);
-          y += 20;
-        });
-        doc.save("interview_review.pdf");
-      });
-    }
-
-    /************* BUTTON EVENT HANDLERS ****************/
-    // Next button: if an animation is in progress, skip it.
-    nextButton.addEventListener("click", () => {
-      if (isAnimating && currentSkipFunction) {
-        // Skip any ongoing animation.
-        currentSkipFunction();
-        return;
-      }
-      // Animate deletion of the current question text, record the answer, then move on.
-      animateTextReverse(questionText, () => {
-        const response = {
-          question: questions[currentQuestionIndex].text,
-          answer: answerText.value.trim()
-        };
-        responses.push(response);
-        answerText.value = "";
-        currentQuestionIndex++;
-        if (currentQuestionIndex < questions.length) {
-          displayQuestion();
-        } else {
-          // End of interview.
-          questionContainer.style.display = "none";
-          showReview();
-        }
-      });
-    });
-
-    // End Interview button: if an animation is in progress, skip it.
-    endInterviewButton.addEventListener("click", () => {
-      if (isAnimating && currentSkipFunction) {
-        currentSkipFunction();
-        // If the question was still animating in (forward), then immediately start deletion.
-        if (animationType === "forward") {
-          animateTextReverse(questionText, () => {
-            const response = {
-              question: questions[currentQuestionIndex].text,
-              answer: answerText.value.trim()
-            };
-            responses.push(response);
-            answerText.value = "";
-            questionContainer.style.display = "none";
-            showReview();
-          });
-        }
-        return;
-      }
-      // Otherwise, animate deletion and end the interview.
-      animateTextReverse(questionText, () => {
-        const response = {
-          question: questions[currentQuestionIndex].text,
-          answer: answerText.value.trim()
-        };
-        responses.push(response);
-        answerText.value = "";
-        questionContainer.style.display = "none";
-        showReview();
-      });
-    });
-
-    // Start Interview: hide instructions and show the first question.
-    document.getElementById("startInterview").addEventListener("click", () => {
-      textOutput.style.display = "none";
-      document.getElementById("startInterview").style.display = "none";
-      document.getElementById("startContainer").style.display = "none";
-      questionContainer.style.display = "block";
-      displayQuestion();
+    // Start the animated text 3 seconds after the page loads.
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        const textOutput = document.getElementById("textOutput");
+        animateText(textOutput, "Hi, I'm Julia, your new reasoning model.");
+      }, 3000);
     });
   </script>
 </body>
