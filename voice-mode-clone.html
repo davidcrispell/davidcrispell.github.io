@@ -19,6 +19,7 @@
       text-align: center;
     }
 
+    /* Circular canvas with a subtle glow */
     canvas {
       border-radius: 50%;
       box-shadow: 0 0 25px rgba(255,255,255,0.3);
@@ -138,6 +139,7 @@
     gl.bindBuffer(gl.ARRAY_BUFFER, quadVBO);
     gl.bufferData(gl.ARRAY_BUFFER, quadVertices, gl.STATIC_DRAW);
 
+    // Setup VAO for simulation pass
     const simVAO = gl.createVertexArray();
     gl.bindVertexArray(simVAO);
     const posLocSim = gl.getAttribLocation(simProgram, 'a_position');
@@ -148,6 +150,7 @@
     gl.vertexAttribPointer(texLocSim, 2, gl.FLOAT, false, 4 * 4, 2 * 4);
     gl.bindVertexArray(null);
 
+    // Setup VAO for render pass
     const renderVAO = gl.createVertexArray();
     gl.bindVertexArray(renderVAO);
     const posLocRender = gl.getAttribLocation(renderProgram, 'a_position');
@@ -158,6 +161,7 @@
     gl.vertexAttribPointer(texLocRender, 2, gl.FLOAT, false, 4 * 4, 2 * 4);
     gl.bindVertexArray(null);
 
+    // --- Create simulation textures and FBOs ---
     const simWidth = 256, simHeight = 256;
     function createTexture() {
       const tex = gl.createTexture();
@@ -185,6 +189,7 @@
     const fboA = createFBO(densityTexA);
     const fboB = createFBO(densityTexB);
 
+    // Smoothstep helper for initial density
     function smoothstep(e0, e1, x) {
       if (e0 > e1) {
         return 1 - smoothstep(e1, e0, x);
@@ -193,6 +198,7 @@
       return t * t * (3 - 2 * t);
     }
 
+    // Initialize simulation density
     {
       const initialData = new Float32Array(simWidth * simHeight);
       for (let y = 0; y < simHeight; y++) {
@@ -211,11 +217,13 @@
       gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, simWidth, simHeight, gl.RED, gl.FLOAT, initialData);
     }
 
+    // --- Simulation Variables ---
     let dt = 0.016;
     let decay = 0.998;
     let simTime = 0;
     let ping = true;
 
+    // Simulation step: update density field
     function stepSimulation() {
       gl.useProgram(simProgram);
       gl.bindVertexArray(simVAO);
@@ -239,6 +247,7 @@
       simTime += dt;
     }
 
+    // Render the current density texture to the canvas
     function render() {
       gl.useProgram(renderProgram);
       gl.bindVertexArray(renderVAO);
@@ -250,6 +259,7 @@
       gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
 
+    // Main loop: simulation step + render
     let lastTime = 0;
     function loop(currentTime) {
       if (!lastTime) lastTime = currentTime;
@@ -263,6 +273,7 @@
     }
     requestAnimationFrame(loop);
 
+    // --- Interactivity: Add a density "blob" on mouse click ---
     canvas.addEventListener('mousedown', function(e) {
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
