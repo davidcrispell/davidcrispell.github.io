@@ -35,9 +35,11 @@
       left: 50%;
       transform: translate(-50%, -50%);
     }
+    /* Enlarged (speaking) state */
     .viewport.speaking {
       transform: translate(-50%, -50%) scale(1.1);
     }
+    /* Dialogue mode: smaller avatar in top-left corner */
     .viewport.dialogue {
       position: fixed;
       top: 20px;
@@ -104,9 +106,21 @@
       color: #000;
       align-self: flex-end;
     }
+    /* Blinking bullet animation */
     .blinkingBullet {
       display: inline-block;
       width: 1em;
+      text-align: center;
+      color: #fff;
+      font-size: 18px;
+      font-family: monospace;
+      margin-left: 5px;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 0; }
+      100% { opacity: 1; }
     }
 
     /* User Input at Bottom */
@@ -329,149 +343,122 @@ void main() {
       requestAnimationFrame(render);
     })();
 
-    /*************** TEXT & BLINK SYNC (Token-Wise Animation with Auto-Scroll) ***************/
+    /*************** TYPEWRITER & BLINKING BULLET FUNCTIONS ***************/
     const bulletChar = "●";
-    let currentBlinkInterval = null;
-    let isAnimating = false;
-    let currentSkipFunction = null;
-    let currentAnimationFrame = null;
 
-    let canClickAvatar = false;
-    let transitionInProgress = false;
+    // Types out text character by character and appends a blinking bullet at the end.
+    function typeOutText(element, text, interval) {
+      return new Promise(resolve => {
+        element.textContent = "";
+        const bulletSpan = document.createElement("span");
+        bulletSpan.className = "blinkingBullet";
+        bulletSpan.textContent = bulletChar;
+        let i = 0;
+        function addChar() {
+          if (i < text.length) {
+            element.textContent = text.substring(0, i + 1);
+            element.appendChild(bulletSpan);
+            i++;
+            setTimeout(addChar, interval);
+          } else {
+            resolve();
+          }
+        }
+        addChar();
+      });
+    }
 
+    /*************** STREAMING RESPONSE DISPLAY ***************/
     const avatar = document.getElementById("avatarViewport");
     const blinkPrompt = document.getElementById("blinkPrompt");
     const initialBubble = document.getElementById("initialMessageBubble");
     const chatContainer = document.getElementById("chatContainer");
 
     /**
-     * animateText now accepts a tokenDelay parameter (in milliseconds) so that you can adjust
-     * the speed of the token-wise animation. Default is 200ms.
+     * streamModelResponse now processes streaming chunks as they arrive.
+     * The response is appended to a dedicated content span while a blinking bullet span remains at the end.
      */
-    function animateText(element, text, callback, tokenDelay = 200) {
-      isAnimating = true;
-      avatar.classList.add("speaking");
-      const tokens = text.split(" ");
-      let currentTokenIndex = 0;
-      element.innerHTML = "";
-      
-      if (currentBlinkInterval) {
-        clearInterval(currentBlinkInterval);
-        currentBlinkInterval = null;
-      }
-      
-      let lastTime = Date.now();
-      
-      function step() {
-        const now = Date.now();
-        const elapsed = now - lastTime;
-        if (elapsed >= tokenDelay) {
-          let tokensToAdd = Math.floor(elapsed / tokenDelay);
-          lastTime = now;
-          while (tokensToAdd > 0 && currentTokenIndex < tokens.length) {
-            if (currentTokenIndex > 0) {
-              element.innerHTML += " ";
-            }
-            element.innerHTML += tokens[currentTokenIndex];
-            currentTokenIndex++;
-            tokensToAdd--;
-          }
-          element.innerHTML = element.innerHTML.replace(/<span class="blinkingBullet">.*?<\/span>/, "");
-          element.innerHTML += ' <span class="blinkingBullet">' + bulletChar + '</span>';
-          chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-        if (currentTokenIndex < tokens.length) {
-          currentAnimationFrame = requestAnimationFrame(step);
-        } else {
-          if (currentBlinkInterval) clearInterval(currentBlinkInterval);
-          currentBlinkInterval = setInterval(() => {
-            const baseText = element.innerHTML.replace(/<span class="blinkingBullet">.*?<\/span>/, "");
-            let showBullet = element.getAttribute("data-showBullet") === "true";
-            showBullet = !showBullet;
-            element.setAttribute("data-showBullet", showBullet ? "true" : "false");
-            element.innerHTML = baseText + ' <span class="blinkingBullet">' + (showBullet ? bulletChar : '\u00A0') + '</span>';
-            blinkPrompt.textContent = showBullet ? '>' : '\u00A0';
-          }, 500);
-          avatar.classList.remove("speaking");
-          isAnimating = false;
-          currentSkipFunction = null;
-          if (callback) callback();
-        }
-      }
-      
-      currentAnimationFrame = requestAnimationFrame(step);
-      
-      currentSkipFunction = function() {
-        if (currentAnimationFrame) cancelAnimationFrame(currentAnimationFrame);
-        element.innerHTML = text + ' <span class="blinkingBullet">' + bulletChar + '</span>';
-        if (currentBlinkInterval) clearInterval(currentBlinkInterval);
-        currentBlinkInterval = setInterval(() => {
-          const baseText = text;
-          let showBullet = element.getAttribute("data-showBullet") === "true";
-          showBullet = !showBullet;
-          element.setAttribute("data-showBullet", showBullet ? "true" : "false");
-          element.innerHTML = baseText + ' <span class="blinkingBullet">' + (showBullet ? bulletChar : '\u00A0') + '</span>';
-          blinkPrompt.textContent = showBullet ? '>' : '\u00A0';
-        }, 500);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-        avatar.classList.remove("speaking");
-        isAnimating = false;
-        currentSkipFunction = null;
-        if (callback) callback();
-      };
-    }
-
-    /**
-     * streamModelResponse fetches the model reply using streaming. As soon as a chunk of tokens is available,
-     * they are appended to the message bubble.
-     */
-    async function streamModelResponse(userText, bubbleElement) {
+    async function streamModelResponse(userText, contentElement, bulletElement) {
       try {
+        // Immediately add the speaking class so the avatar scales as in the bottom version.
+        avatar.classList.add("speaking");
+        // Optionally wait a short moment.
+        await new Promise(resolve => setTimeout(resolve, 100));
+    
         const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer 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' 
+            'Authorization': 'Bearer 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'
           },
           body: JSON.stringify({
             model: "llama3-8b-8192",
-            messages: [{ role: "user", content: userText }]
+            messages: [{ role: "user", content: userText }],
+            stream: true
           })
         });
+    
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
-        bubbleElement.innerHTML = "";
-        avatar.classList.add("speaking");
+        let buffer = "";
+    
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
-          const chunk = decoder.decode(value);
-          // Append each chunk immediately.
-          bubbleElement.innerHTML += chunk;
-          bubbleElement.innerHTML = bubbleElement.innerHTML.replace(/<span class="blinkingBullet">.*?<\/span>/, "");
-          bubbleElement.innerHTML += ' <span class="blinkingBullet">' + bulletChar + '</span>';
-          chatContainer.scrollTop = chatContainer.scrollHeight;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop();
+          for (const line of lines) {
+            if (line.startsWith("data: ")) {
+              const jsonStr = line.substring(6).trim();
+              if (jsonStr === "[DONE]") {
+                break;
+              }
+              try {
+                const parsed = JSON.parse(jsonStr);
+                const token = parsed.choices[0].delta?.content || "";
+                contentElement.textContent += token;
+                // Ensure the bullet remains appended.
+                if (!bulletElement.parentNode) {
+                  contentElement.parentNode.appendChild(bulletElement);
+                }
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+              } catch (e) {
+                console.error("Error parsing JSON:", e);
+              }
+            }
+          }
         }
+    
         avatar.classList.remove("speaking");
       } catch (error) {
         console.error("Error fetching model response:", error);
-        bubbleElement.innerHTML += " Sorry, something went wrong retrieving the response.";
-        avatar.classList.remove("speaking");
+        contentElement.textContent += " Sorry, something went wrong retrieving the response.";
+        setTimeout(() => {
+          avatar.classList.remove("speaking");
+        }, 100);
       }
     }
-
+    
+    // Creates a new model response message with a content span and a blinking bullet span.
     function addModelResponse(userText) {
-      // Remove blinking bullets from previous model messages.
+      // Hide previous blinking bullets.
       document.querySelectorAll(".model-message .blinkingBullet").forEach(el => {
         el.style.display = "none";
       });
       const modelBubble = document.createElement("div");
       modelBubble.className = "message model-message";
+      const contentSpan = document.createElement("span");
+      contentSpan.className = "modelContent";
+      modelBubble.appendChild(contentSpan);
+      const bulletSpan = document.createElement("span");
+      bulletSpan.className = "blinkingBullet";
+      bulletSpan.textContent = bulletChar;
+      modelBubble.appendChild(bulletSpan);
       chatContainer.appendChild(modelBubble);
-      // Instead of waiting for the full message to animate, stream tokens as they arrive.
-      streamModelResponse(userText, modelBubble);
+      streamModelResponse(userText, contentSpan, bulletSpan);
     }
-
+    
     function addUserMessage(message) {
       const userBubble = document.createElement("div");
       userBubble.className = "message user-message";
@@ -479,28 +466,26 @@ void main() {
       chatContainer.appendChild(userBubble);
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
-
+    
     function setupUserInput() {
       const sendButton = document.getElementById("sendButton");
       const userInput = document.getElementById("userInput");
-
+    
       sendButton.addEventListener("click", () => {
-        if (isAnimating) return;
         const message = userInput.value.trim();
         if (message === "") return;
         addUserMessage(message);
         userInput.value = "";
         addModelResponse(message);
       });
-
+    
       userInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
-          if (isAnimating) return;
           sendButton.click();
         }
       });
     }
-
+    
     /*************** TRANSITION MODES ***************/
     function enterDialogueMode() {
       transitionInProgress = true;
@@ -508,7 +493,7 @@ void main() {
       document.body.classList.add("dialogue-mode");
       avatar.classList.add("dialogue");
     }
-
+    
     function enterCenterMode() {
       transitionInProgress = true;
       canClickAvatar = false;
@@ -516,7 +501,10 @@ void main() {
       document.body.classList.remove("dialogue-mode");
       avatar.classList.remove("dialogue");
     }
-
+    
+    let canClickAvatar = false;
+    let transitionInProgress = false;
+    
     avatar.addEventListener("transitionend", () => {
       if (!transitionInProgress) return;
       transitionInProgress = false;
@@ -526,17 +514,17 @@ void main() {
           newInitialBubble.id = "initialMessageBubble";
           newInitialBubble.className = "message model-message center";
           chatContainer.appendChild(newInitialBubble);
-          // Use a faster tokenDelay (50ms) for the initial greeting.
-          animateText(newInitialBubble, "Hi, I'm Julia, your new reasoning model.", () => {
-            canClickAvatar = true;
-          }, 50);
+          newInitialBubble.textContent = "";
+          // Type out the greeting character by character.
+          typeOutText(newInitialBubble, "Hi, I'm Julia, your new reasoning model.", 50);
+          canClickAvatar = true;
         }, 2000);
       } else {
         setupUserInput();
         canClickAvatar = true;
       }
     });
-
+    
     function onAvatarClick() {
       if (!canClickAvatar || transitionInProgress) return;
       if (document.body.classList.contains("dialogue-mode")) {
@@ -545,20 +533,16 @@ void main() {
         enterDialogueMode();
       }
     }
-
+    
     avatar.addEventListener("click", onAvatarClick);
-
+    
     /*************** INITIAL START-UP ***************/
     window.addEventListener("load", () => {
       setTimeout(() => {
-        animateText(
-          initialBubble,
-          "Hi, I'm Julia, a new reasoning assistant.",
-          () => {
-            canClickAvatar = true;
-          },
-          50  // 50 ms per token for the initial message
-        );
+        // Use typeOutText to animate the initial greeting with a blinking bullet.
+        typeOutText(initialBubble, "Hi, I'm Julia, your new reasoning model.", 50).then(() => {
+          canClickAvatar = true;
+        });
       }, 2000);
     });
   </script>
