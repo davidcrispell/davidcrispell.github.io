@@ -218,6 +218,8 @@
           gl_Position = vec4(a_position, 0.0, 1.0);
         }
       `;
+      // New function to fetch the actual model response
+
 
       const fsSource = `
         precision mediump float;
@@ -530,7 +532,52 @@
         enterDialogueMode();
       }
     }
+    async function fetchModelResponse(userText) {
+      // Replace '/model-api' with your actual API endpoint
+      try {
+        const response = await fetch('/model-api', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: userText })
+        });
+        const data = await response.json();
+        // Assume your API returns a JSON object with a "response" property
+        return data.response;
+      } catch (error) {
+        console.error("Error fetching model response:", error);
+        return "Sorry, something went wrong retrieving the response.";
+      }
+    }
 
+    // Modified function to add the model response to the chat
+    async function addModelResponse(userText) {
+      // Remove blinking bullet from old messages
+      document.querySelectorAll(".model-message .blinkingBullet").forEach(el => {
+        el.style.display = "none";
+      });
+
+      const modelBubble = document.createElement("div");
+      modelBubble.className = "message model-message";
+      chatContainer.appendChild(modelBubble);
+
+      // Fetch the actual response and animate it as it appears
+      const modelReply = await fetchModelResponse(userText);
+      animateText(modelBubble, modelReply);
+      modelBubble.scrollIntoView({ behavior: "smooth" });
+    }
+
+    // In your user input handler, replace the dummy timeout with a direct call:
+    sendButton.addEventListener("click", async () => {
+      if (isAnimating) return;
+      const message = userInput.value.trim();
+      if (message === "") return;
+
+      addUserMessage(message);
+      userInput.value = "";
+
+      // Fetch and display the actual model response
+      addModelResponse(message);
+    });
     // Attach the click handler (checks canClickAvatar each time)
     avatar.addEventListener("click", onAvatarClick);
 
