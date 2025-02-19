@@ -325,7 +325,7 @@ void main() {
     const initialBubble = document.getElementById("initialMessageBubble");
     const chatContainer = document.getElementById("chatContainer");
 
-    // The original animateText is still used for static text (e.g. greetings)
+    // The original animateText is used for static texts (e.g., greetings).
     function animateText(element, text, callback) {
       isAnimating = true;
       avatar.classList.add("speaking");
@@ -394,90 +394,80 @@ void main() {
     }
 
     /**
-     * New: Stream the model response token-by-token.
-     * The fetchModelResponse function now accepts onToken and onComplete callbacks.
+     * Stream the model response token-by-token.
+     * This function parses each streamed line, extracts only the token (delta.content),
+     * and passes it to onToken without adding extra spaces.
      */
     async function fetchModelResponse(userText, onToken, onComplete) {
-  try {
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer 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'
-      },
-      body: JSON.stringify({
-        model: "llama3-8b-8192",
-        messages: [{ role: "user", content: userText }],
-        stream: true
-      })
-    });
-    
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder("utf-8");
-    let done = false;
-    let buffer = "";
-    
-    while (!done) {
-      const { value, done: doneReading } = await reader.read();
-      done = doneReading;
-      buffer += decoder.decode(value, { stream: true });
-      
-      // Split the stream into lines (each chunk is prefixed with "data:")
-      let lines = buffer.split("\n");
-      // Keep the last partial line in the buffer.
-      buffer = lines.pop();
-      
-      for (const line of lines) {
-        if (line.startsWith("data:")) {
-          let dataStr = line.substring(5).trim();
-          if (dataStr === "[DONE]") continue;
-          try {
-            let json = JSON.parse(dataStr);
-            const token = json.choices && json.choices[0] && json.choices[0].delta && json.choices[0].delta.content;
-            if (token) {
-              onToken(token);
+      try {
+        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer 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'
+          },
+          body: JSON.stringify({
+            model: "llama3-8b-8192",
+            messages: [{ role: "user", content: userText }],
+            stream: true
+          })
+        });
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+        let done = false;
+        let buffer = "";
+        while (!done) {
+          const { value, done: doneReading } = await reader.read();
+          done = doneReading;
+          buffer += decoder.decode(value, { stream: true });
+          let lines = buffer.split("\n");
+          buffer = lines.pop();
+          for (const line of lines) {
+            if (line.startsWith("data:")) {
+              let dataStr = line.substring(5).trim();
+              if (dataStr === "[DONE]") continue;
+              try {
+                let json = JSON.parse(dataStr);
+                const token = json.choices && json.choices[0] && json.choices[0].delta && json.choices[0].delta.content;
+                if (token) {
+                  onToken(token);
+                }
+              } catch (err) {
+                console.error("Error parsing stream chunk:", err);
+              }
             }
-          } catch (err) {
-            console.error("Error parsing stream chunk:", err);
           }
         }
-      }
-    }
-    
-    // Process any remaining data in the buffer.
-    if (buffer.startsWith("data:")) {
-      let dataStr = buffer.substring(5).trim();
-      if (dataStr !== "[DONE]") {
-        try {
-          let json = JSON.parse(dataStr);
-          const token = json.choices && json.choices[0] && json.choices[0].delta && json.choices[0].delta.content;
-          if (token) {
-            onToken(token);
+        if (buffer.startsWith("data:")) {
+          let dataStr = buffer.substring(5).trim();
+          if (dataStr !== "[DONE]") {
+            try {
+              let json = JSON.parse(dataStr);
+              const token = json.choices && json.choices[0] && json.choices[0].delta && json.choices[0].delta.content;
+              if (token) {
+                onToken(token);
+              }
+            } catch (err) {
+              console.error("Error parsing final stream chunk:", err);
+            }
           }
-        } catch (err) {
-          console.error("Error parsing final stream chunk:", err);
         }
+        if (onComplete) onComplete();
+      } catch (error) {
+        console.error("Error fetching model response:", error);
+        onToken("\nSorry, something went wrong retrieving the response.");
+        if (onComplete) onComplete();
       }
     }
-    
-    if (onComplete) onComplete();
-  } catch (error) {
-    console.error("Error fetching model response:", error);
-    onToken("\nSorry, something went wrong retrieving the response.");
-    if (onComplete) onComplete();
-  }
-}
 
     /**
-     * Append tokens to the given element as they arrive.
+     * Append tokens to the given element exactly as received (without adding spaces).
      */
     function streamModelResponse(userText, element) {
       element.innerHTML = "";
       fetchModelResponse(userText, (token) => {
         element.innerHTML = element.innerHTML.replace(/<span class="blinkingBullet">.*?<\/span>/, "");
-        if (element.innerHTML.length > 0) {
-          element.innerHTML += " ";
-        }
+        // Append the token exactly as received.
         element.innerHTML += token;
         element.innerHTML += ' <span class="blinkingBullet">' + bulletChar + '</span>';
         chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -501,7 +491,6 @@ void main() {
       const modelBubble = document.createElement("div");
       modelBubble.className = "message model-message";
       chatContainer.appendChild(modelBubble);
-      // Use the streaming function to append tokens immediately.
       streamModelResponse(userText, modelBubble);
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
