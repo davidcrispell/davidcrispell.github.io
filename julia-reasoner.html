@@ -2,67 +2,200 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Julia - Your New Reasoning Model</title>
   <style>
     /* General Page Styles */
     html, body {
       height: 100%;
+      width: 100%;
       margin: 0;
-      overflow: hidden;
+      padding: 0;
       background: #000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      overflow: hidden;
+      font-family: Charter, 'Bitstream Charter', serif;
+      position: relative;
+      transition: all 2s ease;
+    }
+    body.dialogue-mode {
+      overflow: auto;
     }
 
-    /* Fluid Simulation (WebGL) Container */
+    /* Avatar */
     .viewport {
       width: 300px;
       height: 300px;
       border-radius: 50%;
       overflow: hidden;
       box-shadow: 0 0 15px rgba(0,0,0,0.5);
-      margin-bottom: 20px;
-      transition: width 0.2s ease, height 0.2s ease;
+      transition: all 1s ease; /* Smooth transitions for transforms / size */
+      cursor: default; /* Will become pointer only after initial message */
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
-    .viewport.active {
-      width: 315px;  /* 5% larger */
-      height: 315px;
+    /* While typing the initial message, scale up the avatar. */
+    .viewport.speakingInitial {
+      transform: translate(-50%, -50%) scale(1.1);
     }
+    /* For subsequent messages, a slight "speaking" bump. */
+    .viewport.speakingSubsequent {
+      transform: translate(-50%, -50%) scale(1.05);
+    }
+
+    /* Dialogue mode: smaller avatar in top-left corner */
+    .viewport.dialogue {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      transform: none; 
+      width: 80px;
+      height: 80px;
+      margin: 0;
+    }
+
     canvas {
       display: block;
       width: 100%;
       height: 100%;
     }
 
-    /* Animated Text Styles */
-    #textOutput {
-      font-family: Charter, 'Bitstream Charter', serif;
-      font-size: 24px;
-      color: #fff;
-      white-space: pre-wrap;
+    /* Chat Interface Wrapper */
+    #chatWrapper {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      margin-top: calc(50vh + 180px); /* below the centered avatar */
+      transition: all 2s ease;
+    }
+    body.dialogue-mode #chatWrapper {
+      margin-top: 140px;
+    }
+
+    /* Chat Messages */
+    #chatContainer {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 10px;
+    }
+    .message {
+      padding: 10px 15px;
+      border-radius: 8px;
+      max-width: 80%;
+      word-wrap: break-word;
+      position: relative;
+      font-size: 20px;
+      line-height: 1.3;
+    }
+    .model-message.center {
+      align-self: center;
       text-align: center;
-      margin-top: 20px; /* Moved down to avoid collision with the circle */
+      background: #000;
+      color: #fff;
+    }
+    .model-message {
+      background: #000;
+      color: #fff;
+      align-self: flex-start;
+    }
+    .user-message {
+      background: #ccc;
+      color: #000;
+      align-self: flex-end;
     }
     .blinkingBullet {
       display: inline-block;
-      width: 1em; /* Reserve space to avoid layout shifts */
+      width: 1em; /* ensures no shift when toggling bullet vs space */
+    }
+
+    /* User Input at Bottom */
+    #userInputContainer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 2s ease;
+      background: #000;
+      padding: 10px;
+    }
+    body.dialogue-mode #userInputContainer {
+      opacity: 1;
+    }
+    #userInputRow {
+      display: flex;
+      gap: 10px;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    /* User text will be white on black */
+    #userInput {
+      flex-grow: 1;
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      caret-color: #fff;
+    }
+    #userInput::placeholder {
+      color: #444;
+    }
+    #sendButton {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      background: #444;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    /* Prompt with fixed width, so toggling won't shift layout */
+    #blinkPrompt {
+      display: inline-block;
+      width: 1em;
+      text-align: center;
+      color: #fff;
+      font-size: 18px;
+      font-family: monospace;
+      margin-right: 5px;
     }
   </style>
 </head>
 <body>
-  <!-- Fluid simulation viewport -->
-  <div class="viewport">
+  <!-- Julia Avatar -->
+  <div class="viewport" id="avatarViewport">
     <canvas id="fluidCanvas"></canvas>
   </div>
 
-  <!-- Text output container for the animated message -->
-  <div id="textOutput"></div>
+  <!-- Chat Interface -->
+  <div id="chatWrapper">
+    <div id="chatContainer">
+      <!-- First model message (initial) -->
+      <div id="initialMessageBubble" class="message model-message center"></div>
+    </div>
+  </div>
+
+  <!-- User Input at Bottom -->
+  <div id="userInputContainer">
+    <div id="userInputRow">
+      <!-- Prompt in sync with bullet blinking, but won't move when toggling -->
+      <span id="blinkPrompt">&gt;</span>
+      <input type="text" id="userInput" placeholder="Type your message..."/>
+      <button id="sendButton">Send</button>
+    </div>
+  </div>
 
   <script>
-    /***************** WEBGL FLUID SIMULATION *****************/
+    /*************** WEBGL FLUID SIMULATION ****************/
     (function () {
       const canvas = document.getElementById("fluidCanvas");
       const gl = canvas.getContext("webgl");
@@ -71,14 +204,12 @@
         return;
       }
 
-      // Resize the canvas to match its container.
       function resizeCanvas() {
         canvas.width = canvas.clientWidth;
         canvas.height = canvas.clientHeight;
         gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
       }
 
-      // Vertex shader.
       const vsSource = `
         attribute vec2 a_position;
         varying vec2 v_uv;
@@ -88,7 +219,6 @@
         }
       `;
 
-      // Fragment shader.
       const fsSource = `
         precision mediump float;
         uniform float u_time;
@@ -98,13 +228,11 @@
         uniform vec3 u_color1;
         uniform vec3 u_color2;
         varying vec2 v_uv;
-        
-        // Pseudo-random function.
+
         float random(in vec2 st) {
           return fract(sin(dot(st, vec2(12.9898,78.233))) * 43758.5453123);
         }
-        
-        // 2D noise function.
+
         float noise(in vec2 st) {
           vec2 i = floor(st);
           vec2 f = fract(st);
@@ -117,36 +245,29 @@
                  (c - a) * u.y * (1.0 - u.x) +
                  (d - b) * u.x * u.y;
         }
-        
+
         void main() {
           vec2 st = v_uv * 3.0;
-          
-          // Create a drifting effect.
           vec2 drift;
           drift.x = noise(vec2(u_time * 0.4, st.y)) - 0.5;
           drift.y = noise(vec2(st.x, u_time * 0.4)) - 0.5;
           st += drift * 0.3;
-          
-          // Blend two noise layers.
+
           float n1 = noise(st + u_time * 0.2);
           float n2 = noise(st * 1.5 - u_time * 0.3);
           float combinedNoise = mix(n1, n2, 0.5);
-          
-          // Create a base noise mask.
           float baseMask = smoothstep(0.35, 0.65, combinedNoise);
-          
-          // Since there is no interactivity, these values remain fixed.
+
+          // Example "interaction" placeholders
           float d = distance(v_uv, u_mouse);
           float interactiveRepel = (1.0 - smoothstep(0.0, 0.3, d)) * u_click * 0.3;
           float mixFactor = clamp(baseMask - interactiveRepel, 0.0, 1.0);
-          
-          // Blend the two colors.
+
           vec3 finalColor = mix(u_color1, u_color2, mixFactor);
           gl_FragColor = vec4(finalColor, 1.0);
         }
       `;
 
-      // Helper function to compile a shader.
       function createShader(gl, type, source) {
         const shader = gl.createShader(type);
         gl.shaderSource(shader, source);
@@ -162,7 +283,6 @@
       const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
       const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
 
-      // Create and link the program.
       const program = gl.createProgram();
       gl.attachShader(program, vertexShader);
       gl.attachShader(program, fragmentShader);
@@ -173,7 +293,6 @@
       }
       gl.useProgram(program);
 
-      // Set up a full-screen quad.
       const positionBuffer = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
       const positions = [
@@ -190,13 +309,12 @@
       gl.enableVertexAttribArray(positionLocation);
       gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
-      // Get uniform locations.
-      const u_timeLoc = gl.getUniformLocation(program, "u_time");
+      const u_timeLoc       = gl.getUniformLocation(program, "u_time");
       const u_resolutionLoc = gl.getUniformLocation(program, "u_resolution");
-      const u_mouseLoc = gl.getUniformLocation(program, "u_mouse");
-      const u_clickLoc = gl.getUniformLocation(program, "u_click");
-      const u_color1Loc = gl.getUniformLocation(program, "u_color1");
-      const u_color2Loc = gl.getUniformLocation(program, "u_color2");
+      const u_mouseLoc      = gl.getUniformLocation(program, "u_mouse");
+      const u_clickLoc      = gl.getUniformLocation(program, "u_click");
+      const u_color1Loc     = gl.getUniformLocation(program, "u_color1");
+      const u_color2Loc     = gl.getUniformLocation(program, "u_color2");
 
       let startTime = Date.now();
 
@@ -205,90 +323,199 @@
         const currentTime = (Date.now() - startTime) / 1000;
         gl.uniform1f(u_timeLoc, currentTime);
         gl.uniform2f(u_resolutionLoc, canvas.width, canvas.height);
-        gl.uniform2f(u_mouseLoc, 0.5, 0.5);  // Fixed center value.
-        gl.uniform1f(u_clickLoc, 0.0);         // No interactive click.
-        // Set the colors.
+
+        // Hard-coded placeholders for the "mouse" and "click"
+        gl.uniform2f(u_mouseLoc, 0.5, 0.5);
+        gl.uniform1f(u_clickLoc, 0.0);
+
+        // Colors
         gl.uniform3f(u_color1Loc, 0.502, 0.7, 1.0);
         gl.uniform3f(u_color2Loc, 0.2, 0, 0.8);
+
         gl.drawArrays(gl.TRIANGLES, 0, 6);
         requestAnimationFrame(render);
       }
       requestAnimationFrame(render);
     })();
 
-    /***************** TEXT ANIMATION & CIRCLE RESIZING *****************/
+    /*************** TEXT & BLINK SYNC ***************/
     const bulletChar = "●";
     let currentBlinkInterval = null;
     let isAnimating = false;
     let currentSkipFunction = null;
-    let currentWords = [];
-    let textGenerationTimer;
 
-    // Function to enlarge the circle during active text generation
-    function enlargeCircle() {
-      const viewport = document.querySelector('.viewport');
-      viewport.classList.add('active');
-      if (textGenerationTimer) clearTimeout(textGenerationTimer);
-      textGenerationTimer = setTimeout(() => {
-        viewport.classList.remove('active');
-      }, 500); // 500ms pause triggers shrink back to normal size
-    }
+    const avatar = document.getElementById("avatarViewport");
+    const blinkPrompt = document.getElementById("blinkPrompt");
 
-    function animateText(element, text, callback) {
+    // Animate text with optional "initial" parameter
+    function animateText(element, text, callback, isInitial = false) {
       isAnimating = true;
-      let chars = text.split("");
+
+      // If this is the initial message, enlarge more
+      if (isInitial) {
+        avatar.classList.add("speakingInitial");
+      } else {
+        // For subsequent model messages, do a slight scale
+        avatar.classList.add("speakingSubsequent");
+      }
+
+      const chars = text.split("");
       let currentCharIndex = 0;
       element.innerHTML = "";
+
+      // If there's a blinking interval running, clear it
       if (currentBlinkInterval) {
         clearInterval(currentBlinkInterval);
         currentBlinkInterval = null;
       }
-      let charInterval = setInterval(() => {
+
+      const charInterval = setInterval(() => {
         if (currentCharIndex < chars.length) {
           const baseText = chars.slice(0, currentCharIndex + 1).join("");
           element.innerHTML = baseText + ' <span class="blinkingBullet">' + bulletChar + '</span>';
           currentCharIndex++;
-          // Each time a character is added, enlarge the circle.
-          enlargeCircle();
         } else {
+          // Typing done
           clearInterval(charInterval);
-          currentWords = chars;
           let showBullet = true;
           const baseText = chars.join("");
+
+          // Start blinking bullet and prompt in sync
           currentBlinkInterval = setInterval(() => {
-            element.innerHTML = baseText + ' <span class="blinkingBullet">' + (showBullet ? bulletChar : "&nbsp;") + '</span>';
+            // Bullet toggles
+            element.innerHTML = baseText + ' <span class="blinkingBullet">'
+              + (showBullet ? bulletChar : '\u00A0') + '</span>';
+
+            // Prompt toggles (but doesn't shift because #blinkPrompt has fixed width)
+            blinkPrompt.textContent = showBullet ? '>' : '\u00A0';
+
             showBullet = !showBullet;
           }, 500);
+
+          // Remove "speaking" classes
+          if (isInitial) {
+            avatar.classList.remove("speakingInitial");
+          } else {
+            avatar.classList.remove("speakingSubsequent");
+          }
+
           isAnimating = false;
           currentSkipFunction = null;
           if (callback) callback();
         }
-      }, 50); // Adjust typing speed as desired.
-      
-      // Function to immediately complete the animation.
+      }, 50);
+
+      // Allow skipping the typing animation
       currentSkipFunction = function() {
         clearInterval(charInterval);
-        if (currentBlinkInterval) { clearInterval(currentBlinkInterval); currentBlinkInterval = null; }
-        currentWords = chars;
-        let showBullet = true;
+        if (currentBlinkInterval) {
+          clearInterval(currentBlinkInterval);
+          currentBlinkInterval = null;
+        }
         const baseText = chars.join("");
-        currentBlinkInterval = setInterval(() => {
-          element.innerHTML = baseText + ' <span class="blinkingBullet">' + (showBullet ? bulletChar : "&nbsp;") + '</span>';
-          showBullet = !showBullet;
-        }, 500);
         element.innerHTML = baseText + ' <span class="blinkingBullet">' + bulletChar + '</span>';
+        blinkPrompt.textContent = '>';
+
+        // Remove "speaking" classes
+        if (isInitial) {
+          avatar.classList.remove("speakingInitial");
+        } else {
+          avatar.classList.remove("speakingSubsequent");
+        }
+
         isAnimating = false;
         currentSkipFunction = null;
         if (callback) callback();
       };
     }
 
-    // Start the animated text 3 seconds after the page loads.
+    // Transition to dialogue mode: smaller avatar top-left
+    function enterDialogueMode() {
+      document.body.classList.add("dialogue-mode");
+      avatar.classList.add("dialogue");
+      avatar.style.cursor = "default"; // no longer pointer
+    }
+
+    // Model response example
+    function addModelResponse(userText) {
+      // Remove blinking bullet from old messages
+      document.querySelectorAll(".model-message .blinkingBullet").forEach(el => {
+        el.style.display = "none";
+      });
+
+      const chatContainer = document.getElementById("chatContainer");
+      const modelBubble = document.createElement("div");
+      modelBubble.className = "message model-message";
+      chatContainer.appendChild(modelBubble);
+
+      // Animate a dummy response
+      animateText(modelBubble, "This is a dummy response to: " + userText, null, false);
+      modelBubble.scrollIntoView({ behavior: "smooth" });
+    }
+
+    // User message bubble
+    function addUserMessage(message) {
+      const chatContainer = document.getElementById("chatContainer");
+      const userBubble = document.createElement("div");
+      userBubble.className = "message user-message";
+      userBubble.textContent = message;
+      chatContainer.appendChild(userBubble);
+      userBubble.scrollIntoView({ behavior: "smooth" });
+    }
+
+    // Initialize send button / input
+    function setupUserInput() {
+      const sendButton = document.getElementById("sendButton");
+      const userInput = document.getElementById("userInput");
+
+      // Prevent sending messages if the model is typing
+      sendButton.addEventListener("click", () => {
+        if (isAnimating) return;
+        const message = userInput.value.trim();
+        if (message === "") return;
+
+        addUserMessage(message);
+        userInput.value = "";
+
+        // Simulate model reply
+        setTimeout(() => {
+          addModelResponse(message);
+        }, 500);
+      });
+
+      userInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          if (isAnimating) return;
+          sendButton.click();
+        }
+      });
+    }
+
+    // Click behavior for the avatar (to move to dialogue mode)
+    function enableAvatarClick() {
+      avatar.style.cursor = "pointer";
+      avatar.addEventListener("click", () => {
+        // Once clicked, shrink and move to top-left corner
+        enterDialogueMode();
+        setupUserInput();
+      }, { once: true });
+    }
+
+    // Wait 2 seconds on load, then type out the initial greeting
     window.addEventListener("load", () => {
+      const initialBubble = document.getElementById("initialMessageBubble");
+
       setTimeout(() => {
-        const textOutput = document.getElementById("textOutput");
-        animateText(textOutput, "Hi, I'm Julia, your new reasoning model.");
-      }, 300);
+        animateText(
+          initialBubble,
+          "Hi, I'm Julia, your new reasoning model.",
+          // After done typing, enable click on the avatar
+          () => {
+            enableAvatarClick();
+          },
+          true // isInitial = true -> bigger scale
+        );
+      }, 2000);
     });
   </script>
 </body>
