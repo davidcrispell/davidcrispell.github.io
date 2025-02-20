@@ -87,7 +87,8 @@
       mangle: false,
       sanitize: false,
       smartLists: true,
-      smartypants: true
+      smartypants: true,
+      xhtml: false
     });
 
     // Function to process thought sections in the text
@@ -97,18 +98,8 @@
       return text.replace(thoughtRegex, (match, content) => {
         index++;
         // Process the content with marked first
-        const processedContent = marked.parse(content);
-        return `
-          <div class="thought-container">
-            <div class="thought-header" data-thought="${index}">
-              <span class="thought-toggle">▶</span>
-              <span>Thought Process</span>
-            </div>
-            <div class="thought-content">
-              ${processedContent}
-            </div>
-          </div>
-        `;
+        const processedContent = marked.parse(content.trim());
+        return `<div class="thought-container"><div class="thought-header" data-thought="${index}"><span class="thought-toggle">▶</span><span>Thought Process</span></div><div class="thought-content">${processedContent}</div></div>`;
       });
     }
 
@@ -249,20 +240,30 @@
       position: relative;
       font-size: 20px;
       line-height: 1.3;
+      display: flex;
+      flex-direction: column;
     }
     .message-content {
       white-space: pre-wrap;
+      margin: 0;
+      padding: 0;
+      min-height: 0;
+      display: inline;
     }
-    /* Markdown Styles */
-    .message-content p {
-      margin: 0.5em 0;
-    }
-    .message-content p:first-child {
+    .message-content > *:first-child {
       margin-top: 0;
     }
-    .message-content p:last-child {
+    .message-content > *:last-child {
       margin-bottom: 0;
     }
+    .message-content p {
+      margin: 0;
+      padding: 0;
+    }
+    .message-content p + p {
+      margin-top: 0.5em;
+    }
+    /* Markdown Styles */
     .message-content code {
       background: rgba(255, 255, 255, 0.1);
       padding: 2px 4px;
@@ -328,14 +329,15 @@
       align-self: flex-end;
     }
     .blinkingBullet {
-      display: inline-block;
-      width: 1em;
+      display: inline;
+      width: auto;
       text-align: center;
       color: #fff;
       font-size: 18px;
       font-family: monospace;
-      margin-left: 5px;
+      margin-left: 2px;
       animation: blink 1s infinite;
+      vertical-align: middle;
     }
     @keyframes blink {
       0%, 49.99% { opacity: 1; }
@@ -433,7 +435,7 @@
 
     /* Thought Process Styling */
     .thought-container {
-      margin: 0.5em 0;
+      margin: 0;
       border-left: 2px solid rgba(128, 128, 255, 0.5);
       overflow: hidden;
     }
@@ -447,6 +449,8 @@
       font-size: 0.9em;
       user-select: none;
       background: rgba(128, 128, 255, 0.05);
+      margin: 0;
+      line-height: 1;
     }
     .thought-header:hover {
       background: rgba(128, 128, 255, 0.1);
@@ -458,12 +462,13 @@
       text-align: center;
       line-height: 12px;
       transition: transform 0.2s ease;
+      margin: 0;
     }
     .thought-toggle.expanded {
       transform: rotate(90deg);
     }
     .thought-content {
-      max-height: 0;
+      height: 0;
       padding: 0;
       margin: 0;
       opacity: 0;
@@ -471,16 +476,18 @@
       transition: all 0.3s ease-out;
       overflow: hidden;
       position: relative;
+      line-height: 1.3;
     }
     .thought-content.expanded {
-      max-height: 1000px;
+      height: auto;
       padding: 8px;
       opacity: 0.8;
       visibility: visible;
-      transition: all 0.5s ease-in;
+      transition: all 0.3s ease-in;
     }
     .thought-content > * {
       margin: 0;
+      padding: 0;
     }
     .thought-content > * + * {
       margin-top: 0.5em;
@@ -808,11 +815,11 @@
       modelBubble.className = "message model-message";
       const contentDiv = document.createElement("div");
       contentDiv.className = "message-content modelContent";
-      modelBubble.appendChild(contentDiv);
       const bulletSpan = document.createElement("span");
       bulletSpan.className = "blinkingBullet";
       bulletSpan.textContent = bulletChar;
-      modelBubble.appendChild(bulletSpan);
+      contentDiv.appendChild(bulletSpan);
+      modelBubble.appendChild(contentDiv);
       chatContainer.appendChild(modelBubble);
       streamModelResponse(userText, contentDiv, bulletSpan);
     }
@@ -822,7 +829,10 @@
       userBubble.className = "message user-message";
       const contentDiv = document.createElement("div");
       contentDiv.className = "message-content";
-      contentDiv.innerHTML = marked.parse(message);
+      // Trim the message and parse it with marked
+      const parsedContent = marked.parse(message.trim());
+      // Remove any trailing newlines from the parsed content
+      contentDiv.innerHTML = parsedContent.replace(/\n+$/, '');
       userBubble.appendChild(contentDiv);
       chatContainer.appendChild(userBubble);
       chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -876,7 +886,7 @@
           newInitialBubble.className = "message model-message center";
           chatContainer.appendChild(newInitialBubble);
           newInitialBubble.textContent = "";
-          typeOutText(newInitialBubble, "Hi, I'm Julia, your new reasoning model.", 5, true);
+          typeOutText(newInitialBubble, "Hi, I'm Julia, your new reasoning model.", 50, true);
           canClickAvatar = true;
         }, 2000);
       } else {
