@@ -240,15 +240,13 @@
       position: relative;
       font-size: 20px;
       line-height: 1.3;
-      display: flex;
-      flex-direction: column;
     }
     .message-content {
       white-space: pre-wrap;
       margin: 0;
       padding: 0;
       min-height: 0;
-      display: inline;
+      display: inline-block;
     }
     .message-content > *:first-child {
       margin-top: 0;
@@ -329,7 +327,7 @@
       align-self: flex-end;
     }
     .blinkingBullet {
-      display: inline;
+      display: inline-block;
       width: auto;
       text-align: center;
       color: #fff;
@@ -337,7 +335,8 @@
       font-family: monospace;
       margin-left: 2px;
       animation: blink 1s infinite;
-      vertical-align: middle;
+      vertical-align: baseline;
+      line-height: inherit;
     }
     @keyframes blink {
       0%, 49.99% { opacity: 1; }
@@ -757,7 +756,7 @@
                 fullResponse += token;
                 update(fullResponse);
                 if (!bulletElement.parentNode) {
-                  contentElement.parentNode.appendChild(bulletElement);
+                  contentElement.appendChild(bulletElement);
                 }
                 chatContainer.scrollTop = chatContainer.scrollHeight;
               } catch (e) {
