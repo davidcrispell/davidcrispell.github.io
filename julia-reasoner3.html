@@ -166,16 +166,22 @@
       color: #444;
     }
     /* Send Button as a circle that scales on click and transitions background-color */
-    #sendButton {
-      width: 40px;
-      height: 40px;
-      border: none;
-      border-radius: 50%;
-      background: #444;
-      cursor: pointer;
-      transition: transform 0.2s ease, background-color 0.2s ease;
-      outline: none;
-    }
+#sendButton {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: #444;
+  cursor: pointer;
+  padding: 8px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  outline: none;
+  clip-path: inset(0 round 15px); /* Clips the button into a squircle shape */
+}
+
     #sendButton:active {
       transform: scale(1.2);
     }
