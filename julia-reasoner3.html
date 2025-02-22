@@ -13,6 +13,10 @@
   <!-- Add marked-katex-extension -->
   <script src="https://cdn.jsdelivr.net/npm/marked-katex-extension/lib/index.umd.js"></script>
   <style>
+    :root {
+      /* Default primary color – update dynamically via JS when the user changes color1 */
+      --avatar-color: #80b2ff;
+    }
     /* General Page Styles with a Modern Font */
     html, body {
       height: 100%;
@@ -278,77 +282,20 @@
       background: none;
       padding: 0;
     }
-    /* Thought Process Styling */
-    .thought-container {
-      margin: 0;
-      padding: 0;
-      border-left: 2px solid rgba(128, 128, 255, 0.5);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      line-height: 1.3;
-    }
-    .thinking-indicator {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: rgba(128, 128, 255, 0.8);
-      font-size: 0.9em;
-      padding: 4px 8px;
-      background: rgba(128, 128, 255, 0.05);
-      margin: 0;
-      line-height: 1;
-    }
-    .thinking-timer {
-      color: rgba(128, 128, 255, 0.6);
-      font-family: monospace;
-    }
-    .thought-header {
-      display: flex;
-      align-items: center;
-      gap: 3px;
-      padding: 4px 8px;
-      cursor: pointer;
-      color: rgba(128, 128, 255, 0.8);
-      font-size: 0.9em;
-      user-select: none;
-      background: rgba(128, 128, 255, 0.05);
-      margin: 0;
-      line-height: 1;
-    }
-    .thought-toggle {
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      text-align: center;
-      line-height: 12px;
-      transition: transform 0.2s ease;
-      margin: 0;
-    }
-    .thought-toggle.expanded {
-      transform: rotate(90deg);
-    }
-    .thought-content {
-      height: 0;
-      padding: 0;
-      margin: 0;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease-out;
-      overflow: hidden;
-      position: relative;
-      line-height: 1.3;
-    }
-    .thought-content.expanded {
-      height: auto;
+    /* New Thinking Box Styles */
+    .thinking-box {
+      border: 2px solid var(--avatar-color);
+      border-radius: 10px;
       padding: 8px;
-      opacity: 0.8;
-      visibility: visible;
-      transition: all 0.3s ease-in;
+      margin-bottom: 10px;
+      max-height: 3.6em; /* approx. 3 lines */
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      cursor: pointer;
+      transition: max-height 0.3s ease;
     }
-    .thought-content > * {
-      margin: 0;
-      padding: 0;
+    .thinking-box.expanded {
+      max-height: 200px; /* or 'none' for full height */
     }
   </style>
   <script>
@@ -423,7 +370,7 @@
       xhtml: false
     });
 
-    // Function to process thought sections in the text
+    // Function to process thought sections in the text (if needed)
     function processThoughts(text) {
       const thoughtRegex = /<think>([\s\S]*?)<\/think>/g;
       let index = 0;
@@ -434,7 +381,7 @@
       });
     }
 
-    // Function to setup thought section click handlers and timers
+    // Function to setup thought section click handlers and timers (if needed)
     function setupThoughtHandlers(element) {
       element.querySelectorAll('.thought-container').forEach(container => {
         const thinkingIndicator = container.querySelector('.thinking-indicator');
@@ -689,6 +636,11 @@
           color2 = hexToRgb(color2Picker.value);
           color3 = hexToRgb(color3Picker.value);
           window.avatarColor = color1;
+          // Update the CSS variable for the avatar's primary color:
+          document.documentElement.style.setProperty(
+            '--avatar-color',
+            `rgb(${Math.round(color1.r * 255)}, ${Math.round(color1.g * 255)}, ${Math.round(color1.b * 255)})`
+          );
         }
         
         color1Picker.addEventListener("input", updateColors);
@@ -751,39 +703,6 @@
       }
     ];
     
-    function typeOutText(element, text, interval, animate = false) {
-      return new Promise(resolve => {
-        const avatar = document.getElementById("avatarViewport");
-        if (animate) {
-          avatar.classList.add("speaking");
-        }
-        element.innerHTML = "";
-        const textNode = document.createTextNode("");
-        element.appendChild(textNode);
-        const bulletSpan = document.createElement("span");
-        bulletSpan.className = "blinkingBullet";
-        bulletSpan.textContent = "●";
-        element.appendChild(bulletSpan);
-        let i = 0;
-        function addChar() {
-          if (i < text.length) {
-            textNode.nodeValue = text.substring(0, i + 1);
-            i++;
-            setTimeout(addChar, interval);
-          } else {
-            if (animate) {
-              avatar.classList.remove("speaking");
-            }
-            resolve();
-          }
-        }
-        addChar();
-      });
-    }
-    
-    const initialBubble = document.getElementById("initialMessageBubble");
-    const chatContainer = document.getElementById("chatContainer");
-    
     async function streamModelResponse(userText, contentElement, bulletElement) {
       const sendButton = document.getElementById("sendButton");
       if (window.avatarColor) {
@@ -813,23 +732,17 @@
         const decoder = new TextDecoder();
         let buffer = "";
         let fullResponse = "";
+        let thinkingContent = "";
         let visibleResponse = "";
-        let thoughtBuffer = "";
-        let hasThoughts = false;
         let inThought = false;
         
-        contentElement.innerHTML = `<div class="thought-container" style="display: none"></div><div class="visible-content"></div>`;
-        const thoughtContainer = contentElement.querySelector('.thought-container');
+        // Set up the contentElement with a dedicated thinking box above the main response.
+        contentElement.innerHTML = `
+          <div class="thinking-box"></div>
+          <div class="visible-content"></div>
+        `;
+        const thinkingBoxDiv = contentElement.querySelector('.thinking-box');
         const visibleContentDiv = contentElement.querySelector('.visible-content');
-        
-        const startTime = Date.now();
-        const timerInterval = setInterval(() => {
-          const timer = contentElement.querySelector('.thinking-timer');
-          if (timer) {
-            const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-            timer.textContent = elapsed + 's';
-          }
-        }, 100);
         
         let done = false;
         while (!done) {
@@ -841,7 +754,7 @@
           buffer += decoder.decode(value, { stream: true });
           const lines = buffer.split("\n");
           buffer = lines.pop();
-          for (const line of lines) {
+          for (let line of lines) {
             if (line.startsWith("data: ")) {
               const jsonStr = line.substring(6).trim();
               if (jsonStr === "[DONE]") {
@@ -850,24 +763,28 @@
               }
               try {
                 const parsed = JSON.parse(jsonStr);
-                const token = parsed.choices[0].delta?.content || "";
+                let token = parsed.choices[0].delta?.content || "";
                 fullResponse += token;
+                // Process thinking tokens
                 if (token.includes("<think>")) {
-                  hasThoughts = true;
                   inThought = true;
-                  thoughtContainer.style.display = "block";
-                  thoughtBuffer = visibleResponse;
-                  visibleResponse = "";
-                } else if (token.includes("</think>")) {
+                  token = token.replace("<think>", "");
+                }
+                if (token.includes("</think>")) {
                   inThought = false;
-                  visibleResponse = thoughtBuffer;
+                  token = token.replace("</think>", "");
                 }
-                if (!inThought) {
+                if (inThought) {
+                  thinkingContent += token;
+                  thinkingBoxDiv.innerHTML = marked.parse(thinkingContent);
+                  // Auto-scroll so new tokens are visible:
+                  thinkingBoxDiv.scrollTop = thinkingBoxDiv.scrollHeight;
+                } else {
                   visibleResponse += token;
-                  const trimmedResponse = visibleResponse.trim();
-                  visibleContentDiv.innerHTML = trimmedResponse ? marked.parse(trimmedResponse) : '';
+                  visibleContentDiv.innerHTML = marked.parse(visibleResponse.trim());
                 }
-                chatContainer.scrollTop = chatContainer.scrollHeight;
+                // Scroll chat container to bottom
+                document.getElementById("chatContainer").scrollTop = document.getElementById("chatContainer").scrollHeight;
               } catch (e) {
                 console.error("Error parsing JSON:", e);
               }
@@ -875,31 +792,10 @@
           }
         }
         
-        if (buffer) {
-          try {
-            const lines = buffer.split("\n");
-            for (const line of lines) {
-              if (line.startsWith("data: ") && line.trim() !== "data: [DONE]") {
-                const jsonStr = line.substring(6).trim();
-                const parsed = JSON.parse(jsonStr);
-                const token = parsed.choices[0].delta?.content || "";
-                fullResponse += token;
-              }
-            }
-          } catch (e) {
-            console.error("Error parsing final buffer:", e);
-          }
-        }
-        
-        clearInterval(timerInterval);
-        
-        const markedText = marked.parse(fullResponse);
-        const processedText = hasThoughts ? processThoughts(markedText) : markedText;
-        contentElement.innerHTML = processedText;
-        if (hasThoughts) {
-          setupThoughtHandlers(contentElement);
-        }
-        chatContainer.scrollTop = chatContainer.scrollHeight;
+        // Add click handler to toggle expanded/collapsed state of the thinking box:
+        thinkingBoxDiv.addEventListener('click', () => {
+          thinkingBoxDiv.classList.toggle('expanded');
+        });
         
         // Add the assistant's response to conversation history.
         conversationHistory.push({ role: "assistant", content: fullResponse });
@@ -928,7 +824,7 @@
       bulletSpan.textContent = "●";
       contentSpan.appendChild(bulletSpan);
       modelBubble.appendChild(contentSpan);
-      chatContainer.appendChild(modelBubble);
+      document.getElementById("chatContainer").appendChild(modelBubble);
       streamModelResponse(userText, contentSpan, bulletSpan);
     }
     
@@ -940,8 +836,8 @@
       const parsedContent = marked.parse(message.trim());
       contentDiv.innerHTML = parsedContent.replace(/\n+$/, '');
       userBubble.appendChild(contentDiv);
-      chatContainer.appendChild(userBubble);
-      chatContainer.scrollTop = chatContainer.scrollHeight;
+      document.getElementById("chatContainer").appendChild(userBubble);
+      document.getElementById("chatContainer").scrollTop = document.getElementById("chatContainer").scrollHeight;
     }
     
     function setupUserInput() {
@@ -971,7 +867,7 @@
     function enterCenterMode() {
       transitionInProgress = true;
       canClickAvatar = false;
-      chatContainer.innerHTML = "";
+      document.getElementById("chatContainer").innerHTML = "";
       document.body.classList.remove("dialogue-mode");
       document.getElementById("avatarViewport").classList.remove("dialogue");
     }
@@ -986,7 +882,7 @@
           const newInitialBubble = document.createElement("div");
           newInitialBubble.id = "initialMessageBubble";
           newInitialBubble.className = "message model-message center";
-          chatContainer.appendChild(newInitialBubble);
+          document.getElementById("chatContainer").appendChild(newInitialBubble);
           newInitialBubble.textContent = "";
           typeOutText(newInitialBubble, "Hi, I'm Julia, your new reasoning model.", 50, true);
           canClickAvatar = true;
@@ -1009,12 +905,43 @@
     
     window.addEventListener("load", () => {
       setTimeout(() => {
+        const initialBubble = document.getElementById("initialMessageBubble");
         typeOutText(initialBubble, "Hi, I'm Julia, your new reasoning model.", 50, true)
           .then(() => {
             canClickAvatar = true;
           });
       }, 2000);
     });
+    
+    function typeOutText(element, text, interval, animate = false) {
+      return new Promise(resolve => {
+        const avatar = document.getElementById("avatarViewport");
+        if (animate) {
+          avatar.classList.add("speaking");
+        }
+        element.innerHTML = "";
+        const textNode = document.createTextNode("");
+        element.appendChild(textNode);
+        const bulletSpan = document.createElement("span");
+        bulletSpan.className = "blinkingBullet";
+        bulletSpan.textContent = "●";
+        element.appendChild(bulletSpan);
+        let i = 0;
+        function addChar() {
+          if (i < text.length) {
+            textNode.nodeValue = text.substring(0, i + 1);
+            i++;
+            setTimeout(addChar, interval);
+          } else {
+            if (animate) {
+              avatar.classList.remove("speaking");
+            }
+            resolve();
+          }
+        }
+        addChar();
+      });
+    }
   </script>
 </body>
 </html>
