@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Julia - Your New Reasoning Model</title>
   <style>
-    /* General Page Styles */
+    /* General Page Styles with Modern Font */
     html, body {
       height: 100%;
       width: 100%;
@@ -13,7 +13,7 @@
       padding: 0;
       background: #000;
       overflow: hidden;
-      font-family: Charter, 'Bitstream Charter', serif;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       position: relative;
       transition: all 2s ease;
     }
@@ -22,8 +22,8 @@
     }
     /* Avatar */
     .viewport {
-      width: 200px;
-      height: 200px;
+      width: 150px;
+      height: 150px;
       border-radius: 50%;
       overflow: hidden;
       box-shadow: 0 0 15px rgba(0,0,0,0.5);
@@ -56,13 +56,14 @@
       width: 100%;
       height: 100%;
     }
-    /* Chat Interface Wrapper */
+    /* Chat Interface Wrapper – wider chatbox */
     #chatWrapper {
-      width: 100%;
-      max-width: 600px;
+      width: 90%;
+      max-width: 800px;
       margin: 0 auto;
       margin-top: calc(50vh + 180px);
       transition: all 2s ease;
+      overflow-x: hidden;
     }
     body.dialogue-mode #chatWrapper {
       margin-top: 140px;
@@ -80,55 +81,49 @@
     .message {
       padding: 10px 15px;
       border-radius: 8px;
-      max-width: 80%;
-      word-wrap: break-word;
-      position: relative;
       font-size: 20px;
       line-height: 1.3;
+      white-space: normal;
+      word-wrap: break-word;
     }
-    .model-message.center {
-      align-self: center;
-      text-align: center;
-      background: #000;
-      color: #fff;
-    }
+    /* Model messages: centered bubble, left-justified text */
     .model-message {
       background: #000;
       color: #fff;
-      align-self: flex-start;
+      margin: 0 auto;
+      text-align: left;
+      max-width: 90%;
     }
+    /* Center initial bubble specifically */
+    .model-message.center {
+      align-self: center;
+    }
+    /* User messages: right-justified and narrower */
     .user-message {
       background: #ccc;
       color: #000;
-      align-self: flex-end;
+      margin-left: auto;
+      text-align: right;
+      max-width: 70%;
     }
-    .blinkingBullet {
-      display: inline-block;
-      width: 1em;
-      text-align: center;
-      color: #fff;
-      font-size: 18px;
-      font-family: monospace;
-      margin-left: 5px;
-      animation: blink 1s infinite;
-    }
-    @keyframes blink {
-      0%, 49.99% { opacity: 1; }
-      50%, 100% { opacity: 0; }
-    }
-    /* User Input at Bottom */
+    /* Rounded User Input Box at Bottom – wider input container */
     #userInputContainer {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #000;
+      padding: 10px 20px;
+      border: 2px solid #444;
+      border-radius: 25px;
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 10px;
       opacity: 0;
       transition: opacity 2s ease;
-      background: #000;
-      padding: 10px;
+      z-index: 10;
+      width: 90%;
+      max-width: 1000px;
     }
     body.dialogue-mode #userInputContainer {
       opacity: 1;
@@ -136,38 +131,40 @@
     #userInputRow {
       display: flex;
       gap: 10px;
-      max-width: 600px;
       width: 100%;
+      align-items: center;
     }
+    /* Changed to textarea for wrapping text */
     #userInput {
       flex-grow: 1;
       background: #000;
       color: #fff;
       border: none;
-      border-radius: 4px;
+      border-radius: 20px;
       font-size: 16px;
+      padding: 8px 12px;
       caret-color: #fff;
+      resize: none;
+      overflow: hidden;
+      width: 100%;
     }
     #userInput::placeholder {
       color: #444;
     }
+    /* Send Button as a circle that scales on click */
     #sendButton {
-      padding: 10px 20px;
+      width: 40px;
+      height: 40px;
       border: none;
-      border-radius: 4px;
+      border-radius: 50%;
       background: #444;
-      color: #fff;
-      font-size: 16px;
       cursor: pointer;
+      transition: transform 0.2s ease;
+      /* Remove any text so it appears as a circle */
+      outline: none;
     }
-    #blinkPrompt {
-      display: inline-block;
-      width: 1em;
-      text-align: center;
-      color: #fff;
-      font-size: 18px;
-      font-family: monospace;
-      margin-right: 5px;
+    #sendButton:active {
+      transform: scale(1.2);
     }
     /* Edit Avatar Button (visible in the menu phase) */
     #editAvatarButton {
@@ -251,12 +248,13 @@
     </div>
   </div>
   
-  <!-- User Input -->
+  <!-- User Input (Rounded Box) -->
   <div id="userInputContainer">
     <div id="userInputRow">
-      <span id="blinkPrompt">&gt;</span>
-      <input type="text" id="userInput" placeholder="Type your message..."/>
-      <button id="sendButton">Send</button>
+      <!-- Changed to textarea for automatic wrapping -->
+      <textarea id="userInput" placeholder="Type your message..." rows="2"></textarea>
+      <!-- Send Button as a circle with no text -->
+      <button id="sendButton"></button>
     </div>
   </div>
   
@@ -554,7 +552,6 @@
       });
     }
     
-    const blinkPrompt = document.getElementById("blinkPrompt");
     const initialBubble = document.getElementById("initialMessageBubble");
     const chatContainer = document.getElementById("chatContainer");
     
@@ -648,7 +645,10 @@
         addModelResponse(message);
       });
       userInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") sendButton.click();
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendButton.click();
+        }
       });
     }
     
