@@ -4,171 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Julia - Your New Reasoning Model</title>
-  <!-- Add KaTeX CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous">
-  <!-- Add KaTeX JS -->
-  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" crossorigin="anonymous"></script>
-  <!-- Add marked library for markdown parsing -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <!-- Add marked-katex-extension -->
-  <script src="https://cdn.jsdelivr.net/npm/marked-katex-extension/lib/index.umd.js"></script>
-  <script>
-    // Configure marked options with KaTeX extension
-    const katexOptions = {
-      throwOnError: false,
-      displayMode: true,
-      output: 'html'
-    };
-
-    // Unified LaTeX extension that handles both inline and block math
-    const latexExtension = {
-      name: 'latex',
-      level: 'inline',
-      start(src) {
-        const match = src.match(/(?:\$\$|\$|\\\(|\\\[)/);
-        return match?.index;
-      },
-      tokenizer(src) {
-        // Handle block math first (double dollars or \[ \])
-        const blockRule = /^(?:\$\$([\s\S]*?)\$\$|\\\[([\s\S]*?)\\\])/;
-        let match = blockRule.exec(src);
-        if (match) {
-          const [raw, doubleDollar, bracket] = match;
-          const text = (doubleDollar || bracket || '').trim();
-          return {
-            type: 'latex',
-            raw,
-            text,
-            isBlock: true,
-            tokens: []
-          };
-        }
-
-        // Then handle inline math (single dollars or \( \))
-        const inlineRule = /^(?:\$([^\$\n]+?)\$|\\\(([^\)]+?)\\\))/;
-        match = inlineRule.exec(src);
-        if (match) {
-          const [raw, dollar, paren] = match;
-          const text = (dollar || paren || '').trim();
-          return {
-            type: 'latex',
-            raw,
-            text,
-            isBlock: false,
-            tokens: []
-          };
-        }
-      },
-      renderer(token) {
-        try {
-          return katex.renderToString(token.text, {
-            ...katexOptions,
-            displayMode: token.isBlock,
-            strict: false
-          });
-        } catch (error) {
-          console.error('KaTeX error:', error);
-          return token.isBlock ? 
-            `<div class="katex-error">${error.message}</div>` :
-            `<span class="katex-error-inline">${error.message}</span>`;
-        }
-      }
-    };
-
-    // Add the unified LaTeX extension
-    marked.use(
-      { extensions: [latexExtension] }
-    );
-
-    marked.setOptions({
-      breaks: false,
-      gfm: true,
-      headerIds: false,
-      mangle: false,
-      sanitize: false,
-      smartLists: true,
-      smartypants: true,
-      xhtml: false
-    });
-
-    // Function to process thought sections in the text
-    function processThoughts(text) {
-      const thoughtRegex = /<think>([\s\S]*?)<\/think>/g;
-      let index = 0;
-      return text.replace(thoughtRegex, (match, content) => {
-        index++;
-        // Process the content with marked first and ensure no extra whitespace
-        const processedContent = marked.parse(content.trim());
-        return `<div class="thought-container"><div class="thinking-indicator"><span class="blinkingBullet">●</span><span>thinking</span><span class="thinking-timer">0.0s</span></div><div class="thought-header" data-thought="${index}" style="display: none"><span class="thought-toggle">▶</span><span>Thought Process</span></div><div class="thought-content">${processedContent}</div></div>`;
-      });
-    }
-
-    // Function to setup thought section click handlers and timers
-    function setupThoughtHandlers(element) {
-      element.querySelectorAll('.thought-container').forEach(container => {
-        const thinkingIndicator = container.querySelector('.thinking-indicator');
-        const header = container.querySelector('.thought-header');
-        const content = container.querySelector('.thought-content');
-        const timer = container.querySelector('.thinking-timer');
-        
-        if (!thinkingIndicator || !header || !content) return;
-
-        // Start timer
-        let startTime = Date.now();
-        let timerInterval = setInterval(() => {
-          const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-          if (timer) timer.textContent = elapsed + 's';
-        }, 100);
-
-        // After a random delay between 0.5 and 2 seconds, show the thought process
-        setTimeout(() => {
-          clearInterval(timerInterval);
-          thinkingIndicator.style.display = 'none';
-          header.style.display = 'flex';
-          
-          header.addEventListener('click', () => {
-            header.querySelector('.thought-toggle').classList.toggle('expanded');
-            content.classList.toggle('expanded');
-          });
-        }, Math.random() * 1500 + 500);
-      });
-    }
-
-    // Batch update function for streaming responses
-    function batchUpdate(element, text, interval = 50) {
-      let lastUpdate = 0;
-      let pendingUpdate = false;
-      let lastText = '';
-      
-      return (newText) => {
-        if (newText === lastText) return;
-        
-        const now = Date.now();
-        if (now - lastUpdate > interval) {
-          const markedText = marked.parse(newText);
-          const processedText = processThoughts(markedText);
-          element.innerHTML = processedText;
-          setupThoughtHandlers(element);
-          lastUpdate = now;
-          pendingUpdate = false;
-          lastText = newText;
-        } else if (!pendingUpdate) {
-          pendingUpdate = true;
-          setTimeout(() => {
-            if (newText !== lastText) {
-              const markedText = marked.parse(newText);
-              const processedText = processThoughts(markedText);
-              element.innerHTML = processedText;
-              setupThoughtHandlers(element);
-              lastText = newText;
-            }
-            lastUpdate = Date.now();
-            pendingUpdate = false;
-          }, interval);
-        }
-      };
-    }
-  </script>
   <style>
     /* General Page Styles */
     html, body {
@@ -185,7 +20,6 @@
     body.dialogue-mode {
       overflow: auto;
     }
-
     /* Avatar */
     .viewport {
       width: 150px;
@@ -217,13 +51,11 @@
     .viewport.dialogue.speaking {
       transform: scale(1.1);
     }
-
     canvas {
       display: block;
       width: 100%;
       height: 100%;
     }
-
     /* Chat Interface Wrapper */
     #chatWrapper {
       width: 100%;
@@ -235,7 +67,6 @@
     body.dialogue-mode #chatWrapper {
       margin-top: 140px;
     }
-
     /* Chat Messages */
     #chatContainer {
       width: 100%;
@@ -255,76 +86,6 @@
       font-size: 20px;
       line-height: 1.3;
     }
-    .message-content {
-      white-space: pre-wrap;
-      margin: 0;
-      padding: 0;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      line-height: 1.3;
-    }
-    .message-content > * {
-      margin: 0;
-      padding: 0;
-    }
-    .message-content p {
-      margin: 0;
-      padding: 0;
-    }
-    .message-content p + p {
-      margin-top: 0.5em;
-    }
-    /* Markdown Styles */
-    .message-content code {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 2px 4px;
-      border-radius: 3px;
-      font-family: 'Courier New', Courier, monospace;
-    }
-    .message-content pre {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 10px;
-      border-radius: 4px;
-      overflow-x: auto;
-      margin: 0.5em 0;
-    }
-    .message-content pre code {
-      background: none;
-      padding: 0;
-    }
-    .message-content ul, .message-content ol {
-      margin: 0.5em 0;
-      padding-left: 20px;
-    }
-    .message-content blockquote {
-      border-left: 3px solid rgba(255, 255, 255, 0.3);
-      margin: 0.5em 0;
-      padding-left: 1em;
-      color: rgba(255, 255, 255, 0.8);
-    }
-    .message-content img {
-      max-width: 100%;
-      height: auto;
-    }
-    .message-content h1, .message-content h2, .message-content h3,
-    .message-content h4, .message-content h5, .message-content h6 {
-      margin: 0.5em 0;
-      font-weight: bold;
-    }
-    .message-content table {
-      border-collapse: collapse;
-      margin: 0.5em 0;
-      width: 100%;
-    }
-    .message-content th, .message-content td {
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 4px 8px;
-    }
-    .message-content th {
-      background: rgba(255, 255, 255, 0.1);
-    }
     .model-message.center {
       align-self: center;
       text-align: center;
@@ -343,21 +104,18 @@
     }
     .blinkingBullet {
       display: inline-block;
-      width: auto;
+      width: 1em;
       text-align: center;
       color: #fff;
       font-size: 18px;
       font-family: monospace;
-      margin-left: 2px;
+      margin-left: 5px;
       animation: blink 1s infinite;
-      vertical-align: baseline;
-      line-height: inherit;
     }
     @keyframes blink {
       0%, 49.99% { opacity: 1; }
       50%, 100% { opacity: 0; }
     }
-
     /* User Input at Bottom */
     #userInputContainer {
       position: fixed;
@@ -411,138 +169,89 @@
       font-family: monospace;
       margin-right: 5px;
     }
-
-    /* KaTeX Error Styling */
-    .katex-error {
-      color: #ff4444;
-      background: rgba(255, 68, 68, 0.1);
-      padding: 8px;
-      border-radius: 4px;
-      margin: 8px 0;
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 14px;
-    }
-    .katex-error-inline {
-      color: #ff4444;
-      background: rgba(255, 68, 68, 0.1);
-      padding: 2px 4px;
-      border-radius: 2px;
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 14px;
-    }
-
-    /* KaTeX Styling Adjustments */
-    .katex-display {
-      margin: 0.5em 0;
-      overflow-x: auto;
-      overflow-y: hidden;
-    }
-    .katex {
-      font-size: 1.1em;
-    }
-    .message.user-message .katex {
-      color: #000;
-    }
-    .message.model-message .katex {
+    /* Edit Avatar Button (visible in the menu phase) */
+    #editAvatarButton {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #444;
       color: #fff;
-    }
-
-    /* Thought Process Styling */
-    .thought-container {
-      margin: 0;
-      padding: 0;
-      border-left: 2px solid rgba(128, 128, 255, 0.5);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      line-height: 1.3;
-    }
-    .thinking-indicator {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: rgba(128, 128, 255, 0.8);
-      font-size: 0.9em;
-      padding: 4px 8px;
-      background: rgba(128, 128, 255, 0.05);
-      margin: 0;
-      line-height: 1;
-    }
-    .thinking-timer {
-      color: rgba(128, 128, 255, 0.6);
-      font-family: monospace;
-    }
-    .thought-header {
-      display: flex;
-      align-items: center;
-      gap: 3px;
-      padding: 4px 8px;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 12px;
       cursor: pointer;
-      color: rgba(128, 128, 255, 0.8);
-      font-size: 0.9em;
-      user-select: none;
-      background: rgba(128, 128, 255, 0.05);
-      margin: 0;
-      line-height: 1;
+      z-index: 20;
     }
-    .thought-toggle {
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      text-align: center;
-      line-height: 12px;
-      transition: transform 0.2s ease;
-      margin: 0;
+    /* Avatar Editor Control Panel */
+    #controlPanel {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.75);
+      padding: 10px;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 12px;
+      z-index: 30;
+      max-height: 90%;
+      overflow-y: auto;
+      cursor: move;
+      display: none; /* hidden by default */
     }
-    .thought-toggle.expanded {
-      transform: rotate(90deg);
+    #controlPanel h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      cursor: move;
     }
-    .thought-content {
-      height: 0;
+    .control-group {
+      margin-bottom: 10px;
+      border-bottom: 1px solid #555;
+      padding-bottom: 8px;
+    }
+    .control-group:last-of-type {
+      border-bottom: none;
+    }
+    .control-group label {
+      display: block;
+      margin-bottom: 6px;
+    }
+    .control-group input[type="range"] {
+      width: 200px;
+      margin-top: 4px;
+    }
+    .control-group small {
+      display: block;
+      margin-top: 4px;
+      color: #ccc;
+    }
+    .color-picker {
+      width: 100%;
+      height: 30px;
+      border: none;
       padding: 0;
-      margin: 0;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease-out;
-      overflow: hidden;
-      position: relative;
-      line-height: 1.3;
-    }
-    .thought-content.expanded {
-      height: auto;
-      padding: 8px;
-      opacity: 0.8;
-      visibility: visible;
-      transition: all 0.3s ease-in;
-    }
-    .thought-content > * {
-      margin: 0;
-      padding: 0;
-    }
-    .thought-content > * + * {
-      margin-top: 0.5em;
-    }
-    .visible-content {
-      margin: 0;
-      padding: 0;
-      display: inline;
+      margin: 4px 0;
+      background: none;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <!-- Julia Avatar -->
+  <!-- Edit Avatar Button -->
+  <button id="editAvatarButton">Edit Avatar</button>
+  
+  <!-- Avatar Canvas -->
   <div class="viewport" id="avatarViewport">
     <canvas id="fluidCanvas"></canvas>
   </div>
-
+  
   <!-- Chat Interface -->
   <div id="chatWrapper">
     <div id="chatContainer">
       <div id="initialMessageBubble" class="message model-message center"></div>
     </div>
   </div>
-
-  <!-- User Input at Bottom -->
+  
+  <!-- User Input -->
   <div id="userInputContainer">
     <div id="userInputRow">
       <span id="blinkPrompt">&gt;</span>
@@ -550,9 +259,34 @@
       <button id="sendButton">Send</button>
     </div>
   </div>
-
-  <!-- FLUID SIMULATION (Avatar) from the First Code Block -->
+  
+  <!-- Avatar Editor Control Panel -->
+  <div id="controlPanel">
+    <h3 id="dragHandle">Avatar Editor</h3>
+    <button id="closeEditorButton" style="background: #444; color: #fff; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer;">Close Editor</button>
+    <div class="control-group">
+      <label>
+        Layer 3 Contribution:
+        <input id="layer3Slider" type="range" min="0" max="1" step="0.01" value="1">
+      </label>
+      <small>0 = two‑color style; 1 = full three‑color style</small>
+    </div>
+    <div class="control-group">
+      <h4>Color 1</h4>
+      <input id="color1Picker" class="color-picker" type="color" value="#80b2ff">
+    </div>
+    <div class="control-group">
+      <h4>Color 2</h4>
+      <input id="color2Picker" class="color-picker" type="color" value="#3300cc">
+    </div>
+    <div class="control-group">
+      <h4>Color 3</h4>
+      <input id="color3Picker" class="color-picker" type="color" value="#ffb233">
+    </div>
+  </div>
+  
   <script>
+    /************** WEBGL FLUID SIMULATION WITH AVATAR EDITOR SUPPORT **************/
     (function () {
       const canvas = document.getElementById("fluidCanvas");
       const gl = canvas.getContext("webgl");
@@ -560,13 +294,14 @@
         console.error("WebGL not supported");
         return;
       }
-  
+      
       function resizeCanvas() {
         canvas.width = canvas.clientWidth;
         canvas.height = canvas.clientHeight;
         gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
       }
-  
+      
+      // Vertex shader (same for both modes)
       const vsSource = `
         attribute vec2 a_position;
         varying vec2 v_uv;
@@ -575,22 +310,23 @@
           gl_Position = vec4(a_position, 0.0, 1.0);
         }
       `;
-  
+      
+      // Fragment shader supports the u_layer3 uniform for avatar customization.
       const fsSource = `
         precision mediump float;
         uniform float u_time;
-        uniform vec2 u_resolution;
-        uniform vec2 u_mouse;
+        uniform vec2  u_resolution;
+        uniform vec2  u_mouse;
         uniform float u_click;
-        uniform vec3 u_color1;
-        uniform vec3 u_color2;
-        uniform vec3 u_color3;
+        uniform vec3  u_color1;
+        uniform vec3  u_color2;
+        uniform vec3  u_color3;
+        uniform float u_layer3;
         varying vec2 v_uv;
-  
+        
         float random(in vec2 st) {
           return fract(sin(dot(st, vec2(12.9898,78.233))) * 43758.5453123);
         }
-  
         float noise(in vec2 st) {
           vec2 i = floor(st);
           vec2 f = fract(st);
@@ -603,31 +339,32 @@
                  (c - a) * u.y * (1.0 - u.x) +
                  (d - b) * u.x * u.y;
         }
-  
+        
         void main() {
           vec2 st = v_uv * 3.0;
           vec2 drift;
           drift.x = noise(vec2(u_time * 0.4, st.y)) - 0.5;
           drift.y = noise(vec2(st.x, u_time * 0.4)) - 0.5;
           st += drift * 0.3;
-  
+          
           float n1 = noise(st + u_time * 0.2);
           float n2 = noise(st * 1.5 - u_time * 0.3);
           float combinedNoise = mix(n1, n2, 0.5);
           float baseMask = smoothstep(0.35, 0.65, combinedNoise);
-  
+          
           float d = distance(v_uv, u_mouse);
           float interactiveRepel = (1.0 - smoothstep(0.0, 0.3, d)) * u_click * 0.3;
           float mixFactor = clamp(baseMask - interactiveRepel, 0.0, 1.0);
-  
-          vec3 baseColor = mix(u_color1, u_color2, mixFactor);
-          float bubbleWeight = exp(-pow((mixFactor - 0.5) / 0.05, 2.0));
-          vec3 finalColor = mix(baseColor, u_color3, bubbleWeight);
-  
+          
+          vec3 twoColor = mix(u_color1, u_color2, mixFactor);
+          float bubbleWeight = exp(-pow((mixFactor - 0.5)/0.05, 2.0));
+          vec3 threeColor = mix(twoColor, u_color3, bubbleWeight);
+          vec3 finalColor = mix(twoColor, threeColor, u_layer3);
+          
           gl_FragColor = vec4(finalColor, 1.0);
         }
       `;
-  
+      
       function createShader(gl, type, source) {
         const shader = gl.createShader(type);
         gl.shaderSource(shader, source);
@@ -639,20 +376,20 @@
         }
         return shader;
       }
-  
+      
       const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
       const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
-  
+      
       const program = gl.createProgram();
       gl.attachShader(program, vertexShader);
       gl.attachShader(program, fragmentShader);
       gl.linkProgram(program);
       if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-        console.error("Program failed to link:", gl.getProgramInfoLog(program));
+        console.error("Program link error:", gl.getProgramInfoLog(program));
         return;
       }
       gl.useProgram(program);
-  
+      
       const positionBuffer = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
       const positions = [
@@ -664,11 +401,12 @@
          1,  1,
       ];
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
-  
+      
       const positionLocation = gl.getAttribLocation(program, "a_position");
       gl.enableVertexAttribArray(positionLocation);
       gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-  
+      
+      // Get uniform locations.
       const u_timeLoc       = gl.getUniformLocation(program, "u_time");
       const u_resolutionLoc = gl.getUniformLocation(program, "u_resolution");
       const u_mouseLoc      = gl.getUniformLocation(program, "u_mouse");
@@ -676,45 +414,128 @@
       const u_color1Loc     = gl.getUniformLocation(program, "u_color1");
       const u_color2Loc     = gl.getUniformLocation(program, "u_color2");
       const u_color3Loc     = gl.getUniformLocation(program, "u_color3");
-  
+      const u_layer3Loc     = gl.getUniformLocation(program, "u_layer3");
+      
+      // Default colors.
+      let color1 = { r: 0.512, g: 0.71, b: 1.0 };
+      let color2 = { r: 0.202, g: 0.3, b: 0.8 };
+      let color3 = { r: 0.502, g: 0.7, b: 1.0 };
+      let layer3 = 1.0; // full three‑color style
+      
       let startTime = Date.now();
-  
+      
       function render() {
         resizeCanvas();
-        const currentTime = (Date.now() - startTime) / 1000;
-        gl.uniform1f(u_timeLoc, currentTime);
+        const time = (Date.now() - startTime) / 1000;
+        gl.uniform1f(u_timeLoc, time);
         gl.uniform2f(u_resolutionLoc, canvas.width, canvas.height);
-  
         gl.uniform2f(u_mouseLoc, 0.5, 0.5);
         gl.uniform1f(u_clickLoc, 0.0);
-  
-        gl.uniform3f(u_color1Loc, 0.512, 0.71, 1.0);
-        gl.uniform3f(u_color2Loc, 0.202, 0.3, 0.8);
-        gl.uniform3f(u_color3Loc, 0.502, 0.7, 1.0);
-  
+        gl.uniform3f(u_color1Loc, color1.r, color1.g, color1.b);
+        gl.uniform3f(u_color2Loc, color2.r, color2.g, color2.b);
+        gl.uniform3f(u_color3Loc, color3.r, color3.g, color3.b);
+        gl.uniform1f(u_layer3Loc, layer3);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
         requestAnimationFrame(render);
       }
       requestAnimationFrame(render);
+      
+      // Utility: Convert hex color (#rrggbb) to normalized RGB.
+      function hexToRgb(hex) {
+        hex = hex.replace(/^#/, '');
+        if (hex.length !== 6) {
+          console.error("Invalid hex color:", hex);
+          return { r: 0, g: 0, b: 0 };
+        }
+        const bigint = parseInt(hex, 16);
+        return {
+          r: ((bigint >> 16) & 255) / 255,
+          g: ((bigint >> 8) & 255) / 255,
+          b: (bigint & 255) / 255
+        };
+      }
+      
+      // Setup control panel event listeners.
+      function setupControls() {
+        const layer3Slider = document.getElementById("layer3Slider");
+        layer3Slider.addEventListener("input", function() {
+          layer3 = parseFloat(this.value);
+        });
+        
+        const color1Picker = document.getElementById("color1Picker");
+        const color2Picker = document.getElementById("color2Picker");
+        const color3Picker = document.getElementById("color3Picker");
+        
+        function updateColors() {
+          color1 = hexToRgb(color1Picker.value);
+          color2 = hexToRgb(color2Picker.value);
+          color3 = hexToRgb(color3Picker.value);
+        }
+        
+        color1Picker.addEventListener("input", updateColors);
+        color2Picker.addEventListener("input", updateColors);
+        color3Picker.addEventListener("input", updateColors);
+        
+        updateColors();
+      }
+      setupControls();
+      
+      // Make the control panel draggable.
+      (function makeDraggable() {
+        const panel = document.getElementById("controlPanel");
+        const handle = document.getElementById("dragHandle");
+        let isDragging = false;
+        let startX, startY, origX, origY;
+        handle.addEventListener("mousedown", function(e) {
+          isDragging = true;
+          startX = e.clientX;
+          startY = e.clientY;
+          const rect = panel.getBoundingClientRect();
+          origX = rect.left;
+          origY = rect.top;
+          e.preventDefault();
+        });
+        document.addEventListener("mousemove", function(e) {
+          if (!isDragging) return;
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          panel.style.left = (origX + dx) + "px";
+          panel.style.top = (origY + dy) + "px";
+          panel.style.right = "auto";
+        });
+        document.addEventListener("mouseup", function() {
+          isDragging = false;
+        });
+      })();
+      
+      // Expose methods to open and close the editor.
+      const editAvatarButton = document.getElementById("editAvatarButton");
+      const controlPanel = document.getElementById("controlPanel");
+      const closeEditorButton = document.getElementById("closeEditorButton");
+      
+      editAvatarButton.addEventListener("click", function() {
+        controlPanel.style.display = "block";
+      });
+      
+      closeEditorButton.addEventListener("click", function() {
+        controlPanel.style.display = "none";
+      });
+      
     })();
   </script>
-
-  <!-- AVATAR & TYPEWRITER SETUP and STREAMING RESPONSE DISPLAY -->
+  
   <script>
-    // Grab the avatar element and bullet character
-    const avatar = document.getElementById("avatarViewport");
-    const bulletChar = "●";
-    
-    // Types out text character by character and appends a blinking bullet.
+    /*************** CHAT AND DIALOGUE LOGIC ***************/
     function typeOutText(element, text, interval, animate = false) {
       return new Promise(resolve => {
+        const avatar = document.getElementById("avatarViewport");
         if (animate) {
           avatar.classList.add("speaking");
         }
         element.textContent = "";
         const bulletSpan = document.createElement("span");
         bulletSpan.className = "blinkingBullet";
-        bulletSpan.textContent = bulletChar;
+        bulletSpan.textContent = "●";
         let i = 0;
         function addChar() {
           if (i < text.length) {
@@ -737,22 +558,11 @@
     const initialBubble = document.getElementById("initialMessageBubble");
     const chatContainer = document.getElementById("chatContainer");
     
-    // Add conversation history array
-    let conversationHistory = [
-      {
-        role: "system",
-        content: `You are Julia, a powerful and friendly AI reasoning model developed by the Julia Research Group. Particularly you are the julia-nano-reasoner-1-70B model.` 
-      }
-    ];
-    
     async function streamModelResponse(userText, contentElement, bulletElement) {
       try {
+        const avatar = document.getElementById("avatarViewport");
         avatar.classList.add("speaking");
         await new Promise(resolve => setTimeout(resolve, 100));
-    
-        // Add user message to history
-        conversationHistory.push({ role: "user", content: userText });
-    
         const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST',
           headers: { 
@@ -761,81 +571,30 @@
           },
           body: JSON.stringify({
             model: "deepseek-r1-distill-llama-70b",
-            messages: conversationHistory,
+            messages: [{ role: "user", content: userText }],
             stream: true
           })
         });
-    
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let buffer = "";
-        let fullResponse = "";
-        let visibleResponse = "";
-        let thoughtBuffer = "";
-        let isDone = false;
-        let hasThoughts = false;
-        let inThought = false;
-
-        // Initialize the content structure with no whitespace between elements
-        contentElement.innerHTML = `<div class="thought-container" style="display: none"><div class="thinking-indicator"><span class="blinkingBullet">●</span><span>thinking</span><span class="thinking-timer">0.0s</span></div></div><div class="visible-content"></div>`;
-
-        const thoughtContainer = contentElement.querySelector('.thought-container');
-        const visibleContentDiv = contentElement.querySelector('.visible-content');
-        
-        // Start timer
-        const startTime = Date.now();
-        const timerInterval = setInterval(() => {
-          const timer = contentElement.querySelector('.thinking-timer');
-          if (timer) {
-            const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-            timer.textContent = elapsed + 's';
-          }
-        }, 100);
-
-        // Process the response stream
-        while (!isDone) {
+        while (true) {
           const { done, value } = await reader.read();
-          
-          if (done) {
-            isDone = true;
-            break;
-          }
-          
+          if (done) break;
           buffer += decoder.decode(value, { stream: true });
           const lines = buffer.split("\n");
           buffer = lines.pop();
-          
           for (const line of lines) {
             if (line.startsWith("data: ")) {
               const jsonStr = line.substring(6).trim();
-              if (jsonStr === "[DONE]") {
-                isDone = true;
-                break;
-              }
+              if (jsonStr === "[DONE]") break;
               try {
                 const parsed = JSON.parse(jsonStr);
                 const token = parsed.choices[0].delta?.content || "";
-                fullResponse += token;
-
-                // Check for thought process tags
-                if (token.includes("<think>")) {
-                  hasThoughts = true;
-                  inThought = true;
-                  thoughtContainer.style.display = "block";
-                  thoughtBuffer = visibleResponse; // Save current visible content
-                  visibleResponse = ""; // Clear visible content while in thought
-                } else if (token.includes("</think>")) {
-                  inThought = false;
-                  visibleResponse = thoughtBuffer; // Restore visible content
+                contentElement.textContent += token;
+                if (!bulletElement.parentNode) {
+                  contentElement.parentNode.appendChild(bulletElement);
                 }
-
-                // Only update visible content if not in a thought block
-                if (!inThought) {
-                  visibleResponse += token;
-                  const trimmedResponse = visibleResponse.trim();
-                  visibleContentDiv.innerHTML = trimmedResponse ? marked.parse(trimmedResponse) : '';
-                }
-
                 chatContainer.scrollTop = chatContainer.scrollHeight;
               } catch (e) {
                 console.error("Error parsing JSON:", e);
@@ -843,49 +602,12 @@
             }
           }
         }
-
-        // Handle any remaining content in the buffer
-        if (buffer) {
-          try {
-            const lines = buffer.split("\n");
-            for (const line of lines) {
-              if (line.startsWith("data: ") && line.trim() !== "data: [DONE]") {
-                const jsonStr = line.substring(6).trim();
-                const parsed = JSON.parse(jsonStr);
-                const token = parsed.choices[0].delta?.content || "";
-                fullResponse += token;
-              }
-            }
-          } catch (e) {
-            console.error("Error parsing final buffer:", e);
-          }
-        }
-
-        // Clear timer
-        clearInterval(timerInterval);
-
-        // Process and display the full response
-        const markedText = marked.parse(fullResponse);
-        const processedText = hasThoughts ? processThoughts(markedText) : markedText;
-        contentElement.innerHTML = processedText;
-        
-        if (hasThoughts) {
-          setupThoughtHandlers(contentElement);
-        }
-        
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-        
-        // Add assistant's response to history
-        conversationHistory.push({ role: "assistant", content: fullResponse });
-    
-        // Small delay before removing speaking state
-        await new Promise(resolve => setTimeout(resolve, 250));
         avatar.classList.remove("speaking");
       } catch (error) {
         console.error("Error fetching model response:", error);
-        contentElement.innerHTML = marked.parse("Sorry, something went wrong retrieving the response.");
+        contentElement.textContent += " Sorry, something went wrong retrieving the response.";
         setTimeout(() => {
-          avatar.classList.remove("speaking");
+          document.getElementById("avatarViewport").classList.remove("speaking");
         }, 100);
       }
     }
@@ -896,27 +618,21 @@
       });
       const modelBubble = document.createElement("div");
       modelBubble.className = "message model-message";
-      const contentDiv = document.createElement("div");
-      contentDiv.className = "message-content modelContent";
+      const contentSpan = document.createElement("span");
+      contentSpan.className = "modelContent";
+      modelBubble.appendChild(contentSpan);
       const bulletSpan = document.createElement("span");
       bulletSpan.className = "blinkingBullet";
-      bulletSpan.textContent = bulletChar;
-      contentDiv.appendChild(bulletSpan);
-      modelBubble.appendChild(contentDiv);
+      bulletSpan.textContent = "●";
+      modelBubble.appendChild(bulletSpan);
       chatContainer.appendChild(modelBubble);
-      streamModelResponse(userText, contentDiv, bulletSpan);
+      streamModelResponse(userText, contentSpan, bulletSpan);
     }
     
     function addUserMessage(message) {
       const userBubble = document.createElement("div");
       userBubble.className = "message user-message";
-      const contentDiv = document.createElement("div");
-      contentDiv.className = "message-content";
-      // Trim the message and parse it with marked
-      const parsedContent = marked.parse(message.trim());
-      // Remove any trailing newlines from the parsed content
-      contentDiv.innerHTML = parsedContent.replace(/\n+$/, '');
-      userBubble.appendChild(contentDiv);
+      userBubble.textContent = message;
       chatContainer.appendChild(userBubble);
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
@@ -924,7 +640,6 @@
     function setupUserInput() {
       const sendButton = document.getElementById("sendButton");
       const userInput = document.getElementById("userInput");
-    
       sendButton.addEventListener("click", () => {
         const message = userInput.value.trim();
         if (message === "") return;
@@ -932,33 +647,27 @@
         userInput.value = "";
         addModelResponse(message);
       });
-    
       userInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-          sendButton.click();
-        }
+        if (e.key === "Enter") sendButton.click();
       });
     }
     
-    /* TRANSITION MODES */
     function enterDialogueMode() {
       transitionInProgress = true;
       canClickAvatar = false;
       document.body.classList.add("dialogue-mode");
-      avatar.classList.add("dialogue");
+      document.getElementById("avatarViewport").classList.add("dialogue");
     }
-    
     function enterCenterMode() {
       transitionInProgress = true;
       canClickAvatar = false;
       chatContainer.innerHTML = "";
       document.body.classList.remove("dialogue-mode");
-      avatar.classList.remove("dialogue");
+      document.getElementById("avatarViewport").classList.remove("dialogue");
     }
-      
     let canClickAvatar = false;
     let transitionInProgress = false;
-    
+    const avatar = document.getElementById("avatarViewport");
     avatar.addEventListener("transitionend", () => {
       if (!transitionInProgress) return;
       transitionInProgress = false;
@@ -986,10 +695,8 @@
         enterDialogueMode();
       }
     }
-    
     avatar.addEventListener("click", onAvatarClick);
     
-    /* INITIAL START-UP */
     window.addEventListener("load", () => {
       setTimeout(() => {
         typeOutText(initialBubble, "Hi, I'm Julia, your new reasoning model.", 50, true)
