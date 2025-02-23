@@ -1021,11 +1021,11 @@ Julia is now being connected with a human.
         // Create a skeuomorphic copy button below the model response.
         const copyButton = document.createElement('button');
         copyButton.className = 'copy-button';
-        copyButton.textContent = 'Copy Response';
+        copyButton.textContent = '📋︎';
         copyButton.addEventListener('click', () => {
           const textToCopy = visibleContentDiv.innerText;
           navigator.clipboard.writeText(textToCopy).then(() => {
-            copyButton.textContent = 'Copied!';
+            copyButton.textContent = '✓';
             setTimeout(() => {
               copyButton.textContent = 'Copy Response';
             }, 2000);
