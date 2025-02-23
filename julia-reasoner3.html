@@ -303,17 +303,15 @@
     }
     /* Reimagined Thinking Box Styles */
     .thinking-box {
-      display: flex;
-      flex-direction: column;
-      border: 2px solid #ccc;
+      width: 90%;
+      margin: 0 0 5px 20px; /* top: 0, right: 0, bottom: 5px, left: 20px */
+      border: 2px solid #ccc; /* example grey border */
       border-radius: 15px;
       overflow: hidden;
-      background: #000;
-      margin-bottom: 5px;
       max-height: 100px;
-      margin-left: 20px;  /* Added left margin */
-      margin-right: 20px; /* Added right margin */
       position: relative;
+      display: flex;
+      flex-direction: column;
     }
     .thinking-box.expanded {
       max-height: none;
