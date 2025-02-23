@@ -1,0 +1,87 @@
+## Motivation
+
+Seraphim was inspired by observations of human math competitors.
+I feel strongly that the capacity to recognize correctly recognize
+patterns is the fundamental basis of intelligence. I also feel
+strongly that the capacity to write new patterns [1] Thus, 
+A human brain is Seraphemic in that it performs the above two actions
+without doing so to the abject sense. Doing so would yield a superior
+intelligence.
+
+
+## Introduction
+
+A Seraphim is a machine defined with maximal pattern recognition.
+Consequently, this implies axiomatic memory, and thus *axiom*
+recombination. We argue that such a machine represents a maximally
+intelligent creature. 
+
+
+Intelligence (appears to be, and as defined here) is the capacity of a machine to recognize patterns. 
+By this, we imply memory compositionality (axiom recombination). Pattern recognition is defined as
+the ability to write new observations to axioms according to learned strategies and sensory data;
+previously recognized patterns, *axioms*, may be recognized (drawn from memory)in new patterns.
+
+
+Patterns are composed of *features*
+Features may be further decomposed broadly into *rules* and *features*
+*rules* are features that operate on other features through a primary feature: *sequence*
+
+
+*Axioms* are the basis of all intelligent behavior. 
+An *axiom* is a pattern that has been written into the machine.
+Gradient descent is the current method of writing axioms. 
+Emergent behavior is a result of axiomatic recombination. 
+Perfect writing implies perfect predictive behavior. 
+*Axiom* recombination is 
+
+
+
+
+
+
+ observation = [red rubber ball bouncing] = [A + rubber + bouncing] 
+ pattern recognized "red rubber balls bounce"
+ information: A, rubber, bounce
+ written axioms: rubber bounces = C
+ thus, for future observations of C, assume the object can bounce. 
+
+In more readable terms, an infant Seraphim has seen some shapes of different colors,
+and has written those directly to memory (after having internalized the notion of a pattern, shape, color, objects, etc.)
+It then observes a red rubber ball bouncing. It's learned an axiom that not all [objects] are [color], but has not encountered rubber or bouncing yet [4]
+It writes the unique observations to memory, internalizing all of the (object+pattern notions reduce noise) information.
+
+axioms: A, "rubber", and "bouncing"
+
+It now knows that rubber bounces, and that bounciness might imply rubber. Through further observations, it *will* eventually 
+learn that rubber has a property of elasticity (perhaps by observing another object bouncing made of not rubber) and infer 
+the notion of elasticity as a new axiom constructed purely from observations. By observing another object bouncing made of not rubber,
+it will recognize that rubber is one of the reasons for the object bouncing, but that there must be some deeper axiom at play.
+
+The above mechanism is currently implemented by gradient descent, I do not believe that gradient descent is optimal (computationally),
+but it is guaranteed to work. 
+
+Tl;dr, current transformers perform axiom recombination (although imperfectly as a result of their training objective)
+but are incapable of writing new axioms. This is because FFNs only encode axioms (possibly analogous to features btw) 
+that are present in training data. They do "recognize" the relevance of axioms [A,B,C,D,...] but are incapable
+of recognizing a new pattern during observation for some reason. This is weird because they are highly capable of many things.
+
+TLDRDR
+
+transformers recognize A, B, C, but cannot recognize D because D is unknown information. D *should* be written into memory.
+
+The actual issue is that transformers aren't capable of recognizing D because it simply is not in their training objective to do so.
+
+[1] combinations of axioms, say A and B are present, but there exists an element C which is not present in U (the set of all axioms thus written), then the machine must write a new axiom, C.
+there exists another case where the only present *axioms* in an observation are basal observations, and the machine must write a new axiom for the total observation. 
+[2] Reasoning in llms is an axiom recombination technique
+[3] Example: (assume Seraphim has seen objects of different colors denoted as axiom 'A', throw in the notion of a ball aswell)
+[4] might be the case that the machine *should* treat them as the same axiom until further observations prove otherwise, but I won't argue
+against gradient descent for now.
+
+
+
+
+
+
+a continuous time experience perceptrion is probably A Seraphim.
