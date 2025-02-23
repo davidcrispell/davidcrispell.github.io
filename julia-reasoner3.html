@@ -33,11 +33,6 @@
       line-height: 1.5;
     }
 
-    /* Remove the rule that made body scroll in dialogue mode */
-    /* body.dialogue-mode {
-      overflow: auto;
-    } */
-
     /* Avatar */
     .viewport {
       width: 150px;
@@ -332,6 +327,24 @@
       border-radius: 4px;
       overflow-x: auto;
       margin: 0.5em 0;
+
+      /* Hide horizontal scrollbar by default, show on hover */
+      -ms-overflow-style: none;     /* IE and Edge */
+      scrollbar-width: none;        /* Firefox */
+    }
+    .message-content pre::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+    .message-content pre:hover::-webkit-scrollbar {
+      height: 8px;
+    }
+    .message-content pre::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .message-content pre::-webkit-scrollbar-thumb {
+      background: #444;
+      border-radius: 4px;
     }
     .message-content pre code {
       background: none;
