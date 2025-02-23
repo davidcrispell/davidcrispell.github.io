@@ -79,15 +79,28 @@
     body.dialogue-mode #chatWrapper {
       margin-top: 140px;
     }
-    /* Chat Messages */
     #chatContainer {
       width: 100%;
       display: flex;
       flex-direction: column;
       gap: 10px;
       padding: 10px;
+      /* Add extra bottom padding to ensure content is not covered by the fixed user input */
+      padding-bottom: 200px;
       max-height: 60vh;
       overflow-y: auto;
+    }
+    /* Create the fading gradient effect at the bottom */
+    #chatContainer::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 120px;  /* This should match the bottom padding */
+      pointer-events: none;
+      /* Adjust colors as needed; here it fades from the container’s background (black) to transparent */
+      background: linear-gradient(to top, #000, rgba(0, 0, 0, 0));
     }
     .message {
       padding: 10px 15px;
