@@ -1085,7 +1085,7 @@ Julia is now being connected with a human.
           newInitialBubble.className = "message model-message center";
           document.getElementById("chatContainer").appendChild(newInitialBubble);
           newInitialBubble.textContent = "";
-          typeOutText(newInitialBubble, "Hi, I'm Julia, your new reasoning model.", 50, true);
+          typeOutText(newInitialBubble, "Hi, I'm Julia, a reasoner built by Julia Labs", 50, true);
           canClickAvatar = true;
         }, 2000);
       } else {
@@ -1107,7 +1107,7 @@ Julia is now being connected with a human.
     window.addEventListener("load", () => {
       setTimeout(() => {
         const initialBubble = document.getElementById("initialMessageBubble");
-        typeOutText(initialBubble, "Hi, I'm Julia, your new reasoning model.", 50, true)
+        typeOutText(initialBubble, "Hi, I'm Julia, a reasoner built by Julia Labs", 50, true)
           .then(() => {
             canClickAvatar = true;
           });
