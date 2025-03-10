@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Netflix Homepage Redesign Project</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="slideshow-container">
+    <!-- Slide 1: Introduction -->
+    <div class="slide active" id="slide1">
+      <h2>Netflix Homepage Redesign Project</h2>
+      <p>
+        This project is a comprehensive redesign of the Netflix homepage aimed at improving overall usability, enhancing visual hierarchy, and increasing user engagement.
+        We focus on addressing issues such as interface clutter, confusing navigation, and visual overload while preserving the core functionality that users love.
+      </p>
+      <p>
+        In the following slides, you will see detailed explanations of the problems with the current design, interactive wireframes of both the existing and proposed layouts,
+        and interactive previews of pixel-perfect mockups that bring the redesign to life.
+      </p>
+    </div>
+
+    <!-- Slide 2: Description of Problem -->
+    <div class="slide" id="slide2">
+      <h2>A) Description of Problem</h2>
+      <p>
+        Although the current Netflix homepage is iconic, it suffers from several usability issues:
+      </p>
+      <ul>
+        <li><strong>Cluttered Layout:</strong> The homepage displays too many competing elements which distract users from the main content. This clutter makes it difficult for users to quickly find what they want.</li>
+        <li><strong>Navigation Confusion:</strong> The menu structure lacks clear separation between content types (TV shows, movies, etc.), leaving users unsure where to find their desired category.</li>
+        <li><strong>Visual Overload:</strong> The mix of large images, overlaying texts, and multiple calls-to-action leads to sensory overload, making the interface feel overwhelming and unfocused.</li>
+      </ul>
+      <p>
+        Below is an interactive preview of the current (original) Netflix homepage. Use this preview to understand the starting point for our redesign.
+      </p>
+      <iframe src="before.html" style="width:100%; height:500px; border:1px solid #ccc;"></iframe>
+    </div>
+
+    <!-- Slide 3: Wireframe of Existing UI -->
+    <div class="slide" id="slide3">
+      <h2>B) Wireframe of Existing UI</h2>
+      <p>
+        The wireframe below represents a simplified, monochromatic blueprint of the existing Netflix homepage. It strips away color and imagery to focus on the layout, content organization, and interaction flow.
+      </p>
+      <p>
+        In this wireframe, notice how the navigation menu, hero section, and content rows are arranged. This simplified view helps us pinpoint areas where the content hierarchy can be improved.
+      </p>
+      <p>
+        <a href="wireframe-before.html" class="dummy-link" target="_blank">Open Interactive Wireframe (Existing UI) in a new tab</a>
+      </p>
+      <iframe src="wireframe-before.html" style="width:100%; height:500px; border:1px dashed #000;"></iframe>
+    </div>
+
+    <!-- Slide 4: Wireframe of Redesigned UI -->
+    <div class="slide" id="slide4">
+      <h2>C) Wireframe of Redesigned UI</h2>
+      <p>
+        The redesigned wireframe reorganizes the content to create a more intuitive flow. Here, we’ve restructured the navigation, simplified the content blocks, and adjusted the layout to make the key elements stand out.
+      </p>
+      <p>
+        This wireframe acts as a blueprint for the new design, ensuring that the improved structure supports both existing functionalities and new enhancements such as clearer category divisions and improved call-to-action placement.
+      </p>
+      <p>
+        <a href="wireframe-after.html" class="dummy-link" target="_blank">Open Interactive Wireframe (Redesigned UI) in a new tab</a>
+      </p>
+      <iframe src="wireframe-after.html" style="width:100%; height:500px; border:1px dashed #000;"></iframe>
+    </div>
+
+    <!-- Slide 5: Pixel Mocks of Redesigned UI -->
+    <div class="slide" id="slide5">
+      <h2>D) Pixel Mocks of Redesigned UI</h2>
+      <p>
+        The final redesign is shown in the pixel‑perfect mockup below. This version incorporates refined typography, a modern color palette, and interactive elements with hover states.
+      </p>
+      <p>
+        Here, the improved navigation, updated imagery, and cleaner layout work together to create a user-friendly experience that is both visually appealing and functional.
+      </p>
+      <p>
+        Below is an interactive preview of the redesigned homepage. Notice how the updated design clearly differentiates between sections and prioritizes content effectively.
+      </p>
+      <iframe src="after.html" style="width:100%; height:500px; border:1px solid #ccc;"></iframe>
+    </div>
+
+    <!-- Slide 6: Side-by-Side Comparison -->
+    <div class="slide" id="slide6">
+      <h2>E) Side-by-Side Comparison</h2>
+      <p>
+        To clearly illustrate the improvements, the following side-by-side comparison displays the original and redesigned homepages.
+        This comparison highlights key differences such as layout clarity, navigation improvements, and visual hierarchy enhancements.
+      </p>
+      <div class="comparison-container">
+        <div style="width:49%;">
+          <h3>Before</h3>
+          <iframe src="before.html" style="width:100%; height:500px; border:1px solid #ccc;"></iframe>
+        </div>
+        <div style="width:49%;">
+          <h3>After</h3>
+          <iframe src="after.html" style="width:100%; height:500px; border:1px solid #ccc;"></iframe>
+        </div>
+      </div>
+      <p>
+        Key Differences:
+      </p>
+      <ul>
+        <li><strong>Layout Improvement:</strong> The redesigned layout provides a clearer focus on important content areas and reduces unnecessary clutter.</li>
+        <li><strong>Improved Navigation:</strong> Menus are now distinctly organized and easier to navigate, leading to a more intuitive user experience.</li>
+        <li><strong>Visual Hierarchy:</strong> The use of updated typography, spacing, and color directs the user's attention to high-priority information effectively.</li>
+      </ul>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="navigation">
+      <button class="nav-button" onclick="changeSlide(-1)">Previous</button>
+      <button class="nav-button" onclick="changeSlide(1)">Next</button>
+    </div>
+  </div>
+
+  <!-- Placeholder Modal for Dummy Links -->
+  <div id="placeholderModal">
+    <h2>Placeholder Page</h2>
+    <p>This is a dummy page for interactive navigation. It serves as a stand-in for pages that would normally contain more detailed content.</p>
+    <button class="nav-button" onclick="closeModal()">Back</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
