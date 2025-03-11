@@ -1,219 +1,276 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>McDonald's – Fresh Look</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Mock McDonald's Homepage - After Redesign</title>
   <style>
-    /* Base styles */
-    body {
+    /* Basic reset */
+    * {
       margin: 0;
       padding: 0;
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      background-color: #fff;
-      color: #333;
+      box-sizing: border-box;
     }
-    /* Simplified, responsive header */
-    header {
-      background-color: #DA291C;
-      padding: 15px 20px;
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+      color: #000;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Small dismissible Terms Banner */
+    .terms-banner {
+      background-color: #f5f5f5;
+      color: #333;
+      font-size: 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding: 5px 10px;
+      position: relative;
+    }
+    .terms-banner span {
+      margin-right: 10px;
+    }
+    .terms-banner button {
+      background-color: #DA291C;
+      color: #fff;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .terms-banner button:hover {
+      background-color: #b51e15;
+    }
+
+    /* Dismiss functionality (optional) */
+    .terms-banner.dismissed {
+      display: none;
+    }
+
+    /* Header / Navigation */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      border-bottom: 1px solid #ddd;
+      background-color: #fff;
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 10;
     }
-    header .logo img {
+    .logo img {
       height: 40px;
     }
-    nav {
-      display: flex;
-      gap: 15px;
-    }
     nav a {
-      color: #fff;
+      margin-left: 20px;
       text-decoration: none;
-      font-weight: bold;
-      font-size: 0.95em;
+      color: #000;
+      font-weight: 600;
+      font-size: 14px;
     }
-    /* Mobile hamburger menu placeholder */
-    @media (max-width: 600px) {
-      nav {
-        display: none;
-      }
-      .hamburger {
-        display: block;
-        cursor: pointer;
-        color: #fff;
-        font-size: 1.5em;
-      }
+    nav a:hover {
+      text-decoration: underline;
     }
-    /* Hero section with improved readability */
+    .order-now-btn {
+      background-color: #FFC72C; /* McDonald's yellow */
+      color: #000;
+      padding: 8px 15px;
+      border-radius: 5px;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+    .order-now-btn:hover {
+      background-color: #f1b700;
+    }
+
+    /* Hero Section (Single Large Promo) */
     .hero {
       position: relative;
-      height: 500px;
-      background: url('https://via.placeholder.com/1200x500?text=Fresh+Flavors+and+Deals') no-repeat center center;
+      background: url('https://picsum.photos/seed/mcd-hero/1200/600') no-repeat center center;
       background-size: cover;
+      height: 500px;
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-    /* Gradient overlay improves text contrast */
-    .hero::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.7));
-      z-index: 1;
-    }
-    .hero .hero-content {
-      position: relative;
-      z-index: 2;
       text-align: center;
       color: #fff;
-      max-width: 700px;
       padding: 20px;
     }
+    .hero-overlay {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 40px 20px;
+      border-radius: 8px;
+      max-width: 600px;
+    }
     .hero h1 {
-      font-size: 3em;
-      margin-bottom: 0.5em;
+      font-size: 2.5em;
+      margin-bottom: 10px;
     }
     .hero p {
       font-size: 1.2em;
-      margin-bottom: 1em;
-    }
-    .hero .cta-btn {
-      background-color: #FFC72C;
-      color: #DA291C;
-      padding: 12px 25px;
-      border: none;
-      border-radius: 25px;
-      font-size: 1em;
-      cursor: pointer;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    /* Content section */
-    .content {
-      padding: 30px 20px;
-      text-align: center;
-    }
-    .content h2 {
-      font-size: 2em;
       margin-bottom: 20px;
     }
-    .deals-carousel {
-      display: flex;
-      overflow-x: auto;
-      gap: 20px;
-      padding-bottom: 10px;
-      justify-content: center;
-    }
-    .deal-card {
-      flex: 0 0 auto;
-      width: 220px;
-      background-color: #f8f8f8;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      transition: transform 0.3s;
-      text-align: left;
-      overflow: hidden;
-    }
-    .deal-card img {
-      width: 100%;
-      display: block;
-    }
-    .deal-card:hover {
-      transform: scale(1.03);
-    }
-    .deal-info {
-      padding: 15px;
-    }
-    .deal-info h3 {
-      margin: 0 0 10px;
-      font-size: 1.2em;
-      color: #DA291C;
-    }
-    .deal-info p {
-      font-size: 0.9em;
-      color: #555;
-      margin: 0;
-    }
-    footer {
+    .hero .cta-btn {
       background-color: #DA291C;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+    .hero .cta-btn:hover {
+      background-color: #b51e15;
+    }
+
+    /* Smaller Promos Section */
+    .promos {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      gap: 20px;
+      padding: 40px 20px;
+    }
+    .promo-card {
+      flex: 1 1 300px;
+      max-width: 400px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .promo-card img {
+      width: 100%;
+      height: auto;
+    }
+    .promo-card h2 {
+      font-size: 1.5em;
+      margin: 16px 0 8px;
+    }
+    .promo-card p {
+      padding: 0 16px;
+      margin-bottom: 16px;
+    }
+    .promo-card .promo-btn {
+      display: inline-block;
+      margin-bottom: 20px;
+      background-color: #DA291C;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+    .promo-card .promo-btn:hover {
+      background-color: #b51e15;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #f5f5f5;
       padding: 20px;
       text-align: center;
-      color: #fff;
-      font-size: 0.9em;
+      font-size: 14px;
+      color: #555;
     }
     footer a {
-      color: #fff;
+      color: #555;
       text-decoration: none;
       margin: 0 10px;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      nav a {
+        margin-left: 10px;
+      }
+      .order-now-btn {
+        margin-left: 10px;
+      }
+      .hero {
+        height: auto;
+        padding: 40px 20px;
+      }
+      .hero-overlay {
+        padding: 20px;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Dismissible Terms Banner -->
+  <div class="terms-banner" id="termsBanner">
+    <span>Our Terms & Conditions have changed. Please review the updated policy.</span>
+    <button onclick="dismissBanner()">Got it</button>
+  </div>
+
+  <!-- Header / Navigation -->
   <header>
     <div class="logo">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/McDonald%27s_logo.svg/2560px-McDonald%27s_logo.svg.png" alt="McDonald's Logo">
+      <!-- Replace with official McDonald's logo if available -->
+      <img src="https://upload.wikimedia.org/wikipedia/commons/8/8f/McDonalds_2020_logo.svg" alt="McDonald's Logo">
     </div>
     <nav>
-      <a href="menu.html">Menu</a>
-      <a href="deals.html">Deals</a>
-      <a href="locations.html">Locations</a>
-      <a href="rewards.html">Rewards</a>
+      <a href="#rewards">Rewards</a>
+      <a href="#food">Our Food</a>
+      <a href="#locations">Find a Restaurant</a>
+      <a href="#careers">Careers</a>
+      <a href="#order" class="order-now-btn">Order Now</a>
     </nav>
-    <div class="hamburger" style="display:none;">☰</div>
   </header>
 
+  <!-- Single Hero Section with Main CTA -->
   <section class="hero">
-    <div class="hero-content">
-      <h1>Fresh Flavors, Exciting Deals</h1>
-      <p>Your favorite meals delivered fast—order now and enjoy exclusive app deals.</p>
-      <a href="order.html" class="cta-btn">Order Now</a>
+    <div class="hero-overlay">
+      <h1>Get Your Favorites Fast</h1>
+      <p>Start your day with a classic Egg McMuffin®, or grab the new McCrispy™—all delivered right to your door!</p>
+      <a href="#order" class="cta-btn">Order Now</a>
     </div>
   </section>
 
-  <section class="content">
-    <h2>Today's Featured Deals</h2>
-    <div class="deals-carousel">
-      <div class="deal-card">
-        <img src="https://via.placeholder.com/220x150?text=Big+Mac+Meal" alt="Big Mac Meal">
-        <div class="deal-info">
-          <h3>Big Mac Meal</h3>
-          <p>Enjoy our classic Big Mac with fries and a drink.</p>
-        </div>
-      </div>
-      <div class="deal-card">
-        <img src="https://via.placeholder.com/220x150?text=McChicken+Combo" alt="McChicken Combo">
-        <div class="deal-info">
-          <h3>McChicken Combo</h3>
-          <p>Savor the crunch with a refreshing drink.</p>
-        </div>
-      </div>
-      <div class="deal-card">
-        <img src="https://via.placeholder.com/220x150?text=McNuggets" alt="McNuggets">
-        <div class="deal-info">
-          <h3>McNuggets</h3>
-          <p>Perfectly crispy and tender nuggets on special.</p>
-        </div>
-      </div>
-      <!-- Additional deal cards can be added here -->
+  <!-- Secondary Promos -->
+  <section class="promos">
+    <div class="promo-card">
+      <img src="https://picsum.photos/seed/mcd-breakfast/600/300" alt="Breakfast Promo">
+      <h2>Breakfast is Always On</h2>
+      <p>From McGriddles to Hash Browns, treat yourself to morning favorites all day.</p>
+      <a href="#order" class="promo-btn">Order Breakfast</a>
+    </div>
+    <div class="promo-card">
+      <img src="https://picsum.photos/seed/mcd-chicken/600/300" alt="McCrispy Promo">
+      <h2>Try the New McCrispy™</h2>
+      <p>Enjoy our new crispy, juicy, tender chicken sandwich—free with $1 purchase on the App.</p>
+      <a href="#app" class="promo-btn">Download the App</a>
     </div>
   </section>
 
+  <!-- Footer -->
   <footer>
-    <p>© 2025 McDonald's Corporation</p>
+    <p>© 2025 McDonald's. All Rights Reserved.</p>
     <p>
-      <a href="help.html">Help Center</a> | 
-      <a href="terms.html">Terms of Use</a> | 
-      <a href="privacy.html">Privacy Policy</a>
+      <a href="#terms">Terms & Conditions</a> | 
+      <a href="#privacy">Privacy Policy</a> | 
+      <a href="#contact">Contact Us</a>
     </p>
   </footer>
+
+  <!-- Simple Script to Dismiss Banner -->
+  <script>
+    function dismissBanner() {
+      document.getElementById('termsBanner').classList.add('dismissed');
+    }
+  </script>
 </body>
 </html>

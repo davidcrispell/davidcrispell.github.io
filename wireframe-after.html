@@ -3,24 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wireframe - Redesigned McDonald's Landing Page</title>
+  <title>Wireframe - After McDonald's Landing Page</title>
   <style>
-    /* Wireframe-specific styles for the after design */
+    /* Wireframe-specific styles for the "after" design */
     .wireframe {
       font-family: monospace;
       background: #f8f8f8;
       color: #000;
       padding: 20px;
     }
+    /* Generic dashed box style */
+    .wireframe .banner,
     .wireframe header,
-    .wireframe nav,
     .wireframe .hero,
-    .wireframe .content,
+    .wireframe .promos,
+    .wireframe .promo-card,
     .wireframe footer {
       border: 1px dashed #000;
       margin: 10px 0;
       padding: 10px;
     }
+
+    /* Small T&C Banner */
+    .wireframe .banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Header / Navigation */
     .wireframe header {
       display: flex;
       justify-content: space-between;
@@ -31,62 +42,80 @@
       text-decoration: none;
       color: #000;
     }
+
+    /* Hero (Single Main Promo) */
     .wireframe .hero {
-      height: 250px;
+      min-height: 150px;
+      text-align: center;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      text-align: center;
     }
-    .wireframe .content {
-      padding: 15px;
-    }
-    .wireframe .thumbnails {
+
+    /* Secondary Promos Section */
+    .wireframe .promos {
       display: flex;
-      gap: 10px;
       flex-wrap: wrap;
-      margin-top: 10px;
+      gap: 10px;
+      justify-content: space-around;
     }
-    .wireframe .thumbnail {
-      width: 120px;
-      height: 70px;
-      border: 1px dashed #000;
+    .wireframe .promo-card {
+      width: 45%;
       text-align: center;
-      line-height: 70px;
-      font-size: 12px;
-      color: #555;
+    }
+
+    /* Footer */
+    .wireframe footer {
+      text-align: center;
     }
   </style>
 </head>
 <body class="wireframe">
+  <!-- Smaller T&C Banner -->
+  <section class="banner">
+    <div>Small T&C Banner Text</div>
+    <div>[Dismiss Button]</div>
+  </section>
+
+  <!-- Header with "Order Now" in Nav -->
   <header>
-    <div class="logo">[Wireframe] Redesigned McDonald's</div>
+    <div class="logo">[McDonald's Logo]</div>
     <nav>
-      <a href="placeholder.html">Menu</a>
-      <a href="placeholder.html">Deals</a>
-      <a href="placeholder.html">Locations</a>
-      <a href="placeholder.html">Rewards</a>
+      <a href="#rewards">Rewards</a>
+      <a href="#food">Our Food</a>
+      <a href="#locations">Find a Restaurant</a>
+      <a href="#careers">Careers</a>
+      <div>[Order Now Button]</div>
     </nav>
   </header>
+
+  <!-- Single Hero Section with One Main CTA -->
   <section class="hero">
-    <div>
-      <p>Hero Banner</p>
-      <small>Clean background image with high-contrast overlay and clear CTA</small>
+    <h3>Get Your Favorites Fast</h3>
+    <p>Single, prominent CTA: [Order Now]</p>
+  </section>
+
+  <!-- Secondary Promos in Card Layout -->
+  <section class="promos">
+    <div class="promo-card">
+      <h4>Breakfast is Always On</h4>
+      <p>Short description about breakfast availability.</p>
+      <div>[Promo Image Placeholder]</div>
+      <small>CTA: Order Breakfast</small>
+    </div>
+    <div class="promo-card">
+      <h4>Try the New McCrispy™</h4>
+      <p>Short description about McCrispy offer.</p>
+      <div>[Promo Image Placeholder]</div>
+      <small>CTA: Download the App</small>
     </div>
   </section>
-  <section class="content">
-    <h3>Featured Deals</h3>
-    <div class="thumbnails">
-      <div class="thumbnail">Deal 1</div>
-      <div class="thumbnail">Deal 2</div>
-      <div class="thumbnail">Deal 3</div>
-      <div class="thumbnail">Deal 4</div>
-      <div class="thumbnail">Deal 5</div>
-    </div>
-  </section>
+
+  <!-- Footer -->
   <footer>
-    <p>© 2025 McDonald's Corporation</p>
-    <small>Footer links: Help Center | Terms of Use | Privacy</small>
+    <p>© 2025 McDonald's. All Rights Reserved.</p>
+    <small>Footer links: Terms & Conditions | Privacy Policy | Contact Us</small>
   </footer>
 </body>
 </html>
