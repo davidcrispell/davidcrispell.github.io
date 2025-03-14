@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Minimal Chat UI</title>
+  <link rel="stylesheet" href="juliastyles.css" />
+</head>
+<body>
+  <div class="chat-container">
+    <!-- Title or header -->
+    <header>
+      <h1>Minimal Chat</h1>
+    </header>
+    
+    <!-- Conversation area -->
+    <div class="conversation" id="conversation">
+      <!-- Example conversation messages -->
+      <div class="message user">
+        <div class="message-content">
+          Hello! How can I help you today?
+        </div>
+      </div>
+      <div class="message llm">
+        <div class="message-content">
+          I’m looking for a minimalistic chat UI. Any ideas?
+        </div>
+      </div>
+    </div>
+    
+    <!-- Input area -->
+    <div class="input-container">
+      <input
+        type="text"
+        id="userInput"
+        placeholder="Type your message..."
+        onkeydown="handleKeyDown(event)"
+      />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script src="juliascript.js"></script>
+</body>
+</html>

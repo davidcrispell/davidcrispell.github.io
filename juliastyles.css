@@ -1,0 +1,102 @@
+/* Global reset & basic styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+  
+  body {
+    background-color: #111;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  
+  /* Chat container */
+  .chat-container {
+    width: 90%;
+    max-width: 700px;
+    background-color: #1b1b1b;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Header */
+  header {
+    padding: 16px;
+    border-bottom: 1px solid #333;
+    text-align: center;
+  }
+  
+  header h1 {
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+  
+  /* Conversation */
+  .conversation {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+  }
+  
+  /* Messages */
+  .message {
+    margin-bottom: 16px;
+    display: flex;
+    align-items: flex-start;
+  }
+  
+  .message-content {
+    padding: 12px 16px;
+    border-radius: 6px;
+    line-height: 1.4;
+    max-width: 80%;
+  }
+  
+  /* Differentiate user vs. LLM messages */
+  .user .message-content {
+    background-color: #333;
+    color: #fff;
+    margin-left: auto;
+  }
+  
+  .llm .message-content {
+    background-color: #2a2a2a;
+    color: #fff;
+    margin-right: auto;
+  }
+  
+  /* Input container */
+  .input-container {
+    display: flex;
+    border-top: 1px solid #333;
+  }
+  
+  .input-container input {
+    flex: 1;
+    background-color: #222;
+    border: none;
+    color: #fff;
+    padding: 12px;
+    font-size: 1rem;
+    outline: none;
+  }
+  
+  .input-container button {
+    background-color: #444;
+    border: none;
+    color: #fff;
+    padding: 12px 16px;
+    cursor: pointer;
+  }
+  
+  .input-container button:hover {
+    background-color: #555;
+  }
+  
