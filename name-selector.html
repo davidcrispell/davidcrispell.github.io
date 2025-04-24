@@ -51,7 +51,7 @@
       margin-top: 40px;
       margin-bottom: 24px;
       font-size: 30px;
-      color: #FFD700;
+      color: #FFF1A5;
       text-shadow: 
           0 0 10px #FFD700,
           0 0 20px #FFD700,
@@ -115,7 +115,6 @@
     input[type="number"] {
       width: 100px;
     }
-    /* Winner Table Styles */
     .winner-table {
       width: 100%;
       border-collapse: collapse;
@@ -164,7 +163,6 @@
       color: #FFD700;
       text-shadow: 0 0 10px #FFD700, 0 0 20px #FF4500, 0 0 30px #FF4500;
     }
-    /* Results Box */
     .results {
       margin: 20px auto;
       max-width: 750px;
@@ -180,6 +178,42 @@
       margin-top: 0;
       text-align: center;
       font-size: 24px;
+    }
+    .animated-title {
+      display: inline-block;
+    }
+    .animated-letter {
+      display: inline-block;
+      color: #FFD700;
+      opacity: 1;
+      transition: all 0.3s ease;
+    }
+    .animated-letter.odd, .animated-letter.even {
+      animation: none;
+    }
+    @keyframes glowOdd {
+      from {
+        color: #FFFFFF;
+        text-shadow: 0 0 5px #FFFFFF,
+                     0 0 10px #FFD700,
+                     0 0 15px #FF4500;
+      }
+      to {
+        color: #FFD700;
+        text-shadow: 0 0 2px #FFD700;
+      }
+    }
+    @keyframes glowEven {
+      from {
+        color: #FFD700;
+        text-shadow: 0 0 2px #FFD700;
+      }
+      to {
+        color: #FFFFFF;
+        text-shadow: 0 0 5px #FFFFFF,
+                     0 0 10px #FFD700,
+                     0 0 15px #FF4500;
+      }
     }
     .results p {
       margin: 8px 0;
@@ -227,50 +261,12 @@
         text-shadow: 0 0 10px #00FFFF;
       }
     }
-    /* Animated Title */
-    .animated-title {
-      display: inline-block;
-    }
-    .animated-letter {
-      display: inline-block;
-      color: #FFD700;
-      opacity: 1;
-      transition: all 0.3s ease;
-    }
-    .animated-letter.odd, .animated-letter.even {
-      animation: none;
-    }
-    @keyframes glowOdd {
-      from {
-        color: #FFFFFF;
-        text-shadow: 0 0 5px #FFFFFF,
-                     0 0 10px #FFD700,
-                     0 0 15px #FF4500;
-      }
-      to {
-        color: #FFD700;
-        text-shadow: 0 0 2px #FFD700;
-      }
-    }
-    @keyframes glowEven {
-      from {
-        color: #FFD700;
-        text-shadow: 0 0 2px #FFD700;
-      }
-      to {
-        color: #FFFFFF;
-        text-shadow: 0 0 5px #FFFFFF,
-                     0 0 10px #FFD700,
-                     0 0 15px #FF4500;
-      }
-    }
   </style>
   <script>
     let currentNames = [];
     const audioSource = 'https://davidcrispell.github.io/GAMBLING.mp3';
     let alternatingInterval = null;
 
-    // Helper: Returns text with the number prefix and extra spaces for single-digit numbers.
     function formatLabelText(index, name) {
       const number = index + 1;
       return number < 10 ? `${number}.  ${name}` : `${number}. ${name}`;
@@ -331,10 +327,13 @@
           return;
         }
 
-        currentNames = lines.map(line => line.split(delimiter)[0].trim());
+        // pull out the first column, trim, then filter out any "Crispell"
+        currentNames = lines
+          .map(line => line.split(delimiter)[0].trim())
+          .filter(name => !name.includes('Crispell'));
 
         if (currentNames.length < numSelections) {
-          alert(`File contains only ${currentNames.length} names, but ${numSelections} were requested.`);
+          alert(`Only ${currentNames.length} eligible names (excluding "Crispell") available, but ${numSelections} were requested.`);
           return;
         }
 
@@ -346,11 +345,9 @@
       reader.readAsText(file);
     }
 
-    // Animate the rolling names with gradually increasing delay.
     function animateNameRolling(totalDuration, initialDelay, delayIncrement) {
       let elapsedTime = 0;
       let currentDelay = initialDelay;
-      
       function roll() {
         const nameElements = document.querySelectorAll('.name-text');
         nameElements.forEach(elem => {
@@ -361,13 +358,11 @@
             ? `${numberPrefix}.  ${randomName}` 
             : `${numberPrefix}. ${randomName}`;
         });
-        
         elapsedTime += currentDelay;
         if (elapsedTime < totalDuration) {
           currentDelay += delayIncrement;
           setTimeout(roll, currentDelay);
         } else {
-          // Final display: show the final text.
           nameElements.forEach(elem => {
             elem.textContent = elem.dataset.finalText;
           });
@@ -405,35 +400,30 @@
         const randomName = currentNames[Math.floor(Math.random() * currentNames.length)];
         nameSpan.textContent = formatLabelText(index, randomName);
         nameCell.appendChild(nameSpan);
-
         const checkboxCell = document.createElement('td');
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.classList.add('name-checkbox');
         checkbox.id = `name-${index}`;
         checkbox.addEventListener('change', (e) => {
-          // Remove any flashing classes before setting the desired class
           if (e.target.checked) {
-            nameSpan.classList.remove('flashing-name', 'flash-faster');
+            nameSpan.classList.remove('flashing-name');
             nameSpan.classList.add('checked-glow');
           } else {
-            nameSpan.classList.remove('checked-glow', 'flash-faster');
+            nameSpan.classList.remove('checked-glow');
             nameSpan.classList.add('flashing-name');
           }
         });
         checkboxCell.appendChild(checkbox);
-
         tr.appendChild(nameCell);
         tr.appendChild(checkboxCell);
         table.appendChild(tr);
       });
 
       resultsDiv.appendChild(table);
-      // Set scramble duration to 6000 ms.
-      animateNameRolling(6000, 20, 20);
+      animateNameRolling(3000, 20, 20);
     }
 
-    // Modified flashLights function to remove flash-faster from all name elements before applying it.
     function flashLights() {
       const resultsDiv = document.getElementById('results');
       resultsDiv.classList.remove('flash');
@@ -444,32 +434,23 @@
         clearInterval(alternatingInterval);
       }
 
-      // Delay flashing until the final names are displayed (6 seconds).
       setTimeout(() => {
         let toggle = false;
         alternatingInterval = setInterval(() => {
           toggle = !toggle;
           const allNameElements = document.querySelectorAll('.name-text');
-          // Remove flash-faster from all elements on each cycle.
-          allNameElements.forEach(el => {
-            el.classList.remove('flash-faster');
-          });
-          
+          allNameElements.forEach(el => el.classList.remove('flash-faster'));
           if (toggle) {
             for (let i = 0; i < allNameElements.length; i += 2) {
-              if (!allNameElements[i].classList.contains('checked-glow')) {
-                allNameElements[i].classList.add('flash-faster');
-              }
+              allNameElements[i].classList.add('flash-faster');
             }
           } else {
             for (let i = 1; i < allNameElements.length; i += 2) {
-              if (!allNameElements[i].classList.contains('checked-glow')) {
-                allNameElements[i].classList.add('flash-faster');
-              }
+              allNameElements[i].classList.add('flash-faster');
             }
           }
         }, 250);
-      }, 6000);
+      }, 3000);
     }
 
     function regenerateNames() {
