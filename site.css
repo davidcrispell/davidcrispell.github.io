@@ -13,8 +13,8 @@
   --toggle-surface: #fbfaf4;
   --toggle-border: #22221f;
   --toggle-thumb: #22221f;
-  --page-width: 660px;
-  --content-width: 500px;
+  --page-width: 760px;
+  --content-width: 580px;
 }
 
 :root.dark {
@@ -88,7 +88,7 @@ a:hover {
 }
 
 .essay-template .site-header {
-  max-width: 540px;
+  max-width: var(--content-width);
 }
 
 .site-title {
@@ -150,7 +150,7 @@ a:hover {
   position: fixed;
   z-index: 20;
   top: 28px;
-  left: max(14px, calc((100vw - var(--page-width)) / 2 - 72px));
+  left: max(14px, calc((100vw - var(--content-width)) / 2 - 96px));
   display: none;
   width: 32px;
   height: 28px;
@@ -201,7 +201,7 @@ a:hover {
   top: 0;
   left: 0;
   display: none;
-  width: min(240px, 76vw);
+  width: min(244px, 76vw);
   height: 100vh;
   padding: 76px 24px 24px;
   background: var(--background);
@@ -224,23 +224,57 @@ a:hover {
   display: block;
 }
 
+.contents-heading {
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+}
+
 .contents-list {
   display: grid;
-  gap: 10px;
+  gap: 0;
   margin: 0;
   padding: 0;
+  border-left: 1px solid var(--border);
   list-style: none;
   font-size: 14px;
-  line-height: 1.25;
+  line-height: 1.22;
 }
 
 .contents-list a {
+  position: relative;
+  display: block;
+  padding: 7px 0 7px 14px;
+  color: var(--muted);
   text-decoration: none;
+  transition: color 120ms ease;
+}
+
+.contents-list a::before {
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  left: -1px;
+  width: 2px;
+  background: transparent;
+  content: "";
+  transition: background-color 120ms ease;
 }
 
 .contents-list a:hover,
 .contents-list a:focus-visible {
+  color: var(--text);
   text-decoration-line: underline;
+}
+
+.contents-list a.is-active {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.contents-list a.is-active::before {
+  background: var(--text);
 }
 
 .contents-toggle:focus-visible {
@@ -254,7 +288,7 @@ a:hover {
 }
 
 .article-page {
-  max-width: 540px;
+  max-width: var(--content-width);
 }
 
 section + section {
@@ -466,7 +500,7 @@ h2 {
   }
 
   .essay-template .site-header {
-    max-width: 540px;
+    max-width: var(--content-width);
   }
 
   .contents-toggle {
@@ -517,6 +551,38 @@ h2 {
   .intro,
   .link-list {
     gap: 10px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .contents-toggle {
+    left: max(18px, calc((100vw - var(--content-width)) / 2 - 102px));
+  }
+
+  .contents-panel {
+    top: 126px;
+    left: max(18px, calc((100vw - var(--content-width)) / 2 - 258px));
+    width: 210px;
+    height: auto;
+    max-height: calc(100vh - 150px);
+    padding: 0;
+    overflow: auto;
+    border-right: 0;
+    background: transparent;
+    box-shadow: none;
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: opacity 140ms ease, transform 140ms ease, visibility 140ms ease;
+  }
+
+  .contents-panel.is-open {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .contents-heading {
+    color: var(--muted);
+    font-size: 13px;
   }
 }
 
