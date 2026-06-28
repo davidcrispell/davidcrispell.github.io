@@ -137,8 +137,8 @@
     }
   });
 
-  desktopQuery.addEventListener("change", function (event) {
-    setOpen(event.matches);
+  desktopQuery.addEventListener("change", function () {
+    setOpen(false);
   });
 
   function updateActiveSection() {
@@ -161,7 +161,7 @@
     });
   }
 
-  setOpen(desktopQuery.matches);
+  setOpen(false);
   updateActiveSection();
   window.addEventListener("scroll", updateActiveSection, { passive: true });
   window.addEventListener("resize", updateActiveSection);
