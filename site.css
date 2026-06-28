@@ -13,8 +13,8 @@
   --toggle-surface: #fbfaf4;
   --toggle-border: #22221f;
   --toggle-thumb: #22221f;
-  --page-width: 780px;
-  --content-width: 600px;
+  --page-width: 660px;
+  --content-width: 500px;
 }
 
 :root.dark {
@@ -49,7 +49,7 @@ body {
   background: var(--background);
   color: var(--text);
   font-family: "Newsreader", Georgia, "Times New Roman", serif;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 500;
   line-height: 1.28;
   transition: background-color 180ms linear, color 180ms linear;
@@ -73,7 +73,7 @@ a:hover {
 
 .site-header,
 .page {
-  width: min(var(--page-width), calc(100% - 32px));
+  width: min(var(--page-width), calc(100% - 28px));
   margin-inline: auto;
 }
 
@@ -81,13 +81,13 @@ a:hover {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 20px;
-  padding-top: 36px;
-  padding-bottom: 72px;
+  gap: 16px;
+  padding-top: 28px;
+  padding-bottom: 44px;
 }
 
 .site-title {
-  font-size: 44px;
+  font-size: 30px;
   font-weight: 700;
   line-height: 0.95;
   text-decoration: none;
@@ -99,9 +99,9 @@ a:hover {
 
 .theme-toggle {
   appearance: none;
-  width: 46px;
-  height: 26px;
-  margin-top: 5px;
+  width: 36px;
+  height: 20px;
+  margin-top: 3px;
   padding: 0;
   border: 0;
   background: transparent;
@@ -114,7 +114,7 @@ a:hover {
   display: block;
   width: 100%;
   height: 100%;
-  border: 1.5px solid var(--toggle-border);
+  border: 1px solid var(--toggle-border);
   border-radius: 999px;
   background: var(--toggle-surface);
   transition: border-color 180ms linear, background-color 180ms linear;
@@ -122,17 +122,17 @@ a:hover {
 
 .theme-toggle__thumb {
   position: absolute;
-  top: 4px;
-  left: 4px;
-  width: 16px;
-  height: 16px;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: var(--toggle-thumb);
   transition: transform 180ms ease, background-color 180ms linear;
 }
 
 .theme-toggle[aria-pressed="true"] .theme-toggle__thumb {
-  transform: translateX(20px);
+  transform: translateX(16px);
 }
 
 .theme-toggle:focus-visible {
@@ -143,20 +143,20 @@ a:hover {
 
 .page {
   max-width: var(--content-width);
-  padding-bottom: 72px;
+  padding-bottom: 56px;
 }
 
 .article-page {
-  max-width: 640px;
+  max-width: 540px;
 }
 
 section + section {
-  margin-top: 44px;
+  margin-top: 32px;
 }
 
 .intro {
   display: grid;
-  gap: 22px;
+  gap: 14px;
 }
 
 p,
@@ -167,15 +167,15 @@ ul {
 }
 
 h2 {
-  font-size: 34px;
+  font-size: 23px;
   font-weight: 700;
   line-height: 1;
-  margin-bottom: 22px;
+  margin-bottom: 14px;
 }
 
 .link-list {
   display: grid;
-  gap: 18px;
+  gap: 11px;
   padding-left: 1.1em;
 }
 
@@ -188,13 +188,13 @@ h2 {
 }
 
 .essay-header {
-  margin-bottom: 52px;
+  margin-bottom: 36px;
 }
 
 .essay-title {
-  max-width: 14ch;
-  margin: 0 0 10px;
-  font-size: 56px;
+  max-width: 16ch;
+  margin: 0 0 8px;
+  font-size: 38px;
   font-weight: 700;
   line-height: 0.96;
   text-wrap: balance;
@@ -202,7 +202,7 @@ h2 {
 
 .essay-subtitle {
   max-width: 26ch;
-  font-size: 25px;
+  font-size: 18px;
   font-style: italic;
   font-weight: 400;
   line-height: 1.12;
@@ -210,14 +210,14 @@ h2 {
 }
 
 .essay-date {
-  margin-top: 30px;
+  margin-top: 20px;
   color: var(--muted);
   font-size: 0.9em;
 }
 
 .essay-body {
   font-weight: 400;
-  line-height: 1.45;
+  line-height: 1.42;
   text-wrap: pretty;
 }
 
@@ -226,14 +226,14 @@ h2 {
 }
 
 .essay-body h2 {
-  margin-top: 62px;
-  margin-bottom: 10px;
-  font-size: 36px;
+  margin-top: 42px;
+  margin-bottom: 8px;
+  font-size: 24px;
   text-wrap: balance;
 }
 
 .section-subtitle {
-  margin-bottom: 24px;
+  margin-bottom: 18px;
   color: var(--muted);
   font-size: 1em;
   font-style: italic;
@@ -241,7 +241,7 @@ h2 {
 }
 
 .essay-body blockquote {
-  margin: 1.6em 0;
+  margin: 1.4em 0;
   padding: 0.2em 0 0.2em 1.1em;
   border-left: 1px solid var(--border);
   font-style: italic;
@@ -272,12 +272,12 @@ h2 {
   z-index: 5;
   top: calc(100% + 0.65em);
   left: 50%;
-  width: min(320px, 80vw);
-  padding: 14px 16px;
+  width: min(280px, 80vw);
+  padding: 12px 14px;
   background: var(--tooltip-background);
   box-shadow: 0 6px 18px var(--tooltip-shadow);
   color: var(--text);
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 400;
   line-height: 1.45;
   text-align: left;
@@ -295,8 +295,8 @@ h2 {
 }
 
 .footnotes {
-  margin-top: 64px;
-  padding-top: 28px;
+  margin-top: 44px;
+  padding-top: 22px;
   border-top: 1px solid var(--border);
   font-size: 0.82em;
   font-weight: 400;
@@ -304,13 +304,13 @@ h2 {
 }
 
 .footnotes h2 {
-  margin-bottom: 20px;
-  font-size: 30px;
+  margin-bottom: 14px;
+  font-size: 22px;
 }
 
 .footnotes-list {
   display: grid;
-  gap: 16px;
+  gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -323,7 +323,7 @@ h2 {
 }
 
 .back-to-top {
-  margin-top: 42px;
+  margin-top: 30px;
   text-align: center;
 }
 
@@ -341,53 +341,53 @@ h2 {
 
 @media (max-width: 720px) {
   body {
-    font-size: 18px;
+    font-size: 15px;
   }
 
   .site-header,
   .page {
-    width: min(100% - 28px, var(--page-width));
+    width: min(100% - 24px, var(--page-width));
   }
 
   .site-header {
     align-items: flex-start;
-    padding-top: 26px;
-    padding-bottom: 52px;
+    padding-top: 22px;
+    padding-bottom: 36px;
   }
 
   .site-title {
-    font-size: 34px;
+    font-size: 27px;
   }
 
   .theme-toggle {
-    width: 42px;
-    height: 24px;
+    width: 34px;
+    height: 19px;
   }
 
   .theme-toggle__thumb {
-    width: 14px;
-    height: 14px;
+    width: 13px;
+    height: 13px;
   }
 
   .theme-toggle[aria-pressed="true"] .theme-toggle__thumb {
-    transform: translateX(18px);
+    transform: translateX(15px);
   }
 
   h2 {
-    font-size: 28px;
-    margin-bottom: 18px;
+    font-size: 21px;
+    margin-bottom: 12px;
   }
 
   .essay-title {
-    font-size: 40px;
+    font-size: 32px;
   }
 
   .essay-subtitle {
-    font-size: 21px;
+    font-size: 17px;
   }
 
   .essay-date {
-    margin-top: 24px;
+    margin-top: 18px;
   }
 
   .footnote-tooltip {
@@ -396,17 +396,17 @@ h2 {
 
   .intro,
   .link-list {
-    gap: 16px;
+    gap: 10px;
   }
 }
 
 @media (max-width: 420px) {
   body {
-    font-size: 17px;
+    font-size: 15px;
   }
 
   .site-title {
-    font-size: 31px;
+    font-size: 25px;
   }
 
   .site-header {
@@ -414,6 +414,6 @@ h2 {
   }
 
   h2 {
-    font-size: 26px;
+    font-size: 20px;
   }
 }
