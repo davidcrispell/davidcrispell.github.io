@@ -87,6 +87,8 @@
   var headings = document.querySelectorAll(".essay-body h2");
   var desktopQuery = window.matchMedia("(min-width: 1100px)");
   var sectionLinks = [];
+  var closeTimer = null;
+  var fadeDuration = 220;
 
   if (!panel || !toggle || !list || !headings.length) {
     return;
@@ -115,10 +117,31 @@
   });
 
   function setOpen(isOpen) {
-    panel.classList.toggle("is-open", isOpen);
-    document.body.classList.toggle("contents-open", isOpen);
+    if (closeTimer) {
+      window.clearTimeout(closeTimer);
+      closeTimer = null;
+    }
+
+    panel.classList.remove("is-closing");
     toggle.setAttribute("aria-expanded", String(isOpen));
     panel.setAttribute("aria-hidden", String(!isOpen));
+    document.body.classList.toggle("contents-open", isOpen);
+
+    if (isOpen) {
+      panel.classList.add("is-open");
+      return;
+    }
+
+    if (!panel.classList.contains("is-open")) {
+      return;
+    }
+
+    panel.classList.remove("is-open");
+    panel.classList.add("is-closing");
+    closeTimer = window.setTimeout(function () {
+      panel.classList.remove("is-closing");
+      closeTimer = null;
+    }, fadeDuration);
   }
 
   toggle.addEventListener("click", function () {

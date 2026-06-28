@@ -535,12 +535,18 @@ h2 {
     box-shadow: none;
     opacity: 0;
     transform: none;
-    transition: opacity 140ms ease, visibility 140ms ease;
+    transition: opacity 140ms ease;
   }
 
   .contents-panel.is-open {
     opacity: 1;
     transform: none;
+  }
+
+  .contents-panel.is-closing {
+    opacity: 0;
+    transform: none;
+    visibility: visible;
   }
 
   .contents-heading {
@@ -649,13 +655,20 @@ h2 {
     box-shadow: none;
     opacity: 0;
     transform: none;
-    transition: opacity 220ms ease, visibility 220ms ease;
+    transition: opacity 220ms ease;
   }
 
   .contents-panel.is-open {
     animation: contents-fade-in 220ms ease both;
     opacity: 1;
     transform: none;
+  }
+
+  .contents-panel.is-closing {
+    animation: contents-fade-out 220ms ease both;
+    opacity: 0;
+    transform: none;
+    visibility: visible;
   }
 
   .contents-heading {
@@ -694,7 +707,7 @@ h2 {
   }
 
   .contents-list a.is-active {
-    color: var(--muted);
+    color: var(--text);
     font-weight: inherit;
   }
 }
@@ -706,6 +719,16 @@ h2 {
 
   to {
     opacity: 1;
+  }
+}
+
+@keyframes contents-fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
   }
 }
 
