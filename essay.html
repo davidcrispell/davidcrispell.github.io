@@ -30,7 +30,7 @@
       })();
     </script>
   </head>
-  <body>
+  <body class="essay-template">
     <header class="site-header">
       <a class="site-title" href="./" aria-label="David Crispell home">David Crispell</a>
       <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
@@ -39,6 +39,22 @@
         </span>
       </button>
     </header>
+
+    <button
+      class="contents-toggle"
+      type="button"
+      aria-label="Toggle essay contents"
+      aria-expanded="false"
+      aria-controls="essay-contents"
+    >
+      <span class="contents-toggle__bar" aria-hidden="true"></span>
+      <span class="contents-toggle__bar" aria-hidden="true"></span>
+      <span class="contents-toggle__bar" aria-hidden="true"></span>
+    </button>
+
+    <nav id="essay-contents" class="contents-panel" aria-label="Essay contents" aria-hidden="true">
+      <ol class="contents-list" data-contents-list></ol>
+    </nav>
 
     <main class="page article-page">
       <article class="essay">
@@ -72,6 +88,13 @@
           <blockquote>
             <p>A short pull quote or aside can live here if a passage needs a little more air.</p>
           </blockquote>
+
+          <h2>Another Section</h2>
+          <p class="section-subtitle">A second heading so the contents panel has multiple jumps.</p>
+          <p>
+            Add or remove section headings as needed. The left panel updates itself from the
+            headings inside the essay body.
+          </p>
         </div>
 
         <section class="footnotes" aria-labelledby="footnotes-heading" data-footnotes-list>

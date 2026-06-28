@@ -79,3 +79,57 @@
     item.insertAdjacentHTML("beforeend", originalNote);
   });
 })();
+
+(function () {
+  var panel = document.querySelector(".contents-panel");
+  var toggle = document.querySelector(".contents-toggle");
+  var list = document.querySelector("[data-contents-list]");
+  var headings = document.querySelectorAll(".essay-body h2");
+
+  if (!panel || !toggle || !list || !headings.length) {
+    return;
+  }
+
+  function slugify(text) {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  }
+
+  headings.forEach(function (heading, index) {
+    if (!heading.id) {
+      heading.id = slugify(heading.textContent) || "section-" + (index + 1);
+    }
+
+    var item = document.createElement("li");
+    var link = document.createElement("a");
+    link.href = "#" + heading.id;
+    link.textContent = heading.textContent;
+    item.appendChild(link);
+    list.appendChild(item);
+  });
+
+  function setOpen(isOpen) {
+    panel.classList.toggle("is-open", isOpen);
+    toggle.setAttribute("aria-expanded", String(isOpen));
+    panel.setAttribute("aria-hidden", String(!isOpen));
+  }
+
+  toggle.addEventListener("click", function () {
+    setOpen(!panel.classList.contains("is-open"));
+  });
+
+  list.addEventListener("click", function (event) {
+    if (event.target.closest("a")) {
+      setOpen(false);
+    }
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      setOpen(false);
+    }
+  });
+})();
