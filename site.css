@@ -49,7 +49,7 @@ body {
   background: var(--background);
   color: var(--text);
   font-family: "Newsreader", Georgia, "Times New Roman", serif;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 500;
   line-height: 1.28;
   transition: background-color 180ms linear, color 180ms linear;
@@ -92,7 +92,7 @@ a:hover {
 }
 
 .site-title {
-  font-size: 30px;
+  font-size: 28.8px;
   font-weight: 700;
   line-height: 0.95;
   text-decoration: none;
@@ -162,14 +162,37 @@ a:hover {
 }
 
 .contents-toggle__bar {
+  position: absolute;
+  left: 6px;
   display: block;
-  width: 100%;
-  height: 1px;
+  width: 20px;
+  height: 1.5px;
   background: currentColor;
+  transition: opacity 120ms ease, transform 160ms ease;
 }
 
-.contents-toggle__bar + .contents-toggle__bar {
-  margin-top: 5px;
+.contents-toggle__bar:nth-child(1) {
+  top: 7px;
+}
+
+.contents-toggle__bar:nth-child(2) {
+  top: 13px;
+}
+
+.contents-toggle__bar:nth-child(3) {
+  top: 19px;
+}
+
+.contents-toggle[aria-expanded="true"] .contents-toggle__bar:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.contents-toggle[aria-expanded="true"] .contents-toggle__bar:nth-child(2) {
+  opacity: 0;
+}
+
+.contents-toggle[aria-expanded="true"] .contents-toggle__bar:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
 }
 
 .contents-panel {
@@ -251,7 +274,7 @@ ul {
 }
 
 h2 {
-  font-size: 23px;
+  font-size: 32px;
   font-weight: 700;
   line-height: 1;
   margin-bottom: 14px;
@@ -278,7 +301,7 @@ h2 {
 .essay-title {
   max-width: 16ch;
   margin: 0 0 8px;
-  font-size: 38px;
+  font-size: 60px;
   font-weight: 700;
   line-height: 0.96;
   text-wrap: balance;
@@ -286,7 +309,7 @@ h2 {
 
 .essay-subtitle {
   max-width: 26ch;
-  font-size: 18px;
+  font-size: 22px;
   font-style: italic;
   font-weight: 400;
   line-height: 1.12;
@@ -296,10 +319,11 @@ h2 {
 .essay-date {
   margin-top: 20px;
   color: var(--muted);
-  font-size: 0.9em;
+  font-size: 18px;
 }
 
 .essay-body {
+  font-size: 20px;
   font-weight: 400;
   line-height: 1.42;
   text-wrap: pretty;
@@ -312,7 +336,7 @@ h2 {
 .essay-body h2 {
   margin-top: 42px;
   margin-bottom: 8px;
-  font-size: 24px;
+  font-size: 32px;
   scroll-margin-top: 28px;
   text-wrap: balance;
 }
@@ -320,7 +344,7 @@ h2 {
 .section-subtitle {
   margin-bottom: 18px;
   color: var(--muted);
-  font-size: 1em;
+  font-size: 24px;
   font-style: italic;
   line-height: 1.25;
 }
@@ -390,7 +414,7 @@ h2 {
 
 .footnotes h2 {
   margin-bottom: 14px;
-  font-size: 22px;
+  font-size: 32px;
 }
 
 .footnotes-list {
@@ -426,7 +450,7 @@ h2 {
 
 @media (max-width: 720px) {
   body {
-    font-size: 15px;
+    font-size: 20px;
   }
 
   .site-header,
@@ -451,7 +475,7 @@ h2 {
   }
 
   .site-title {
-    font-size: 27px;
+    font-size: 28.8px;
   }
 
   .theme-toggle {
@@ -469,20 +493,21 @@ h2 {
   }
 
   h2 {
-    font-size: 21px;
+    font-size: 32px;
     margin-bottom: 12px;
   }
 
   .essay-title {
-    font-size: 32px;
+    font-size: 60px;
   }
 
   .essay-subtitle {
-    font-size: 17px;
+    font-size: 22px;
   }
 
   .essay-date {
     margin-top: 18px;
+    font-size: 18px;
   }
 
   .footnote-tooltip {
@@ -497,11 +522,11 @@ h2 {
 
 @media (max-width: 420px) {
   body {
-    font-size: 15px;
+    font-size: 20px;
   }
 
   .site-title {
-    font-size: 25px;
+    font-size: 28.8px;
   }
 
   .site-header {
@@ -509,6 +534,6 @@ h2 {
   }
 
   h2 {
-    font-size: 20px;
+    font-size: 32px;
   }
 }
