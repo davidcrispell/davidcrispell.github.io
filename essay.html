@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Essay template for David Crispell's personal website."
+    >
+    <meta name="theme-color" content="#f3f0e7">
+    <title>Essay Title - David Crispell</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="site.css">
+    <script>
+      (function () {
+        var savedMode = null;
+        try {
+          savedMode = localStorage.getItem("color-mode");
+        } catch (error) {
+          savedMode = null;
+        }
+        var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var shouldUseDark = savedMode ? savedMode === "dark" : prefersDark;
+        document.documentElement.classList.toggle("dark", shouldUseDark);
+      })();
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="site-title" href="./" aria-label="David Crispell home">David Crispell</a>
+      <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
+        <span class="theme-toggle__track" aria-hidden="true">
+          <span class="theme-toggle__thumb"></span>
+        </span>
+      </button>
+    </header>
+
+    <main class="page article-page">
+      <article class="essay">
+        <header class="essay-header">
+          <h1 class="essay-title">Essay Title</h1>
+          <p class="essay-subtitle">A short subheader that frames the essay.</p>
+          <p class="essay-date">Month 2026</p>
+        </header>
+
+        <div class="essay-body" data-footnotes-body>
+          <p>
+            This is the opening body paragraph. Write in plain paragraphs and add a footnote by placing
+            a superscript number after the sentence that needs one<sup>1</sup>.
+          </p>
+          <p>
+            This is a second paragraph. It keeps the same slow, readable rhythm as the homepage while
+            leaving you enough room for long-form thinking<sup>2</sup>.
+          </p>
+
+          <h2>Section Header</h2>
+          <p class="section-subtitle">Section subheader for the idea that follows.</p>
+          <p>
+            Continue the essay here. You can add links, emphasis, lists, blockquotes, and more footnotes
+            without changing the page structure.
+          </p>
+          <p>
+            Another paragraph in the section. The template is intentionally sparse so your writing is the
+            first thing on the page.
+          </p>
+
+          <blockquote>
+            <p>A short pull quote or aside can live here if a passage needs a little more air.</p>
+          </blockquote>
+        </div>
+
+        <section class="footnotes" aria-labelledby="footnotes-heading" data-footnotes-list>
+          <h2 id="footnotes-heading">Footnotes</h2>
+          <ol class="footnotes-list">
+            <li>Footnote text goes here. On desktop, this also appears when hovering over the reference.</li>
+            <li>Another footnote. The return link is added automatically by the script.</li>
+          </ol>
+        </section>
+
+        <p class="back-to-top">
+          <a href="#top">Back to top</a>
+        </p>
+      </article>
+    </main>
+
+    <script src="site.js"></script>
+  </body>
+</html>
