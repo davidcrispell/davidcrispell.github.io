@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Scratch work WIP by David Crispell.">
+    <meta name="theme-color" content="#f3f0e7">
+    <title>scratch work WIP - David Crispell</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="site.css">
+    <script>
+      (function () {
+        var savedMode = null;
+        try {
+          savedMode = localStorage.getItem("color-mode");
+        } catch (error) {
+          savedMode = null;
+        }
+        var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var shouldUseDark = savedMode ? savedMode === "dark" : prefersDark;
+        document.documentElement.classList.toggle("dark", shouldUseDark);
+      })();
+    </script>
+  </head>
+  <body class="essay-template">
+    <header class="site-header">
+      <a class="site-title" href="./" aria-label="David Crispell home">David Crispell</a>
+      <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
+        <span class="theme-toggle__track" aria-hidden="true">
+          <span class="theme-toggle__thumb"></span>
+        </span>
+      </button>
+    </header>
+
+    <button
+      class="contents-toggle"
+      type="button"
+      aria-label="Toggle essay contents"
+      aria-expanded="false"
+      aria-controls="essay-contents"
+    >
+      <span class="contents-toggle__bar" aria-hidden="true"></span>
+      <span class="contents-toggle__bar" aria-hidden="true"></span>
+      <span class="contents-toggle__bar" aria-hidden="true"></span>
+    </button>
+
+    <nav id="essay-contents" class="contents-panel" aria-label="Essay contents" aria-hidden="true">
+      <div class="contents-heading">Contents</div>
+      <ol class="contents-list" data-contents-list></ol>
+    </nav>
+
+    <main class="page article-page">
+      <article class="essay">
+        <header class="essay-header">
+          <h1 class="essay-title">scratch work WIP</h1>
+          <p class="essay-subtitle">Universe-scale motivation notes.</p>
+          <p class="essay-date">June 2026</p>
+        </header>
+
+        <div class="essay-body" data-footnotes-body>
+          <p>This is a lot of my scratch work, but in general I want the universe to be <em>the best it can possibly be</em>.</p>
+
+          <h2>Motivation</h2>
+          <p>To motivate work towards future universe states, I estimate a lower bound for the amount of beauty to have existed to be the sum of the welfare experienced by the 110 billion humans<sup>1</sup> which have thus far existed, and I estimate the upper bound on the number of computations necessary to simulate<sup>2</sup> such experienced beauty to be 110B * &lt;num human neural computations per life&gt;, and find the number to be roughly on the order of 110B * 10^n (n in (~23, ~26)). This, in universal terms, is <em>vanishingly small</em> with respect to the possible future volumes of computronium and time<sup>3</sup>.</p>
+          <p>To illustrate just how small this number is, a Fermi'd estimate of how many human lives a &lt;unit of volume&gt; of computronium may simulate exceeds 110 billion <em>every &lt;unit of time&gt;</em>, and these could run for &lt;time until computation is no longer possible (only in computronium form! More computation in less efficient structures may be possible)&gt;. We should therefore conclude that the potential for universal beauty is absurdly massive, and thus place commensurate absurdly massive weight on bringing about these best universal states.<sup>4</sup><sup>5</sup></p>
+
+          <h2>Humanity's Position</h2>
+          <p>So far as we are aware, humanity is unique in its position. We are the only known intelligent life in our universe, and are therefore the only beings capable of bringing about the rise of superintelligence. Humanity is then the light-bearer, and so we bear the weight of the risk of universal extinction. Any mistake we make in constructing our ASIs (likely via the scalable oversight / bootstrapping agenda) could propagate towards human extinction, or worse, unacceptably high s-risk by an improperly extrapolated alignment target.<sup>6</sup></p>
+
+          <h2>Project Framing</h2>
+          <p>Roughly: I want the future universe to be <em>the best it can possibly be</em>, and have reason to believe the best possible universe to be an overwhelmingly dominating moral pressure. I recognize LLMs as the most imminent technology with potential to achieve the best possible universal outcomes. Ensuring that LLMs are robustly aligned for future scalable oversight bootstrapping projects is something I deem <em>absolutely essential</em> to guarantee we end up in the best possible universe basins, and subliminal learning as a phenomenon directly threatens this.</p>
+          <p>If we do not have a strong theory of subliminal learning, if our model n (from the model n supervises model n+1) has some misaligned trait t, then we risk t's propagation through to substantial light cone basins and, if uncorrected, the risk is approximately infinite. Also, I want humanity to survive and flourish, like in Machines of Loving Grace, and so investigating data order's effect on subliminal learning (for scalable oversight futures) is extremely valuable, and also valuable as a step into serious technical alignment research for me.</p>
+        </div>
+
+        <section class="footnotes" aria-labelledby="footnotes-heading" data-footnotes-list>
+          <h2 id="footnotes-heading">Footnotes</h2>
+          <ol class="footnotes-list">
+            <li>And possibly non-negligible sum of animal experience, but this is more difficult to calculate and I think that beauty as an emergent property of intelligence seems a legitimate hypothesis, further complicating calculations. Besides, lower bound is true for the statement when subtracting all animal welfare.</li>
+            <li>It's not quite clear that computational / pure computronium / generally substrate-modifying simulations could even yield phenomenologically comparable lives to the biological ones, but I find it likely that welfare simulations would result in some meaningful welfare, at least in some cases.</li>
+            <li>Some people might call these "the possible states of the light cone."</li>
+            <li>As a general corollary to these big numbers, inefficient computronium / utilitronium solutions, incorrect alignment targets, specification gaming by superintelligences, etc. may result in sum losses in universal utility n times greater than &lt;number of humans&gt; tortured in simulated hell for &lt;unit of time&gt;.</li>
+            <li>In general, some amount of beauty has definitely existed and if we count it up among humans, it seems natural that it is in the computations performed by the 110 billion people who have existed. Then if we take for axiom that more cloned welfare = more good, we predict that a unit volume of computronium simulating these lifetimes over and over is a welfare-generating machine which massively outperforms the raw humans at generating welfare per unit spacetime.</li>
+            <li>It seems plausible that an n supervising n+1 might have a slightly off generalized representation of what the platonic human (or, better, universal) CEV would be, and so n+1 generalizes this "off-color CEV." If this generalization process does not self-correct, then we have the above problem. Further, it is not necessarily the case that humans are the best basin for superintelligence to sprout from in general.</li>
+          </ol>
+        </section>
+      </article>
+    </main>
+
+    <script src="site.js"></script>
+  </body>
+</html>

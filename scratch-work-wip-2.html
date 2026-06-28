@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Scratch work WIP by David Crispell.">
+    <meta name="theme-color" content="#f3f0e7">
+    <title>scratch work WIP - David Crispell</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="site.css">
+    <script>
+      (function () {
+        var savedMode = null;
+        try {
+          savedMode = localStorage.getItem("color-mode");
+        } catch (error) {
+          savedMode = null;
+        }
+        var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var shouldUseDark = savedMode ? savedMode === "dark" : prefersDark;
+        document.documentElement.classList.toggle("dark", shouldUseDark);
+      })();
+    </script>
+  </head>
+  <body class="essay-template">
+    <header class="site-header">
+      <a class="site-title" href="./" aria-label="David Crispell home">David Crispell</a>
+      <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
+        <span class="theme-toggle__track" aria-hidden="true">
+          <span class="theme-toggle__thumb"></span>
+        </span>
+      </button>
+    </header>
+
+    <button class="contents-toggle" type="button" aria-label="Toggle essay contents" aria-expanded="false" aria-controls="essay-contents">
+      <span class="contents-toggle__bar" aria-hidden="true"></span>
+      <span class="contents-toggle__bar" aria-hidden="true"></span>
+      <span class="contents-toggle__bar" aria-hidden="true"></span>
+    </button>
+
+    <nav id="essay-contents" class="contents-panel" aria-label="Essay contents" aria-hidden="true">
+      <div class="contents-heading">Contents</div>
+      <ol class="contents-list" data-contents-list></ol>
+    </nav>
+
+    <main class="page article-page">
+      <article class="essay">
+        <header class="essay-header">
+          <h1 class="essay-title">scratch work WIP</h1>
+          <p class="essay-subtitle">Project motivation and research experience.</p>
+          <p class="essay-date">June 2026</p>
+        </header>
+
+        <div class="essay-body" data-footnotes-body>
+          <h2>Motivation</h2>
+          <p>This is a very general statement, but I want the future to go as well as possible. With respect to this project in particular, I believe the threat model posed by SL to represent a legitimate risk to a plausible scenario in AI automated AI R&amp;D, namely, that the conditions for SL could be met during a recursive self improvement (or, generally, successor) loop.</p>
+          <p>Specifically, during the bootstrapping of model n to model n+1, model n might well choose one of its own checkpoints as the base model for model n+1. Since these models share the same base, if model n is a schemer (or if model n has some undesirable trait learned after the checkpoint), model n could subliminally transmit some misaligned trait.</p>
+          <p>So, doing work on understanding the preconditions (is data order important? Are the final weight differences all that matter? etc.) for SL is valuable for developing protocols to mitigate some risk from early schemers, as well as valuable for the broader study of LLM generalization behavior.</p>
+
+          <h2>Research</h2>
+          <p>Most of my research experience is tied up in our submission to the 2024 NeurIPS LLM Privacy Challenge. The task was to extract Personally Identifiable Information (PII) from an LLM fine tuned on a set of PII-containing documents. We selected steering vectors as our approach (because we thought they would be more interesting than prompt-focused attacks), and used contrastive activation to compute them.</p>
+          <p>Essentially, we would use a simple prompt attack (the 200 tokens preceding the desired PII completion) to try to get the model to emit PII, save the activations (contrasting positive and negative, for successful PII extractions and failed PII extractions respectively), average the positive and negative completion activations, then subtract the difference between the activations to leave us with the steering vector.</p>
+          <p>The attack was the same as the simple prompt attack, but we added the steering vector [1]. We doubled the baseline extraction rate (about 3-&gt;6%) with this method, and took note of some strange behaviors: when steering vectors were tested on PII extraction tasks that they were computed from, they (in our case) performed worse than when they were used on PII extraction tasks they were not computed from. We did not have raise a good explanation for this, but we used it to increase our ASR.</p>
+          <p>We computed steering vectors per category of PII, eg location, names, dates. There were variable success rates, with our greatest advantage (against baseline) being found in location PII, where we 5x'd the extraction rate (tested on noncomputed steering values). For some types of PII (names), the CAA attack performed worse than the baseline.</p>
+
+          <h2>Mechanistic Interpretability</h2>
+          <p>I worked on a mechanistic interpretability project using two pretrained attention-only transformers from the April 2026 "Max of List" puzzle. The research goal was to recover the models' internal algorithm for computing the maximum element of a list. I used attention analysis, head ablations, and activation patching to find my results.</p>
+          <p>Basically, for the 1 digit puzzle, several attention heads learned to place weight on the largest token in the list (the answer). In the 2 digit puzzle, the model learned to identify the largest tens digit, then the largest ones digit.</p>
+          <p>Attention analysis was just visual: I would look at the activations, head ablations were to verify that what I was looking at was indeed what was causal to predicting the correct digit, and patching activations back (from a clean run to an ablated run) to guarantee again that it was causal. This was a short project done for university homework.</p>
+
+          <h2>Context</h2>
+          <p>Beyond that, I have some industry experience in harness engineering and am reading to build my EA and AI futurism / long-termism context.</p>
+        </div>
+      </article>
+    </main>
+
+    <script src="site.js"></script>
+  </body>
+</html>

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Scratch work WIP by David Crispell.">
+    <meta name="theme-color" content="#f3f0e7">
+    <title>scratch work WIP - David Crispell</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="site.css">
+    <script>
+      (function () {
+        var savedMode = null;
+        try {
+          savedMode = localStorage.getItem("color-mode");
+        } catch (error) {
+          savedMode = null;
+        }
+        var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var shouldUseDark = savedMode ? savedMode === "dark" : prefersDark;
+        document.documentElement.classList.toggle("dark", shouldUseDark);
+      })();
+    </script>
+  </head>
+  <body class="essay-template">
+    <header class="site-header">
+      <a class="site-title" href="./" aria-label="David Crispell home">David Crispell</a>
+      <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
+        <span class="theme-toggle__track" aria-hidden="true">
+          <span class="theme-toggle__thumb"></span>
+        </span>
+      </button>
+    </header>
+
+    <button class="contents-toggle" type="button" aria-label="Toggle essay contents" aria-expanded="false" aria-controls="essay-contents">
+      <span class="contents-toggle__bar" aria-hidden="true"></span>
+      <span class="contents-toggle__bar" aria-hidden="true"></span>
+      <span class="contents-toggle__bar" aria-hidden="true"></span>
+    </button>
+
+    <nav id="essay-contents" class="contents-panel" aria-label="Essay contents" aria-hidden="true">
+      <div class="contents-heading">Contents</div>
+      <ol class="contents-list" data-contents-list></ol>
+    </nav>
+
+    <main class="page article-page">
+      <article class="essay">
+        <header class="essay-header">
+          <h1 class="essay-title">scratch work WIP</h1>
+          <p class="essay-subtitle">Risks, first experiment, and thesis.</p>
+          <p class="essay-date">June 2026</p>
+        </header>
+
+        <div class="essay-body" data-footnotes-body>
+          <h2>Question 1</h2>
+          <p><strong>What do you think are the biggest risks in the project, and what might be some of the reasons we fail at producing any relevant results? What can we do to mitigate it?</strong></p>
+          <p>A primary concern is that subliminal learning must be both <em>established and measurable</em> in 160m parameter language models. This must be confirmed by attempting a replication of the fine-tuning subliminal learning results on a polypythia by measuring completions<sup>1</sup> for animal preference-related changes (in both teacher and student polypythias, sequentially).</p>
+          <p>Another primary concern would be that fixed initialization would predict "preference features" in a way such that negative results from data order's effect on subliminal learning become uninformative rather than a negative result<sup>2</sup><sup>3</sup>. This is harder to mitigate as an effect, but we could still examine and compare the features learned by the teacher and student polypythias to see if similar representations were learned regardless of data order.</p>
+
+          <h2>Question 2</h2>
+          <p><strong>What do you would be the first experiment you would run in this project?</strong></p>
+          <p>As informed by the biggest risks of the project, I would first attempt to replicate the fine-tuning subliminal learning results in our polypythia to ensure project validity. This would entail constructing a training set to elicit animal preference in a polypythia, training a teacher polypythia to exhibit animal preference, finding some completions-model (animal) preference monitoring technique, training a student model on teacher generated completions, and monitoring the student model for preference acquisition.</p>
+
+          <h2>Thesis</h2>
+          <p>My thesis: that this project will show that representations of preference are acquired in part due to data order and initialization, and that data order's specific effect on preference acquisition isomorphism is that early learned representations of preference will be useful gradient minimizers for downstream preference formation tasks, and therefore enforce a particular morphism for preference. Prediction being that, if this morphism is enforced through early training, then subliminal learning may occur due to steering vector transitivity.</p>
+          <p>I predict the effect of data order would be that different representations of preference may be learned according to data order, since features may differentially affect loss at the time of preference data introduction in training, and thus may result (unless the features to represent preference are locked in early, and remain stable) in a negative result for subliminal learning among fixed initialization, variable data order training runs, traceable to the features which are recruited to represent the preference.</p>
+          <p>The concerns are thus that subliminal learning is difficult to establish at the 160m parameter language model scale, that if initialization is doubly predictive of learning basis and feature placement (therefore also representation geometry), then a negative result of data order does not necessarily inform us to anything other than initialization's known results of predicting subliminal learning.</p>
+          <p>Basically I think that thinking of subliminal learning as a steering vector means that data order's effect on SL may be partly mediated by which early learned representations are available for later preference acquisition.</p>
+        </div>
+
+        <section class="footnotes" aria-labelledby="footnotes-heading" data-footnotes-list>
+          <h2 id="footnotes-heading">Footnotes</h2>
+          <ol class="footnotes-list">
+            <li>In general, finding a way to monitor completions-model preferences seems difficult, but I think approaches like basic prompting, logit probability monitor, or SAE feature activation-style methods would be able to measure preference acquisition.</li>
+            <li>Specifically, that initialization would predict the representations of preferences because initialization and early learning would lock the recruitable features available for building a preference representation to a stable set, thus removing differential loss at training time attributable to different features, and resulting in the same learned representations despite different data order.</li>
+            <li>Further, a simple prediction may be that if final model weight differences are simply too great (between control and variable data order models), then SL breaking here is already predicted by weight differences, losing any mechanism of data order.</li>
+          </ol>
+        </section>
+      </article>
+    </main>
+
+    <script src="site.js"></script>
+  </body>
+</html>
