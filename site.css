@@ -500,12 +500,88 @@ h2 {
   }
 
   .essay-template .site-header {
+    align-items: center;
+    justify-content: flex-start;
+    gap: 18px;
     max-width: var(--content-width);
   }
 
+  .essay-template .site-title {
+    margin-right: auto;
+  }
+
   .contents-toggle {
-    top: 72px;
-    left: 10px;
+    position: relative;
+    z-index: 25;
+    top: auto;
+    left: auto;
+    flex: 0 0 auto;
+    margin: 0;
+  }
+
+  .contents-toggle__bar {
+    height: 2px;
+  }
+
+  .contents-panel {
+    top: 86px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 86px);
+    padding: 42px 30px 32px;
+    overflow: auto;
+    border-right: 0;
+    background: var(--background);
+    box-shadow: none;
+    opacity: 0;
+    transform: none;
+    transition: opacity 140ms ease, visibility 140ms ease;
+  }
+
+  .contents-panel.is-open {
+    opacity: 1;
+    transform: none;
+  }
+
+  .contents-heading {
+    margin-bottom: 28px;
+    color: var(--text);
+    font-size: 32px;
+  }
+
+  .contents-list {
+    display: block;
+    padding-left: 1.1em;
+    border-left: 0;
+    list-style: decimal;
+    font-size: 24px;
+    line-height: 1.65;
+  }
+
+  .contents-list li + li {
+    margin-top: 4px;
+  }
+
+  .contents-list a {
+    display: inline;
+    padding: 0;
+    color: var(--text);
+  }
+
+  .contents-list a::before {
+    display: none;
+  }
+
+  .contents-list a.is-active {
+    font-weight: inherit;
+  }
+
+  .essay-template.contents-open {
+    overflow: hidden;
+  }
+
+  .essay-template.contents-open .page {
+    visibility: hidden;
   }
 
   .site-title {

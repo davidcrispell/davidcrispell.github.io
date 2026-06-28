@@ -116,6 +116,7 @@
 
   function setOpen(isOpen) {
     panel.classList.toggle("is-open", isOpen);
+    document.body.classList.toggle("contents-open", isOpen);
     toggle.setAttribute("aria-expanded", String(isOpen));
     panel.setAttribute("aria-hidden", String(!isOpen));
   }
