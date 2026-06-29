@@ -73,10 +73,48 @@
     backlink.href = "#" + refId;
     backlink.className = "footnote-backref";
     backlink.textContent = label;
-    backlink.setAttribute("aria-label", "Return to footnote reference " + number);
+    backlink.title = "Return to inline footnote reference " + label;
+    backlink.setAttribute("aria-label", "Return to inline footnote reference " + number);
 
     item.appendChild(backlink);
     item.insertAdjacentHTML("beforeend", originalNote);
+  });
+
+  footnotes.addEventListener("click", function (event) {
+    var backlink = event.target.closest(".footnote-backref");
+
+    if (!backlink) {
+      return;
+    }
+
+    var target = document.querySelector(backlink.getAttribute("href"));
+
+    if (!target) {
+      return;
+    }
+
+    var targetLink = target.querySelector(".footnote-ref");
+    var scrollTarget = target.getBoundingClientRect().top + window.pageYOffset - window.innerHeight * 0.25;
+
+    event.preventDefault();
+    window.scrollTo({
+      top: Math.max(scrollTarget, 0),
+      behavior: "auto",
+    });
+
+    if (targetLink) {
+      targetLink.focus({ preventScroll: true });
+      targetLink.classList.remove("is-return-target");
+      window.requestAnimationFrame(function () {
+        targetLink.classList.add("is-return-target");
+      });
+    }
+
+    if (window.history && window.history.pushState) {
+      window.history.pushState(null, "", backlink.getAttribute("href"));
+    } else {
+      window.location.hash = backlink.getAttribute("href").slice(1);
+    }
   });
 })();
 

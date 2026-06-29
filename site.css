@@ -410,6 +410,11 @@ h2 {
   background: var(--footnote-background-hover);
 }
 
+.footnote-ref.is-return-target {
+  animation: footnote-return-pulse 900ms ease;
+  background: var(--footnote-background-hover);
+}
+
 .footnote-tooltip {
   position: absolute;
   z-index: 5;
@@ -463,6 +468,17 @@ h2 {
   margin-right: 0.4em;
   font-weight: 600;
   text-decoration: none;
+}
+
+@keyframes footnote-return-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+
+  35% {
+    box-shadow: 0 0 0 4px var(--footnote-background-hover);
+  }
 }
 
 .back-to-top {
