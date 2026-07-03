@@ -1,18 +1,18 @@
 :root {
   color-scheme: light;
-  --background: #f3f0e7;
-  --text: #22221f;
-  --muted: #6a675f;
-  --link: #22221f;
-  --selection: rgba(0, 100, 255, 0.24);
-  --border: rgba(34, 34, 31, 0.26);
-  --footnote-background: rgba(34, 34, 31, 0.1);
-  --footnote-background-hover: rgba(34, 34, 31, 0.16);
-  --tooltip-background: #fbfaf4;
-  --tooltip-shadow: rgba(34, 34, 31, 0.18);
-  --toggle-surface: #fbfaf4;
-  --toggle-border: #22221f;
-  --toggle-thumb: #22221f;
+  --background: #fff1f6;
+  --text: #261923;
+  --muted: #765b68;
+  --link: #261923;
+  --selection: rgba(214, 79, 132, 0.24);
+  --border: rgba(84, 39, 62, 0.24);
+  --footnote-background: rgba(168, 53, 101, 0.12);
+  --footnote-background-hover: rgba(168, 53, 101, 0.2);
+  --tooltip-background: #fff8fb;
+  --tooltip-shadow: rgba(84, 39, 62, 0.18);
+  --toggle-surface: #fff8fb;
+  --toggle-border: #261923;
+  --toggle-thumb: #261923;
   --page-width: 760px;
   --content-width: 580px;
 }
