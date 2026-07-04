@@ -154,6 +154,139 @@ a:hover {
   border-radius: 999px;
 }
 
+.waterman-page {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 680px);
+  align-items: start;
+  column-gap: 96px;
+  width: min(1120px, calc(100% - 36px));
+  margin-inline: auto;
+  padding: 56px 0 84px;
+}
+
+.waterman-rail {
+  position: sticky;
+  top: 56px;
+  padding-top: 76px;
+}
+
+.waterman-title {
+  display: block;
+  color: var(--text);
+  font-size: 46px;
+  line-height: 0.78;
+  text-decoration: none;
+}
+
+.waterman-title span {
+  display: block;
+}
+
+.waterman-title:hover {
+  color: var(--text);
+}
+
+.waterman-nav {
+  display: grid;
+  gap: 14px;
+  margin-top: 72px;
+  font-size: 34px;
+  line-height: 0.96;
+}
+
+.waterman-nav a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.waterman-nav a:hover,
+.waterman-nav a:focus-visible {
+  text-decoration-line: underline;
+  text-decoration-thickness: 0.055em;
+  text-underline-offset: 0.12em;
+}
+
+.waterman-rail .theme-toggle {
+  margin-top: 38px;
+}
+
+.waterman-main {
+  min-width: 0;
+}
+
+.waterman-art {
+  width: min(100%, 610px);
+  margin: 0 auto 34px;
+}
+
+.waterman-art img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.waterman-content {
+  display: grid;
+  gap: 32px;
+  max-width: 620px;
+  margin-inline: auto;
+  font-size: 20px;
+  line-height: 1.42;
+}
+
+.waterman-section {
+  scroll-margin-top: 32px;
+}
+
+.waterman-section + .waterman-section {
+  margin-top: 0;
+}
+
+.waterman-section h2 {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.waterman-intro {
+  display: grid;
+  gap: 14px;
+}
+
+@media (max-width: 900px) {
+  .waterman-page {
+    display: block;
+    width: min(100% - 28px, 680px);
+    padding-top: 28px;
+  }
+
+  .waterman-rail {
+    position: static;
+    padding-top: 0;
+    margin-bottom: 34px;
+  }
+
+  .waterman-title {
+    font-size: 38px;
+    line-height: 0.82;
+  }
+
+  .waterman-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    margin-top: 28px;
+    font-size: 24px;
+  }
+
+  .waterman-rail .theme-toggle {
+    margin-top: 24px;
+  }
+
+  .waterman-art {
+    width: min(100%, 540px);
+  }
+}
+
 .contents-toggle {
   position: fixed;
   z-index: 20;

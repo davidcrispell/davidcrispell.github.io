@@ -7,10 +7,10 @@
       name="description"
       content="Personal website for David Crispell: writing, projects, research, and links."
     >
-    <meta name="theme-color" content="#eae5dd">
+    <meta name="theme-color" content="#f3e3c4">
     <title>David Crispell</title>
     <link rel="preconnect" href="https://db.onlinewebfonts.com" crossorigin>
-    <link rel="stylesheet" href="site.css?v=20260704-6">
+    <link rel="stylesheet" href="site.css?v=20260704-8">
     <script>
       (function () {
         var savedMode = null;
@@ -25,59 +25,77 @@
       })();
     </script>
   </head>
-  <body>
-    <header class="site-header">
-      <a class="site-title" href="./" aria-label="David Crispell home">David Crispell</a>
-      <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
-        <span class="theme-toggle__track" aria-hidden="true">
-          <span class="theme-toggle__thumb"></span>
-        </span>
-      </button>
-    </header>
+  <body class="waterman-home">
+    <main class="waterman-page">
+      <aside class="waterman-rail" aria-label="Homepage navigation">
+        <a class="waterman-title" href="./" aria-label="David Crispell home">
+          <span>David</span>
+          <span>Crispell</span>
+        </a>
 
-    <main class="page">
-      <section class="intro" aria-labelledby="intro-heading">
-        <h1 id="intro-heading" class="visually-hidden">Introduction</h1>
-        <p>
-          Current work <a href="#">Company</a>. Current work.
-        </p>
-        <p>Previous work</p>
-        <p>Education</p>
-      </section>
+        <nav class="waterman-nav" aria-label="Homepage sections">
+          <a href="#now">Now</a>
+          <a href="#writing">Writing</a>
+          <a href="#projects">Projects</a>
+          <a href="#research">Research</a>
+          <a href="#contact">Contact</a>
+        </nav>
 
-      <section aria-labelledby="short-posts-heading">
-        <h2 id="short-posts-heading">Short Posts</h2>
-        <ul class="link-list">
-          <li><a href="scratch-work-wip-1.html">incoherent scratchwork</a></li>
-          <li><a href="scratch-work-wip-2.html">incoherent scratchwork</a></li>
-          <li><a href="scratch-work-wip-3.html">incoherent scratchwork</a></li>
-        </ul>
-      </section>
+        <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
+          <span class="theme-toggle__track" aria-hidden="true">
+            <span class="theme-toggle__thumb"></span>
+          </span>
+        </button>
+      </aside>
 
-      <section aria-labelledby="projects-heading">
-        <h2 id="projects-heading">Projects</h2>
-        <ul class="link-list">
-          <li><a href="#">WIP</a></li>
-        </ul>
-      </section>
+      <section class="waterman-main">
+        <figure class="waterman-art">
+          <img src="assets/ground-dan-hillier.jpeg" alt="Ground by Dan Hillier">
+        </figure>
 
-      <section aria-labelledby="research-heading">
-        <h2 id="research-heading">Research</h2>
-        <ul class="link-list">
-          <li><a href="#">WIP</a></li>
-        </ul>
-      </section>
+        <div class="waterman-content">
+          <section id="now" class="waterman-section waterman-intro" aria-labelledby="now-heading">
+            <h1 id="now-heading" class="visually-hidden">Now</h1>
+            <p>Hello, I'm David.</p>
+            <p>Current work <a href="#">Company</a>. Current work.</p>
+            <p>Previous work. Education.</p>
+          </section>
 
-      <section aria-labelledby="links-heading">
-        <h2 id="links-heading">Links</h2>
-        <ul class="link-list meta-list">
-          <li><a href="mailto:davidglenrc@gmail.com">Email</a></li>
-          <li><a href="https://github.com/davidcrispell">GitHub</a></li>
-          <li><a href="https://www.linkedin.com/in/dcrispell">LinkedIn</a></li>
-        </ul>
+          <section id="writing" class="waterman-section" aria-labelledby="writing-heading">
+            <h2 id="writing-heading">Writing</h2>
+            <ul class="link-list">
+              <li><a href="scratch-work-wip-1.html">incoherent scratchwork</a></li>
+              <li><a href="scratch-work-wip-2.html">incoherent scratchwork</a></li>
+              <li><a href="scratch-work-wip-3.html">incoherent scratchwork</a></li>
+            </ul>
+          </section>
+
+          <section id="projects" class="waterman-section" aria-labelledby="projects-heading">
+            <h2 id="projects-heading">Projects</h2>
+            <ul class="link-list">
+              <li><a href="#">WIP</a></li>
+            </ul>
+          </section>
+
+          <section id="research" class="waterman-section" aria-labelledby="research-heading">
+            <h2 id="research-heading">Research</h2>
+            <ul class="link-list">
+              <li><a href="#">WIP</a></li>
+            </ul>
+          </section>
+
+          <section id="contact" class="waterman-section" aria-labelledby="contact-heading">
+            <h2 id="contact-heading">Contact</h2>
+            <ul class="link-list meta-list">
+              <li><a href="mailto:davidglenrc@gmail.com">Email</a></li>
+              <li><a href="https://github.com/davidcrispell">GitHub</a></li>
+              <li><a href="https://www.linkedin.com/in/dcrispell">LinkedIn</a></li>
+            </ul>
+          </section>
+        </div>
       </section>
     </main>
 
-    <script src="site.js?v=20260704-6"></script>
+    <script src="site.js?v=20260704-8"></script>
   </body>
 </html>
