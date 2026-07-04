@@ -1,3 +1,11 @@
+@font-face {
+  font-display: swap;
+  font-family: "Emilio Test Light";
+  font-style: normal;
+  font-weight: 300;
+  src: url("https://db.onlinewebfonts.com/t/1d4bbad5848fe07309fe057d76b07fed.woff2") format("woff2");
+}
+
 :root {
   color-scheme: light;
   --background: #eae5dd;
@@ -56,7 +64,7 @@ body {
   margin: 0;
   background-color: var(--background);
   color: var(--text);
-  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+  font-family: "Emilio Test Light", "Emilio", Georgia, "Times New Roman", serif;
   font-size: 20px;
   font-weight: 300;
   line-height: 1.28;
@@ -113,7 +121,7 @@ a:hover {
 
 .site-title {
   font-size: 28.8px;
-  font-weight: 400;
+  font-weight: 300;
   line-height: 0.95;
   text-decoration: none;
 }
@@ -247,7 +255,7 @@ a:hover {
 .contents-heading {
   margin-bottom: 12px;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 300;
   line-height: 1;
 }
 
@@ -290,7 +298,7 @@ a:hover {
 
 .contents-list a.is-active {
   color: var(--text);
-  font-weight: 400;
+  font-weight: 300;
 }
 
 .contents-list a.is-active::before {
@@ -329,7 +337,7 @@ ul {
 
 h2 {
   font-size: 32px;
-  font-weight: 400;
+  font-weight: 300;
   line-height: 1;
   margin-bottom: 14px;
 }
@@ -356,7 +364,7 @@ h2 {
   max-width: 16ch;
   margin: 0 0 8px;
   font-size: 60px;
-  font-weight: 400;
+  font-weight: 300;
   line-height: 0.96;
   text-wrap: balance;
 }
@@ -459,7 +467,7 @@ h2 {
 }
 
 .footnote-tooltip__label {
-  font-weight: 400;
+  font-weight: 300;
 }
 
 .footnotes {
@@ -486,7 +494,7 @@ h2 {
 
 .footnote-backref {
   margin-right: 0.4em;
-  font-weight: 400;
+  font-weight: 300;
   text-decoration: none;
 }
 
