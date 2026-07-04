@@ -44,6 +44,11 @@
       alt: "Subliminal learning owl artwork",
       background: "#ddccae",
     },
+    {
+      src: "assets/cherrytree.jpg",
+      alt: "Cherry tree artwork",
+      background: "#dbd0bc",
+    },
   ];
 
   if (!artButton || !artImage) {
