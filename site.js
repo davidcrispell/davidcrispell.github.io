@@ -49,6 +49,11 @@
       alt: "Cherry tree artwork",
       background: "#dbd0bc",
     },
+    {
+      src: "assets/butterflies.png",
+      alt: "Butterflies and flowers artwork",
+      background: "#efe4ce",
+    },
   ];
 
   if (!artButton || !artImage) {
