@@ -13,6 +13,9 @@
   --toggle-surface: #fff8fb;
   --toggle-border: #261923;
   --toggle-thumb: #261923;
+  --plastic-texture: url("assets/computer-plastic-light.png");
+  --plastic-texture-position: 0 0;
+  --plastic-texture-size: 512px 512px;
   --page-width: 760px;
   --content-width: 580px;
 }
@@ -32,6 +35,9 @@
   --toggle-surface: #34332e;
   --toggle-border: #f3f0e7;
   --toggle-thumb: #f3f0e7;
+  --plastic-texture: url("assets/computer-plastic-dark.png");
+  --plastic-texture-position: 0 0;
+  --plastic-texture-size: 512px 512px;
 }
 
 * {
@@ -40,13 +46,21 @@
 
 html {
   min-height: 100%;
-  background: var(--background);
+  background-color: var(--background);
+  background-image: var(--plastic-texture);
+  background-position: var(--plastic-texture-position);
+  background-size: var(--plastic-texture-size);
+  background-attachment: fixed;
 }
 
 body {
   min-height: 100%;
   margin: 0;
-  background: var(--background);
+  background-color: var(--background);
+  background-image: var(--plastic-texture);
+  background-position: var(--plastic-texture-position);
+  background-size: var(--plastic-texture-size);
+  background-attachment: fixed;
   color: var(--text);
   font-family: "Newsreader", Georgia, "Times New Roman", serif;
   font-size: 20px;
@@ -204,7 +218,11 @@ a:hover {
   width: min(244px, 76vw);
   height: 100vh;
   padding: 76px 24px 24px;
-  background: var(--background);
+  background-color: var(--background);
+  background-image: var(--plastic-texture);
+  background-position: var(--plastic-texture-position);
+  background-size: var(--plastic-texture-size);
+  background-attachment: fixed;
   border-right: 1px solid var(--border);
   box-shadow: 8px 0 24px var(--tooltip-shadow);
   pointer-events: none;
@@ -547,7 +565,11 @@ h2 {
     padding: 42px 30px 32px;
     overflow: auto;
     border-right: 0;
-    background: var(--background);
+    background-color: var(--background);
+    background-image: var(--plastic-texture);
+    background-position: var(--plastic-texture-position);
+    background-size: var(--plastic-texture-size);
+    background-attachment: fixed;
     box-shadow: none;
     opacity: 0;
     transform: none;
