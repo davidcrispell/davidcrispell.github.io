@@ -64,7 +64,7 @@ body {
   color: var(--text);
   font-family: "Newsreader", Georgia, "Times New Roman", serif;
   font-size: 20px;
-  font-weight: 500;
+  font-weight: 300;
   line-height: 1.28;
   transition: background-color 180ms linear, color 180ms linear;
 }
@@ -107,7 +107,7 @@ a:hover {
 
 .site-title {
   font-size: 28.8px;
-  font-weight: 700;
+  font-weight: 400;
   line-height: 0.95;
   text-decoration: none;
 }
@@ -245,7 +245,7 @@ a:hover {
 .contents-heading {
   margin-bottom: 12px;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 400;
   line-height: 1;
 }
 
@@ -288,7 +288,7 @@ a:hover {
 
 .contents-list a.is-active {
   color: var(--text);
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .contents-list a.is-active::before {
@@ -327,7 +327,7 @@ ul {
 
 h2 {
   font-size: 32px;
-  font-weight: 700;
+  font-weight: 400;
   line-height: 1;
   margin-bottom: 14px;
 }
@@ -354,7 +354,7 @@ h2 {
   max-width: 16ch;
   margin: 0 0 8px;
   font-size: 60px;
-  font-weight: 700;
+  font-weight: 400;
   line-height: 0.96;
   text-wrap: balance;
 }
@@ -363,7 +363,7 @@ h2 {
   max-width: 26ch;
   font-size: 22px;
   font-style: italic;
-  font-weight: 400;
+  font-weight: 300;
   line-height: 1.12;
   text-wrap: balance;
 }
@@ -376,7 +376,7 @@ h2 {
 
 .essay-body {
   font-size: 20px;
-  font-weight: 400;
+  font-weight: 300;
   line-height: 1.42;
   text-wrap: pretty;
 }
@@ -444,7 +444,7 @@ h2 {
   box-shadow: 0 6px 18px var(--tooltip-shadow);
   color: var(--text);
   font-size: 12px;
-  font-weight: 400;
+  font-weight: 300;
   line-height: 1.45;
   text-align: left;
   transform: translateX(-50%);
@@ -457,7 +457,7 @@ h2 {
 }
 
 .footnote-tooltip__label {
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .footnotes {
@@ -465,7 +465,7 @@ h2 {
   padding-top: 22px;
   border-top: 1px solid var(--border);
   font-size: 0.82em;
-  font-weight: 400;
+  font-weight: 300;
   line-height: 1.45;
 }
 
@@ -484,7 +484,7 @@ h2 {
 
 .footnote-backref {
   margin-right: 0.4em;
-  font-weight: 600;
+  font-weight: 400;
   text-decoration: none;
 }
 
