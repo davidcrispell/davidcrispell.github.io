@@ -1,43 +1,45 @@
 :root {
   color-scheme: light;
-  --background: #fff1f6;
-  --text: #261923;
-  --muted: #765b68;
-  --link: #261923;
-  --selection: rgba(214, 79, 132, 0.24);
-  --border: rgba(84, 39, 62, 0.24);
-  --footnote-background: rgba(168, 53, 101, 0.12);
-  --footnote-background-hover: rgba(168, 53, 101, 0.2);
-  --tooltip-background: #fff8fb;
-  --tooltip-shadow: rgba(84, 39, 62, 0.18);
-  --toggle-surface: #fff8fb;
-  --toggle-border: #261923;
-  --toggle-thumb: #261923;
-  --plastic-texture: url("assets/computer-plastic-light.png");
-  --plastic-texture-position: 0 0;
-  --plastic-texture-size: 512px 512px;
+  --background: #eae5dd;
+  --text: #3d3833;
+  --muted: #746b62;
+  --link: #3d3833;
+  --selection: rgba(61, 56, 51, 0.2);
+  --border: rgba(61, 56, 51, 0.24);
+  --footnote-background: rgba(61, 56, 51, 0.1);
+  --footnote-background-hover: rgba(61, 56, 51, 0.18);
+  --tooltip-background: #f4efe7;
+  --tooltip-shadow: rgba(61, 56, 51, 0.18);
+  --toggle-surface: #f4efe7;
+  --toggle-border: #3d3833;
+  --toggle-thumb: #3d3833;
+  --plastic-filter: url("assets/computer-plastic-light.png");
+  --plastic-filter-opacity: 0.85;
+  --plastic-filter-position: 0 0;
+  --plastic-filter-size: 512px 512px;
   --page-width: 760px;
   --content-width: 580px;
 }
 
 :root.dark {
   color-scheme: dark;
-  --background: #22221f;
-  --text: #f3f0e7;
-  --muted: #c8c2b5;
-  --link: #f3f0e7;
-  --selection: rgba(111, 166, 255, 0.36);
-  --border: rgba(243, 240, 231, 0.28);
-  --footnote-background: rgba(243, 240, 231, 0.14);
-  --footnote-background-hover: rgba(243, 240, 231, 0.22);
-  --tooltip-background: #34332e;
+  --background: #3d3833;
+  --text: #eae5dd;
+  --muted: #c7c0b6;
+  --link: #eae5dd;
+  --selection: rgba(234, 229, 221, 0.24);
+  --border: rgba(234, 229, 221, 0.28);
+  --footnote-background: rgba(234, 229, 221, 0.13);
+  --footnote-background-hover: rgba(234, 229, 221, 0.22);
+  --tooltip-background: #4a4540;
   --tooltip-shadow: rgba(0, 0, 0, 0.35);
-  --toggle-surface: #34332e;
-  --toggle-border: #f3f0e7;
-  --toggle-thumb: #f3f0e7;
-  --plastic-texture: url("assets/computer-plastic-dark.png");
-  --plastic-texture-position: 0 0;
-  --plastic-texture-size: 512px 512px;
+  --toggle-surface: #4a4540;
+  --toggle-border: #eae5dd;
+  --toggle-thumb: #eae5dd;
+  --plastic-filter: url("assets/computer-plastic-dark.png");
+  --plastic-filter-opacity: 0.85;
+  --plastic-filter-position: 0 0;
+  --plastic-filter-size: 512px 512px;
 }
 
 * {
@@ -47,26 +49,30 @@
 html {
   min-height: 100%;
   background-color: var(--background);
-  background-image: var(--plastic-texture);
-  background-position: var(--plastic-texture-position);
-  background-size: var(--plastic-texture-size);
-  background-attachment: fixed;
 }
 
 body {
   min-height: 100%;
   margin: 0;
   background-color: var(--background);
-  background-image: var(--plastic-texture);
-  background-position: var(--plastic-texture-position);
-  background-size: var(--plastic-texture-size);
-  background-attachment: fixed;
   color: var(--text);
   font-family: "Newsreader", Georgia, "Times New Roman", serif;
   font-size: 20px;
   font-weight: 300;
   line-height: 1.28;
   transition: background-color 180ms linear, color 180ms linear;
+}
+
+body::before {
+  position: fixed;
+  z-index: 999;
+  inset: 0;
+  pointer-events: none;
+  background-image: var(--plastic-filter);
+  background-position: var(--plastic-filter-position);
+  background-size: var(--plastic-filter-size);
+  content: "";
+  opacity: var(--plastic-filter-opacity);
 }
 
 ::selection {
@@ -219,10 +225,6 @@ a:hover {
   height: 100vh;
   padding: 76px 24px 24px;
   background-color: var(--background);
-  background-image: var(--plastic-texture);
-  background-position: var(--plastic-texture-position);
-  background-size: var(--plastic-texture-size);
-  background-attachment: fixed;
   border-right: 1px solid var(--border);
   box-shadow: 8px 0 24px var(--tooltip-shadow);
   pointer-events: none;
@@ -566,10 +568,6 @@ h2 {
     overflow: auto;
     border-right: 0;
     background-color: var(--background);
-    background-image: var(--plastic-texture);
-    background-position: var(--plastic-texture-position);
-    background-size: var(--plastic-texture-size);
-    background-attachment: fixed;
     box-shadow: none;
     opacity: 0;
     transform: none;
