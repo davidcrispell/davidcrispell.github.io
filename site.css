@@ -31,17 +31,17 @@
 
 :root.dark {
   color-scheme: dark;
-  --background: #3d3833;
+  --background: #302c28;
   --text: #eae5dd;
-  --muted: #c7c0b6;
+  --muted: #c5bdb3;
   --link: #eae5dd;
   --selection: rgba(234, 229, 221, 0.24);
   --border: rgba(234, 229, 221, 0.28);
   --footnote-background: rgba(234, 229, 221, 0.13);
   --footnote-background-hover: rgba(234, 229, 221, 0.22);
-  --tooltip-background: #4a4540;
+  --tooltip-background: #3d3833;
   --tooltip-shadow: rgba(0, 0, 0, 0.35);
-  --toggle-surface: #4a4540;
+  --toggle-surface: #3d3833;
   --toggle-border: #eae5dd;
   --toggle-thumb: #eae5dd;
   --plastic-filter: url("assets/plastic-filter-dark-v2.png");
