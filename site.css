@@ -25,29 +25,42 @@
   --plastic-filter-opacity: 0.58;
   --plastic-filter-position: 0 0;
   --plastic-filter-size: 1024px 1024px;
+  --reflection-x: 58%;
+  --reflection-y: 18%;
+  --reflection-angle: 132deg;
+  --reflection-opacity: 0.28;
+  --reflection-blend-mode: soft-light;
+  --reflection-primary: rgba(255, 255, 255, 0.24);
+  --reflection-secondary: rgba(255, 255, 255, 0.08);
+  --reflection-shadow: rgba(61, 56, 51, 0.08);
   --page-width: 760px;
   --content-width: 580px;
 }
 
 :root.dark {
   color-scheme: dark;
-  --background: #302c28;
+  --background: #25221f;
   --text: #eae5dd;
-  --muted: #c5bdb3;
+  --muted: #c2baaf;
   --link: #eae5dd;
   --selection: rgba(234, 229, 221, 0.24);
   --border: rgba(234, 229, 221, 0.28);
   --footnote-background: rgba(234, 229, 221, 0.13);
   --footnote-background-hover: rgba(234, 229, 221, 0.22);
-  --tooltip-background: #3d3833;
+  --tooltip-background: #302c28;
   --tooltip-shadow: rgba(0, 0, 0, 0.35);
-  --toggle-surface: #3d3833;
+  --toggle-surface: #302c28;
   --toggle-border: #eae5dd;
   --toggle-thumb: #eae5dd;
   --plastic-filter: url("assets/plastic-filter-dark-v2.png");
   --plastic-filter-opacity: 0.5;
   --plastic-filter-position: 0 0;
   --plastic-filter-size: 1024px 1024px;
+  --reflection-opacity: 0.42;
+  --reflection-blend-mode: screen;
+  --reflection-primary: rgba(255, 252, 241, 0.22);
+  --reflection-secondary: rgba(255, 252, 241, 0.06);
+  --reflection-shadow: rgba(0, 0, 0, 0.22);
 }
 
 * {
@@ -81,6 +94,45 @@ body::before {
   background-size: var(--plastic-filter-size);
   content: "";
   opacity: var(--plastic-filter-opacity);
+}
+
+body::after {
+  position: fixed;
+  z-index: 1000;
+  inset: -18%;
+  pointer-events: none;
+  background-image:
+    radial-gradient(
+      circle at var(--reflection-x) var(--reflection-y),
+      var(--reflection-primary) 0,
+      var(--reflection-secondary) 18%,
+      transparent 42%
+    ),
+    linear-gradient(
+      var(--reflection-angle),
+      transparent 0%,
+      transparent 36%,
+      var(--reflection-secondary) 45%,
+      var(--reflection-primary) 49%,
+      transparent 57%,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse at calc(100% - var(--reflection-x)) calc(100% - var(--reflection-y)),
+      var(--reflection-shadow) 0,
+      transparent 46%
+    );
+  content: "";
+  mix-blend-mode: var(--reflection-blend-mode);
+  opacity: var(--reflection-opacity);
+  transition: opacity 180ms linear;
+  will-change: background-image;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::after {
+    opacity: 0.12;
+  }
 }
 
 ::selection {
