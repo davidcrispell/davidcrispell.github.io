@@ -13,10 +13,10 @@
   --toggle-surface: #f4efe7;
   --toggle-border: #3d3833;
   --toggle-thumb: #3d3833;
-  --plastic-filter: url("assets/computer-plastic-light.png");
-  --plastic-filter-opacity: 0.85;
+  --plastic-filter: url("assets/plastic-filter-light-v2.png");
+  --plastic-filter-opacity: 0.58;
   --plastic-filter-position: 0 0;
-  --plastic-filter-size: 512px 512px;
+  --plastic-filter-size: 1024px 1024px;
   --page-width: 760px;
   --content-width: 580px;
 }
@@ -36,10 +36,10 @@
   --toggle-surface: #4a4540;
   --toggle-border: #eae5dd;
   --toggle-thumb: #eae5dd;
-  --plastic-filter: url("assets/computer-plastic-dark.png");
-  --plastic-filter-opacity: 0.85;
+  --plastic-filter: url("assets/plastic-filter-dark-v2.png");
+  --plastic-filter-opacity: 0.5;
   --plastic-filter-position: 0 0;
-  --plastic-filter-size: 512px 512px;
+  --plastic-filter-size: 1024px 1024px;
 }
 
 * {
@@ -56,7 +56,7 @@ body {
   margin: 0;
   background-color: var(--background);
   color: var(--text);
-  font-family: "Newsreader", Georgia, "Times New Roman", serif;
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
   font-size: 20px;
   font-weight: 300;
   line-height: 1.28;
