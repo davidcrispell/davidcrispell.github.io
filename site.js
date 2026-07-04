@@ -5,6 +5,7 @@
   function setMode(isDark, persist) {
     root.classList.toggle("dark", isDark);
     toggle.setAttribute("aria-pressed", String(isDark));
+    window.dispatchEvent(new Event("color-mode-change"));
     if (persist) {
       try {
         localStorage.setItem("color-mode", isDark ? "dark" : "light");
@@ -23,6 +24,70 @@
   toggle.addEventListener("click", function () {
     setMode(!root.classList.contains("dark"), true);
   });
+})();
+
+(function () {
+  var root = document.documentElement;
+  var artButton = document.querySelector("[data-random-art]");
+  var artImage = document.querySelector("[data-random-art-image]");
+  var themeMeta = document.querySelector('meta[name="theme-color"]');
+  var darkBackground = "#25221f";
+  var activeIndex = -1;
+  var images = [
+    {
+      src: "assets/ground-dan-hillier.jpeg",
+      alt: "Ground by Dan Hillier",
+      background: "#f4eddb",
+    },
+    {
+      src: "assets/subliminal-learning-owl.jpeg",
+      alt: "Subliminal learning owl artwork",
+      background: "#ddccae",
+    },
+  ];
+
+  if (!artButton || !artImage) {
+    return;
+  }
+
+  function updateThemeMeta() {
+    if (!themeMeta || activeIndex < 0) {
+      return;
+    }
+
+    themeMeta.setAttribute(
+      "content",
+      root.classList.contains("dark") ? darkBackground : images[activeIndex].background
+    );
+  }
+
+  function setImage(index) {
+    activeIndex = index;
+    artImage.src = images[index].src;
+    artImage.alt = images[index].alt;
+    root.style.setProperty("--image-background", images[index].background);
+    updateThemeMeta();
+  }
+
+  function randomIndex() {
+    if (images.length < 2) {
+      return 0;
+    }
+
+    var nextIndex = activeIndex;
+    while (nextIndex === activeIndex) {
+      nextIndex = Math.floor(Math.random() * images.length);
+    }
+    return nextIndex;
+  }
+
+  setImage(randomIndex());
+
+  artButton.addEventListener("click", function () {
+    setImage(randomIndex());
+  });
+
+  window.addEventListener("color-mode-change", updateThemeMeta);
 })();
 
 (function () {

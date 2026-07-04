@@ -8,7 +8,7 @@
 
 :root {
   color-scheme: light;
-  --background: #f3e3c4;
+  --background: var(--image-background, #f4eddb);
   --text: #3d3833;
   --muted: #746b62;
   --link: #3d3833;
@@ -49,6 +49,7 @@
 html {
   min-height: 100%;
   background-color: var(--background);
+  transition: background-color 520ms ease;
 }
 
 body {
@@ -60,7 +61,7 @@ body {
   font-size: 20px;
   font-weight: 300;
   line-height: 1.28;
-  transition: background-color 180ms linear, color 180ms linear;
+  transition: background-color 520ms ease, color 180ms linear;
 }
 
 ::selection {
@@ -217,6 +218,21 @@ a:hover {
 .waterman-art {
   width: min(100%, 610px);
   margin: 0 auto 34px;
+}
+
+.waterman-art-button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.waterman-art-button:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 8px;
 }
 
 .waterman-art img {
