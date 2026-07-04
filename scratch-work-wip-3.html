@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#f4eddb">
     <title>incoherent scratchwork - David Crispell</title>
     <link rel="preconnect" href="https://db.onlinewebfonts.com" crossorigin>
-    <link rel="stylesheet" href="site.css?v=20260704-9">
+    <link rel="stylesheet" href="site.css?v=20260704-10">
     <script>
       (function () {
         var savedMode = null;
@@ -19,6 +19,14 @@
         var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
         var shouldUseDark = savedMode ? savedMode === "dark" : prefersDark;
         document.documentElement.classList.toggle("dark", shouldUseDark);
+        try {
+          var savedBackground = localStorage.getItem("image-background");
+          if (savedBackground) {
+            document.documentElement.style.setProperty("--image-background", savedBackground);
+          }
+        } catch (error) {
+          return;
+        }
       })();
     </script>
   </head>

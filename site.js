@@ -66,6 +66,11 @@
     artImage.src = images[index].src;
     artImage.alt = images[index].alt;
     root.style.setProperty("--image-background", images[index].background);
+    try {
+      localStorage.setItem("image-background", images[index].background);
+    } catch (error) {
+      return;
+    }
     updateThemeMeta();
   }
 
