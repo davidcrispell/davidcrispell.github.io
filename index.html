@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&display=swap">
-    <link rel="stylesheet" href="site.css?v=20260705-2">
+    <link rel="stylesheet" href="site.css?v=20260705-3">
     <script>
       (function () {
         var savedMode = null;
@@ -82,7 +82,15 @@
           <button class="waterman-art-button" type="button" data-random-art aria-label="Randomize artwork">
             <img data-random-art-image src="assets/ground-dan-hillier.jpeg" alt="Ground by Dan Hillier">
           </button>
-          <figcaption class="waterman-art-caption" data-random-art-caption><span class="plate-no">Plate I</span> Ground — Dan Hillier</figcaption>
+          <figcaption class="waterman-art-caption">
+            <button class="plate-nav plate-nav--prev" type="button" data-art-step="-1" aria-label="Previous plate">
+              <span aria-hidden="true">‹</span>
+            </button>
+            <span data-random-art-caption><span class="plate-no">Plate I</span> Ground — Dan Hillier</span>
+            <button class="plate-nav plate-nav--next" type="button" data-art-step="1" aria-label="Next plate">
+              <span aria-hidden="true">›</span>
+            </button>
+          </figcaption>
         </figure>
 
         <div class="waterman-content">
@@ -127,6 +135,6 @@
 
     <div class="botanical-footer" aria-hidden="true"></div>
 
-    <script src="site.js?v=20260705-1"></script>
+    <script src="site.js?v=20260705-3"></script>
   </body>
 </html>

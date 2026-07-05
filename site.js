@@ -31,6 +31,7 @@
   var artButton = document.querySelector("[data-random-art]");
   var artImage = document.querySelector("[data-random-art-image]");
   var artCaption = document.querySelector("[data-random-art-caption]");
+  var artStepButtons = document.querySelectorAll("[data-art-step]");
   var themeMeta = document.querySelector('meta[name="theme-color"]');
   var darkBackground = "#25221f";
   var fadeDuration = 190;
@@ -172,10 +173,27 @@
     return nextIndex;
   }
 
+  function stepImage(delta) {
+    var nextIndex = activeIndex + delta;
+    if (nextIndex < 0) {
+      nextIndex = images.length - 1;
+    }
+    if (nextIndex >= images.length) {
+      nextIndex = 0;
+    }
+    setImage(nextIndex);
+  }
+
   setImage(randomIndex(), true);
 
   artButton.addEventListener("click", function () {
     setImage(randomIndex());
+  });
+
+  artStepButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      stepImage(Number(button.getAttribute("data-art-step")) || 1);
+    });
   });
 
   window.addEventListener("color-mode-change", updateThemeMeta);

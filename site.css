@@ -264,6 +264,10 @@ a:hover {
 }
 
 .waterman-art-caption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
   margin-top: 14px;
   color: var(--muted);
   font-size: 15px;
@@ -271,6 +275,38 @@ a:hover {
   letter-spacing: 0.02em;
   text-align: center;
   transition: color 520ms ease;
+}
+
+.plate-nav {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--accent-2);
+  cursor: pointer;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 24px;
+  font-style: normal;
+  line-height: 1;
+  transition: color 520ms ease, transform 140ms ease;
+}
+
+.plate-nav:hover {
+  color: var(--accent);
+}
+
+.plate-nav:active {
+  transform: translateY(1px);
+}
+
+.plate-nav:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 3px;
 }
 
 .waterman-art-caption .plate-no {
