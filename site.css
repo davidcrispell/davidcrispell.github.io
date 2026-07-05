@@ -22,13 +22,14 @@
   --tooltip-shadow: rgba(61, 56, 51, 0.18);
   --page-width: 760px;
   --content-width: 580px;
+  --nav-font: "Playfair Display", "Times New Roman", Times, serif;
 }
 
 :root.dark {
   color-scheme: dark;
   --background: #25221f;
-  --text: #eae5dd;
-  --muted: #c2baaf;
+  --text: var(--image-ink-dark, #eae5dd);
+  --muted: var(--image-muted-dark, #c2baaf);
   --accent: var(--image-accent-dark, #c2baaf);
   --accent-2: var(--image-accent-2-dark, #a99e8c);
   --tooltip-shadow: rgba(0, 0, 0, 0.35);
@@ -50,7 +51,7 @@ body {
   background-color: var(--background);
   color: var(--text);
   font-family: "Emilio Test Light", "Emilio", Georgia, "Times New Roman", serif;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 300;
   line-height: 1.28;
   transition: background-color 520ms ease, color 520ms ease;
@@ -96,8 +97,9 @@ a:hover {
 
 .site-title {
   color: var(--accent);
-  font-size: 28.8px;
-  font-weight: 300;
+  font-family: var(--nav-font);
+  font-size: 28px;
+  font-weight: 700;
   line-height: 0.95;
   text-decoration: none;
   transition: color 520ms ease;
@@ -168,8 +170,11 @@ a:hover {
 .waterman-title {
   display: block;
   color: var(--accent);
-  font-size: 46px;
-  line-height: 0.78;
+  font-family: var(--nav-font);
+  font-size: 56px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 0.8;
   text-decoration: none;
   transition: color 520ms ease;
 }
@@ -186,7 +191,9 @@ a:hover {
   display: grid;
   gap: 14px;
   margin-top: 72px;
-  font-size: 34px;
+  font-family: var(--nav-font);
+  font-size: 32px;
+  font-weight: 400;
   line-height: 0.96;
 }
 
@@ -219,7 +226,7 @@ a:hover {
   display: block;
   width: 100%;
   padding: 12px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--image-frame-border, var(--border));
   background: color-mix(in srgb, var(--background) 88%, #ffffff);
   color: inherit;
   cursor: pointer;
@@ -267,7 +274,7 @@ a:hover {
   gap: 32px;
   max-width: 620px;
   margin-inline: auto;
-  font-size: 20px;
+  font-size: 18px;
   line-height: 1.42;
 }
 
@@ -308,6 +315,71 @@ a:hover {
   transition: color 520ms ease;
 }
 
+.page-footnote {
+  grid-column: 2;
+  margin-top: 72px;
+  padding-top: 16px;
+  position: relative;
+}
+
+.page-footnote::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 104px;
+  border-top: 1px solid var(--border);
+}
+
+.page-footnote p {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 30px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.page-footnote a {
+  color: var(--muted);
+}
+
+.page-footnote a:hover {
+  color: var(--text);
+}
+
+.page-footnote__ref {
+  position: relative;
+  top: -0.3em;
+  margin-right: 0.4em;
+  color: var(--accent);
+  font-size: 0.8em;
+  transition: color 520ms ease;
+}
+
+.waterman-home .waterman-page {
+  padding-bottom: 28px;
+}
+
+@supports ((mask-image: url("")) or (-webkit-mask-image: url(""))) {
+  .botanical-footer {
+    height: 170px;
+    margin-top: 0;
+    background-color: var(--accent-2);
+    opacity: 0.55;
+    transition: background-color 520ms ease;
+    -webkit-mask-image: url("assets/botanical-footer.png");
+    -webkit-mask-position: bottom center;
+    -webkit-mask-repeat: repeat-x;
+    -webkit-mask-size: auto 100%;
+    mask-image: url("assets/botanical-footer.png");
+    mask-position: bottom center;
+    mask-repeat: repeat-x;
+    mask-size: auto 100%;
+  }
+}
+
 .waterman-intro {
   display: grid;
   gap: 14px;
@@ -327,7 +399,7 @@ a:hover {
   }
 
   .waterman-title {
-    font-size: 38px;
+    font-size: 44px;
     line-height: 0.82;
   }
 
@@ -515,16 +587,8 @@ h2 {
 .link-list {
   display: grid;
   gap: 11px;
-  padding-left: 1.1em;
-}
-
-.link-list li::marker {
-  color: var(--accent-2);
-  font-size: 0.82em;
-}
-
-.meta-list li {
-  color: var(--muted);
+  padding-left: 0;
+  list-style: none;
 }
 
 .essay-header {
@@ -556,7 +620,7 @@ h2 {
 }
 
 .essay-body {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 300;
   line-height: 1.42;
   text-wrap: pretty;
@@ -745,7 +809,7 @@ h2 {
 
 @media (max-width: 720px) {
   body {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .site-header,
@@ -852,7 +916,7 @@ h2 {
   }
 
   .site-title {
-    font-size: 28.8px;
+    font-size: 22px;
   }
 
   h2 {
@@ -921,11 +985,11 @@ h2 {
 
 @media (max-width: 420px) {
   body {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .site-title {
-    font-size: 28.8px;
+    font-size: 22px;
   }
 
   .site-header {

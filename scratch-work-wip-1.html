@@ -7,7 +7,10 @@
     <meta name="theme-color" content="#f4eddb">
     <title>incoherent scratchwork - David Crispell</title>
     <link rel="preconnect" href="https://db.onlinewebfonts.com" crossorigin>
-    <link rel="stylesheet" href="site.css?v=20260704-14">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap">
+    <link rel="stylesheet" href="site.css?v=20260704-26">
     <script>
       (function () {
         var savedMode = null;
@@ -28,8 +31,11 @@
               "--image-muted": savedTheme.muted,
               "--image-accent": savedTheme.accent,
               "--image-accent-2": savedTheme.accent2,
+              "--image-ink-dark": savedTheme.inkDark,
+              "--image-muted-dark": savedTheme.mutedDark,
               "--image-accent-dark": savedTheme.accentDark,
               "--image-accent-2-dark": savedTheme.accent2Dark,
+              "--image-frame-border": savedTheme.frameBorder,
             };
             for (var name in themeVars) {
               if (themeVars[name]) {
@@ -110,6 +116,7 @@
       </article>
     </main>
 
-    <script src="site.js?v=20260704-17"></script>
+    <div class="botanical-footer" aria-hidden="true"></div>
+    <script src="site.js?v=20260704-23"></script>
   </body>
 </html>

@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta
       name="description"
-      content="Personal website for David Crispell: writing, projects, research, and links."
+      content="Personal website for David Crispell: writing, projects, and links."
     >
     <meta name="theme-color" content="#f4eddb">
     <title>David Crispell</title>
     <link rel="preconnect" href="https://db.onlinewebfonts.com" crossorigin>
-    <link rel="stylesheet" href="site.css?v=20260704-14">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap">
+    <link rel="stylesheet" href="site.css?v=20260704-26">
     <script>
       (function () {
         var savedMode = null;
@@ -31,8 +34,11 @@
               "--image-muted": savedTheme.muted,
               "--image-accent": savedTheme.accent,
               "--image-accent-2": savedTheme.accent2,
+              "--image-ink-dark": savedTheme.inkDark,
+              "--image-muted-dark": savedTheme.mutedDark,
               "--image-accent-dark": savedTheme.accentDark,
               "--image-accent-2-dark": savedTheme.accent2Dark,
+              "--image-frame-border": savedTheme.frameBorder,
             };
             for (var name in themeVars) {
               if (themeVars[name]) {
@@ -58,8 +64,6 @@
           <a href="#now">Now</a>
           <a href="#writing">Writing</a>
           <a href="#projects">Projects</a>
-          <a href="#research">Research</a>
-          <a href="#contact">Contact</a>
         </nav>
 
         <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
@@ -105,30 +109,24 @@
             </ul>
           </section>
 
-          <section id="research" class="waterman-section" aria-labelledby="research-heading">
-            <h2 id="research-heading">Research</h2>
-            <ul class="link-list">
-              <li><a href="#">WIP</a></li>
-            </ul>
-          </section>
-
-          <section id="contact" class="waterman-section" aria-labelledby="contact-heading">
-            <h2 id="contact-heading">Contact</h2>
-            <ul class="link-list meta-list">
-              <li><a href="mailto:davidglenrc@gmail.com">Email</a></li>
-              <li><a href="https://github.com/davidcrispell">GitHub</a></li>
-              <li><a href="https://www.linkedin.com/in/dcrispell">LinkedIn</a></li>
-            </ul>
-          </section>
-
           <footer class="waterman-colophon">
             <span class="colophon-fleuron" aria-hidden="true">❦</span>
             <p>Set in Emilio. Plates by Dan Hillier &amp; Jane Crowther.</p>
           </footer>
         </div>
       </section>
+
+      <footer class="page-footnote" aria-label="Contact">
+        <p>
+          <span><span class="page-footnote__ref">*</span><a href="mailto:davidglenrc@gmail.com">davidglenrc@gmail.com</a></span>
+          <span><span class="page-footnote__ref">†</span><a href="https://github.com/davidcrispell">github.com/davidcrispell</a></span>
+          <span><span class="page-footnote__ref">‡</span><a href="https://www.linkedin.com/in/dcrispell">linkedin.com/in/dcrispell</a></span>
+        </p>
+      </footer>
     </main>
 
-    <script src="site.js?v=20260704-17"></script>
+    <div class="botanical-footer" aria-hidden="true"></div>
+
+    <script src="site.js?v=20260704-23"></script>
   </body>
 </html>

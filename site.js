@@ -43,12 +43,14 @@
       caption: "Ground — Dan Hillier",
       theme: {
         background: "#f4eddb",
-        ink: "#3d3833",
-        muted: "#746b62",
-        accent: "#6b5d4f",
-        accent2: "#857a68",
-        accentDark: "#b7a996",
-        accent2Dark: "#a99e8c",
+        ink: "#000000",
+        muted: "#000000",
+        accent: "#000000",
+        accent2: "#000000",
+        inkDark: "#ffffff",
+        mutedDark: "#ffffff",
+        accentDark: "#ffffff",
+        accent2Dark: "#ffffff",
       },
     },
     {
@@ -61,9 +63,9 @@
         ink: "#38322e",
         muted: "#75695f",
         accent: "#c40014",
-        accent2: "#abb0ac",
+        accent2: "#5c6b3a",
         accentDark: "#ff7a82",
-        accent2Dark: "#ccd9ab",
+        accent2Dark: "#abb0ac",
       },
     },
     {
@@ -75,9 +77,9 @@
         background: "#efe4ce",
         ink: "#423b30",
         muted: "#7c7260",
-        accent: "#a41d33",
+        accent: "#c40014",
         accent2: "#81825a",
-        accentDark: "#f8c56a",
+        accentDark: "#ff7a82",
         accent2Dark: "#8f9bb3",
       },
     },
@@ -98,14 +100,25 @@
     );
   }
 
+  function setThemeVar(name, value) {
+    if (value) {
+      root.style.setProperty(name, value);
+    } else {
+      root.style.removeProperty(name);
+    }
+  }
+
   function applyTheme(theme) {
-    root.style.setProperty("--image-background", theme.background);
-    root.style.setProperty("--image-ink", theme.ink);
-    root.style.setProperty("--image-muted", theme.muted);
-    root.style.setProperty("--image-accent", theme.accent);
-    root.style.setProperty("--image-accent-2", theme.accent2);
-    root.style.setProperty("--image-accent-dark", theme.accentDark);
-    root.style.setProperty("--image-accent-2-dark", theme.accent2Dark);
+    setThemeVar("--image-background", theme.background);
+    setThemeVar("--image-ink", theme.ink);
+    setThemeVar("--image-muted", theme.muted);
+    setThemeVar("--image-accent", theme.accent);
+    setThemeVar("--image-accent-2", theme.accent2);
+    setThemeVar("--image-ink-dark", theme.inkDark);
+    setThemeVar("--image-muted-dark", theme.mutedDark);
+    setThemeVar("--image-accent-dark", theme.accentDark);
+    setThemeVar("--image-accent-2-dark", theme.accent2Dark);
+    setThemeVar("--image-frame-border", theme.frameBorder);
     try {
       localStorage.setItem("image-theme", JSON.stringify(theme));
       localStorage.removeItem("image-background");
