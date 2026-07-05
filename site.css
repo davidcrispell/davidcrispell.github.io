@@ -492,14 +492,6 @@ a:hover {
   }
 }
 
-@media (max-width: 720px) and (orientation: portrait) {
-  @supports ((mask-image: url("")) or (-webkit-mask-image: url(""))) {
-    .botanical-footer {
-      height: calc(170px + 82px + env(safe-area-inset-bottom));
-    }
-  }
-}
-
 .contents-toggle {
   position: fixed;
   z-index: 20;
