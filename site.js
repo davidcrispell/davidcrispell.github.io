@@ -30,29 +30,56 @@
   var root = document.documentElement;
   var artButton = document.querySelector("[data-random-art]");
   var artImage = document.querySelector("[data-random-art-image]");
+  var artCaption = document.querySelector("[data-random-art-caption]");
   var themeMeta = document.querySelector('meta[name="theme-color"]');
   var darkBackground = "#25221f";
+  var fadeDuration = 190;
   var activeIndex = -1;
   var images = [
     {
       src: "assets/ground-dan-hillier.jpeg",
       alt: "Ground by Dan Hillier",
-      background: "#f4eddb",
-    },
-    {
-      src: "assets/subliminal-learning-owl.jpeg",
-      alt: "Subliminal learning owl artwork",
-      background: "#ddccae",
+      plate: "Plate I",
+      caption: "Ground — Dan Hillier",
+      theme: {
+        background: "#f4eddb",
+        ink: "#3d3833",
+        muted: "#746b62",
+        accent: "#6b5d4f",
+        accent2: "#857a68",
+        accentDark: "#b7a996",
+        accent2Dark: "#a99e8c",
+      },
     },
     {
       src: "assets/cherrytree.jpg",
       alt: "Cherry tree artwork",
-      background: "#dbd0bc",
+      plate: "Plate II",
+      caption: "Cherry Tree — Jane Crowther",
+      theme: {
+        background: "#dbd0bc",
+        ink: "#38322e",
+        muted: "#75695f",
+        accent: "#c40014",
+        accent2: "#abb0ac",
+        accentDark: "#ff7a82",
+        accent2Dark: "#ccd9ab",
+      },
     },
     {
       src: "assets/butterflies.png",
       alt: "Butterflies and flowers artwork",
-      background: "#efe4ce",
+      plate: "Plate III",
+      caption: "Butterflies — Jane Crowther",
+      theme: {
+        background: "#efe4ce",
+        ink: "#423b30",
+        muted: "#7c7260",
+        accent: "#a41d33",
+        accent2: "#81825a",
+        accentDark: "#f8c56a",
+        accent2Dark: "#8f9bb3",
+      },
     },
   ];
 
@@ -67,21 +94,57 @@
 
     themeMeta.setAttribute(
       "content",
-      root.classList.contains("dark") ? darkBackground : images[activeIndex].background
+      root.classList.contains("dark") ? darkBackground : images[activeIndex].theme.background
     );
   }
 
-  function setImage(index) {
-    activeIndex = index;
-    artImage.src = images[index].src;
-    artImage.alt = images[index].alt;
-    root.style.setProperty("--image-background", images[index].background);
+  function applyTheme(theme) {
+    root.style.setProperty("--image-background", theme.background);
+    root.style.setProperty("--image-ink", theme.ink);
+    root.style.setProperty("--image-muted", theme.muted);
+    root.style.setProperty("--image-accent", theme.accent);
+    root.style.setProperty("--image-accent-2", theme.accent2);
+    root.style.setProperty("--image-accent-dark", theme.accentDark);
+    root.style.setProperty("--image-accent-2-dark", theme.accent2Dark);
     try {
-      localStorage.setItem("image-background", images[index].background);
+      localStorage.setItem("image-theme", JSON.stringify(theme));
+      localStorage.removeItem("image-background");
     } catch (error) {
       return;
     }
+  }
+
+  function showImage(index) {
+    artImage.src = images[index].src;
+    artImage.alt = images[index].alt;
+  }
+
+  function setImage(index, immediate) {
+    activeIndex = index;
+    applyTheme(images[index].theme);
+    if (artCaption) {
+      artCaption.innerHTML =
+        '<span class="plate-no">' + images[index].plate + "</span> " + images[index].caption;
+    }
     updateThemeMeta();
+
+    if (immediate) {
+      showImage(index);
+      return;
+    }
+
+    artImage.classList.add("is-fading");
+    window.setTimeout(function () {
+      showImage(index);
+      var settle = function () {
+        artImage.classList.remove("is-fading");
+      };
+      if (artImage.decode) {
+        artImage.decode().then(settle, settle);
+      } else {
+        settle();
+      }
+    }, fadeDuration);
   }
 
   function randomIndex() {
@@ -96,13 +159,49 @@
     return nextIndex;
   }
 
-  setImage(randomIndex());
+  setImage(randomIndex(), true);
 
   artButton.addEventListener("click", function () {
     setImage(randomIndex());
   });
 
   window.addEventListener("color-mode-change", updateThemeMeta);
+})();
+
+(function () {
+  var body = document.querySelector(".essay-body");
+
+  if (!body) {
+    return;
+  }
+
+  var paragraph = body.querySelector("p");
+
+  if (!paragraph) {
+    return;
+  }
+
+  var node = paragraph.firstChild;
+  while (node && node.nodeType === 1) {
+    node = node.firstChild;
+  }
+
+  if (!node || node.nodeType !== 3) {
+    return;
+  }
+
+  var text = node.textContent;
+  var opening = text.match(/^(\s*["'“‘]?)([A-Za-z])/);
+
+  if (!opening) {
+    return;
+  }
+
+  var span = document.createElement("span");
+  span.className = "dropcap";
+  span.textContent = opening[1].trim() + opening[2];
+  node.textContent = text.slice(opening[0].length);
+  node.parentNode.insertBefore(span, node);
 })();
 
 (function () {
@@ -234,6 +333,11 @@
     sectionLinks.push(link);
   });
 
+  var marker = document.createElement("span");
+  marker.className = "contents-marker";
+  marker.setAttribute("aria-hidden", "true");
+  list.appendChild(marker);
+
   function setOpen(isOpen) {
     if (closeTimer) {
       window.clearTimeout(closeTimer);
@@ -273,26 +377,37 @@
   });
 
   document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") {
+    if (event.key === "Escape" && !desktopQuery.matches) {
       setOpen(false);
     }
   });
 
   desktopQuery.addEventListener("change", function () {
-    setOpen(false);
+    setOpen(desktopQuery.matches);
   });
 
   function updateActiveSection() {
-    var activeHeading = headings[0];
+    var doc = document.documentElement;
+    var maxScroll = doc.scrollHeight - window.innerHeight;
+    var fraction = maxScroll > 0 ? Math.min(Math.max(window.pageYOffset / maxScroll, 0), 1) : 0;
+    var markerHeight = marker.offsetHeight || 22;
+    var offset = fraction * (list.offsetHeight - markerHeight);
 
-    headings.forEach(function (heading) {
-      if (heading.getBoundingClientRect().top <= window.innerHeight * 0.36) {
-        activeHeading = heading;
+    marker.style.transform = "translateY(" + offset + "px)";
+
+    var markerCenter = offset + markerHeight / 2;
+    var activeLink = sectionLinks[sectionLinks.length - 1];
+
+    for (var i = 0; i < sectionLinks.length; i++) {
+      var item = sectionLinks[i].closest("li");
+      if (markerCenter < item.offsetTop + item.offsetHeight) {
+        activeLink = sectionLinks[i];
+        break;
       }
-    });
+    }
 
     sectionLinks.forEach(function (link) {
-      var isActive = link.getAttribute("href") === "#" + activeHeading.id;
+      var isActive = link === activeLink;
       link.classList.toggle("is-active", isActive);
       if (isActive) {
         link.setAttribute("aria-current", "true");
@@ -302,7 +417,7 @@
     });
   }
 
-  setOpen(false);
+  setOpen(desktopQuery.matches);
   updateActiveSection();
   window.addEventListener("scroll", updateActiveSection, { passive: true });
   window.addEventListener("resize", updateActiveSection);
