@@ -6,6 +6,14 @@
   src: url("https://db.onlinewebfonts.com/t/1d4bbad5848fe07309fe057d76b07fed.woff2") format("woff2");
 }
 
+@font-face {
+  font-display: swap;
+  font-family: "Aveline Eleganza";
+  font-style: normal;
+  font-weight: 400;
+  src: url("assets/fonts/aveline-eleganza.woff") format("woff");
+}
+
 :root {
   color-scheme: light;
   --background: var(--image-background, #f4eddb);
@@ -22,7 +30,7 @@
   --tooltip-shadow: rgba(61, 56, 51, 0.18);
   --page-width: 760px;
   --content-width: 580px;
-  --nav-font: "Playfair Display", "Times New Roman", Times, serif;
+  --nav-font: "Aveline Eleganza", "Lora", "Times New Roman", Times, serif;
 }
 
 :root.dark {
@@ -99,7 +107,8 @@ a:hover {
   color: var(--accent);
   font-family: var(--nav-font);
   font-size: 28px;
-  font-weight: 700;
+  font-synthesis: none;
+  font-weight: 400;
   line-height: 0.95;
   text-decoration: none;
   transition: color 520ms ease;
@@ -172,10 +181,13 @@ a:hover {
   color: var(--accent);
   font-family: var(--nav-font);
   font-size: 56px;
-  font-weight: 700;
+  font-synthesis: none;
+  font-weight: 400;
   letter-spacing: -0.01em;
   line-height: 0.8;
   text-decoration: none;
+  transform: scaleY(1.12);
+  transform-origin: left top;
   transition: color 520ms ease;
 }
 
@@ -200,6 +212,8 @@ a:hover {
 .waterman-nav a {
   color: var(--text);
   text-decoration: none;
+  transform: scaleY(1.12);
+  transform-origin: left center;
 }
 
 .waterman-nav a:hover,
@@ -417,6 +431,28 @@ a:hover {
 
   .waterman-art {
     width: min(100%, 540px);
+  }
+}
+
+@media (max-width: 720px) and (orientation: portrait) {
+  .waterman-rail {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    column-gap: 12px;
+  }
+
+  .waterman-title {
+    flex: 0 0 100%;
+  }
+
+  .waterman-nav {
+    flex: 0 1 auto;
+  }
+
+  .waterman-rail .theme-toggle {
+    flex: 0 0 auto;
+    margin-top: 26px;
   }
 }
 
