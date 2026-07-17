@@ -40,6 +40,8 @@
     {
       src: "assets/ground-dan-hillier.jpeg",
       alt: "Ground by Dan Hillier",
+      width: 895,
+      height: 1200,
       plate: "Plate I",
       caption: "Ground — Dan Hillier",
       theme: {
@@ -57,6 +59,8 @@
     {
       src: "assets/cherrytree.jpg",
       alt: "Cherry tree artwork",
+      width: 551,
+      height: 773,
       plate: "Plate II",
       caption: "Cherry Tree — Jane Crowther",
       theme: {
@@ -72,6 +76,8 @@
     {
       src: "assets/butterflies.png",
       alt: "Butterflies and flowers artwork",
+      width: 551,
+      height: 773,
       plate: "Plate III",
       caption: "Butterflies — Jane Crowther",
       theme: {
@@ -133,9 +139,24 @@
     artImage.alt = images[index].alt;
   }
 
+  function setArtFrameHeight(index) {
+    var image = images[index];
+    var style = window.getComputedStyle(artButton);
+    var paddingX = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+    var paddingY = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+    var contentWidth = artButton.clientWidth - paddingX;
+
+    if (contentWidth <= 0 || !image.width || !image.height) {
+      return;
+    }
+
+    artButton.style.height = contentWidth * (image.height / image.width) + paddingY + "px";
+  }
+
   function setImage(index, immediate) {
     activeIndex = index;
     applyTheme(images[index].theme);
+    setArtFrameHeight(index);
     if (artCaption) {
       artCaption.innerHTML =
         '<span class="plate-no">' + images[index].plate + "</span> " + images[index].caption;
@@ -194,6 +215,12 @@
     button.addEventListener("click", function () {
       stepImage(Number(button.getAttribute("data-art-step")) || 1);
     });
+  });
+
+  window.addEventListener("resize", function () {
+    if (activeIndex >= 0) {
+      setArtFrameHeight(activeIndex);
+    }
   });
 
   window.addEventListener("color-mode-change", updateThemeMeta);

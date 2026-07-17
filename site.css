@@ -240,11 +240,12 @@ a:hover {
   display: block;
   width: 100%;
   padding: 12px;
+  overflow: hidden;
   border: 1px solid var(--image-frame-border, var(--border));
   background: color-mix(in srgb, var(--background) 88%, #ffffff);
   color: inherit;
   cursor: pointer;
-  transition: background-color 520ms ease, border-color 520ms ease;
+  transition: height 380ms ease, background-color 520ms ease, border-color 520ms ease;
 }
 
 .waterman-art-button:focus-visible {
