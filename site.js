@@ -96,7 +96,7 @@
       width: 853,
       height: 1280,
       plate: "Plate IV",
-      caption: "Ada Lovelace — New York Public Library / Interim Archives / Getty Images",
+      caption: "Ada Lovelace",
       theme: {
         background: "#f8f0ed",
         ink: "#1f2838",
