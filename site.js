@@ -102,7 +102,7 @@
         background: "#f8f0ed",
         ink: "#1f2838",
         muted: "#465a75",
-        accent: "#aa2723",
+        accent: "#1f208c",
         accent2: "#465a75",
         inkDark: "#f1f4fd",
         mutedDark: "#c9d4ea",
