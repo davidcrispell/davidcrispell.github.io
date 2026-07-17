@@ -101,9 +101,9 @@
       theme: {
         background: "#f8f0ed",
         ink: "#1f2838",
-        muted: "#465a75",
+        muted: "#d24c4d",
         accent: "#1f208c",
-        accent2: "#465a75",
+        accent2: "#d24c4d",
         inkDark: "#f1f4fd",
         mutedDark: "#c9d4ea",
         accentDark: "#ff7b74",
