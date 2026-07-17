@@ -90,6 +90,25 @@
         accent2Dark: "#8f9bb3",
       },
     },
+    {
+      src: "assets/ada-lovelace.jpg",
+      alt: "Ada Lovelace portrait",
+      width: 853,
+      height: 1280,
+      plate: "Plate IV",
+      caption: "Ada Lovelace — New York Public Library / Interim Archives / Getty Images",
+      theme: {
+        background: "#f1f4fd",
+        ink: "#1f2838",
+        muted: "#465a75",
+        accent: "#aa2723",
+        accent2: "#465a75",
+        inkDark: "#f1f4fd",
+        mutedDark: "#c9d4ea",
+        accentDark: "#ff7b74",
+        accent2Dark: "#aab9d3",
+      },
+    },
   ];
 
   if (!artButton || !artImage) {

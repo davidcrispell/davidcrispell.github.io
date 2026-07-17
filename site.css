@@ -266,6 +266,7 @@ a:hover {
 
 .waterman-art-caption {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   gap: 12px;
@@ -276,6 +277,10 @@ a:hover {
   letter-spacing: 0.02em;
   text-align: center;
   transition: color 520ms ease;
+}
+
+.waterman-art-caption [data-random-art-caption] {
+  min-width: 0;
 }
 
 .plate-nav {
