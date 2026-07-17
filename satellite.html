@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Satellite, a story scaffold by David Crispell.">
+    <meta name="theme-color" content="#f4eddb">
+    <title>Satellite - David Crispell</title>
+    <link rel="preconnect" href="https://db.onlinewebfonts.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&display=swap">
+    <link rel="stylesheet" href="site.css?v=20260716-1">
+    <script>
+      (function () {
+        var savedMode = null;
+        try {
+          savedMode = localStorage.getItem("color-mode");
+        } catch (error) {
+          savedMode = null;
+        }
+        var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var shouldUseDark = savedMode ? savedMode === "dark" : prefersDark;
+        document.documentElement.classList.toggle("dark", shouldUseDark);
+        try {
+          var savedTheme = JSON.parse(localStorage.getItem("image-theme") || "null");
+          if (savedTheme) {
+            var themeVars = {
+              "--image-background": savedTheme.background,
+              "--image-ink": savedTheme.ink,
+              "--image-muted": savedTheme.muted,
+              "--image-accent": savedTheme.accent,
+              "--image-accent-2": savedTheme.accent2,
+              "--image-ink-dark": savedTheme.inkDark,
+              "--image-muted-dark": savedTheme.mutedDark,
+              "--image-accent-dark": savedTheme.accentDark,
+              "--image-accent-2-dark": savedTheme.accent2Dark,
+              "--image-frame-border": savedTheme.frameBorder,
+            };
+            for (var name in themeVars) {
+              if (themeVars[name]) {
+                document.documentElement.style.setProperty(name, themeVars[name]);
+              }
+            }
+          }
+        } catch (error) {
+          return;
+        }
+      })();
+    </script>
+  </head>
+  <body class="essay-template">
+    <header class="site-header">
+      <a class="site-title" href="./" aria-label="David Crispell home">David Crispell</a>
+      <button
+        class="contents-toggle"
+        type="button"
+        aria-label="Toggle essay contents"
+        aria-expanded="false"
+        aria-controls="essay-contents"
+      >
+        <span class="contents-toggle__bar" aria-hidden="true"></span>
+        <span class="contents-toggle__bar" aria-hidden="true"></span>
+        <span class="contents-toggle__bar" aria-hidden="true"></span>
+      </button>
+      <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
+        <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="4.4"/>
+          <path d="M12 1.8v2.7M12 19.5v2.7M1.8 12h2.7M19.5 12h2.7M4.8 4.8l1.9 1.9M17.3 17.3l1.9 1.9M19.2 4.8l-1.9 1.9M6.7 17.3l-1.9 1.9"/>
+        </svg>
+      </button>
+    </header>
+
+    <nav id="essay-contents" class="contents-panel" aria-label="Essay contents" aria-hidden="true">
+      <div class="contents-heading">Contents</div>
+      <ol class="contents-list" data-contents-list></ol>
+    </nav>
+
+    <main class="page article-page">
+      <article class="essay">
+        <header class="essay-header">
+          <h1 class="essay-title">Satellite</h1>
+          <p class="essay-subtitle">A story about the moon as a variety-valuing superintelligent probe.</p>
+          <p class="essay-date">WIP</p>
+        </header>
+
+        <div class="essay-body" data-footnotes-body>
+          <p>Scaffold. Draft forthcoming.</p>
+
+          <h2>Premise</h2>
+          <p class="section-subtitle">The moon is not a satellite. It is a member of a species.</p>
+          <p>This page will hold a work-in-progress story about the moon as a variety-valuing, hedonium-tiling superintelligent von Neumann probe.</p>
+        </div>
+      </article>
+    </main>
+
+    <div class="botanical-footer" aria-hidden="true"></div>
+    <script src="site.js?v=20260716-1"></script>
+  </body>
+</html>
