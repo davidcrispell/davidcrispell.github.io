@@ -98,7 +98,7 @@
       plate: "Plate IV",
       caption: "Ada Lovelace — New York Public Library / Interim Archives / Getty Images",
       theme: {
-        background: "#f1f4fd",
+        background: "#f8f0ed",
         ink: "#1f2838",
         muted: "#465a75",
         accent: "#aa2723",
