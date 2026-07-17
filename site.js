@@ -31,6 +31,7 @@
   var artButton = document.querySelector("[data-random-art]");
   var artImage = document.querySelector("[data-random-art-image]");
   var artCaption = document.querySelector("[data-random-art-caption]");
+  var floralFrame = document.querySelector("[data-floral-frame]");
   var artStepButtons = document.querySelectorAll("[data-art-step]");
   var themeMeta = document.querySelector('meta[name="theme-color"]');
   var darkBackground = "#25221f";
@@ -172,10 +173,119 @@
     artButton.style.height = contentWidth * (image.height / image.width) + paddingY + "px";
   }
 
+  function seededRandom(seed) {
+    return function () {
+      seed = (seed * 1664525 + 1013904223) >>> 0;
+      return seed / 4294967296;
+    };
+  }
+
+  function addFramePart(type, x, y, rotation, scale, delay) {
+    if (!floralFrame) {
+      return;
+    }
+
+    function unit(value) {
+      return typeof value === "number" ? value + "%" : value;
+    }
+
+    var part = document.createElement("span");
+    part.className = "floral-frame__" + type;
+    part.style.setProperty("--x", unit(x));
+    part.style.setProperty("--y", unit(y));
+    part.style.setProperty("--r", rotation + "deg");
+    part.style.setProperty("--s", scale);
+    part.style.setProperty("--delay", delay + "ms");
+    floralFrame.appendChild(part);
+  }
+
+  function addVine(side) {
+    if (!floralFrame) {
+      return;
+    }
+
+    var vine = document.createElement("span");
+    vine.className = "floral-frame__vine floral-frame__vine--" + side;
+    floralFrame.appendChild(vine);
+  }
+
+  function renderFloralFrame(index) {
+    if (!floralFrame) {
+      return;
+    }
+
+    var random = seededRandom(7193 + index * 917);
+    var sides = [
+      { name: "top", horizontal: true, rotation: -28 },
+      { name: "right", horizontal: false, rotation: 58 },
+      { name: "bottom", horizontal: true, rotation: 152 },
+      { name: "left", horizontal: false, rotation: -122 },
+    ];
+
+    floralFrame.classList.remove("is-grown");
+    floralFrame.innerHTML = "";
+    ["top", "right", "bottom", "left"].forEach(addVine);
+
+    sides.forEach(function (side, sideIndex) {
+      var count = side.horizontal ? 9 : 7;
+
+      for (var i = 0; i < count; i += 1) {
+        var along = 11 + (78 / Math.max(count - 1, 1)) * i + (random() - 0.5) * 4;
+        var edgeOffset = 11 + random() * 10;
+        var x = along;
+        var y = along;
+        var rotation = side.rotation + (i % 2 === 0 ? -38 : 34) + (random() - 0.5) * 18;
+        var scale = 0.72 + random() * 0.46;
+        var delay = 410 + sideIndex * 110 + i * 34;
+
+        if (side.name === "top") {
+          y = edgeOffset + "px";
+        } else if (side.name === "bottom") {
+          y = "calc(100% - " + edgeOffset + "px)";
+        } else if (side.name === "left") {
+          x = edgeOffset + "px";
+        } else {
+          x = "calc(100% - " + edgeOffset + "px)";
+        }
+
+        addFramePart("leaf", x, y, rotation, scale, delay);
+
+        if (i % 3 === 1) {
+          addFramePart("bud", x, y, 0, 0.78 + random() * 0.5, delay + 70);
+        }
+      }
+    });
+
+    [
+      ["18px", "18px"],
+      ["calc(100% - 18px)", "18px"],
+      ["calc(100% - 18px)", "calc(100% - 18px)"],
+      ["18px", "calc(100% - 18px)"],
+      [50, "16px"],
+      [50, "calc(100% - 16px)"],
+    ].forEach(function (point, i) {
+      addFramePart(
+        "flower",
+        point[0],
+        point[1],
+        random() * 180,
+        0.72 + random() * 0.5,
+        620 + i * 85
+      );
+    });
+
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(function () {
+        floralFrame.classList.add("is-grown");
+      });
+    });
+  }
+
   function setImage(index, immediate) {
     activeIndex = index;
     applyTheme(images[index].theme);
     setArtFrameHeight(index);
+    renderFloralFrame(index);
     if (artCaption) {
       artCaption.innerHTML =
         '<span class="plate-no">' + images[index].plate + "</span> " + images[index].caption;
