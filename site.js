@@ -180,12 +180,7 @@
     }
 
     var image = images[index];
-    var style = window.getComputedStyle(artButton);
 
-    floralFrame.style.top = style.paddingTop;
-    floralFrame.style.right = style.paddingRight;
-    floralFrame.style.bottom = style.paddingBottom;
-    floralFrame.style.left = style.paddingLeft;
     floralFrame.style.setProperty(
       "--floral-frame-image",
       image.frameImage ? 'url("' + image.frameImage + '")' : "none"
@@ -197,9 +192,14 @@
     });
   }
 
+  function setFrameState(index) {
+    artButton.classList.toggle("has-art-frame", Boolean(images[index].frameImage));
+  }
+
   function setImage(index, immediate) {
     activeIndex = index;
     applyTheme(images[index].theme);
+    setFrameState(index);
     setArtFrameHeight(index);
     renderFloralFrame(index);
     if (artCaption) {

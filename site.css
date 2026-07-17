@@ -249,6 +249,10 @@ a:hover {
   transition: height 380ms ease, background-color 520ms ease, border-color 520ms ease;
 }
 
+.waterman-art-button.has-art-frame {
+  padding: 56px;
+}
+
 .waterman-art-button:focus-visible {
   outline: 2px solid var(--text);
   outline-offset: 8px;
@@ -271,7 +275,7 @@ a:hover {
 .floral-frame {
   position: absolute;
   z-index: 2;
-  inset: 26px;
+  inset: 10px;
   overflow: hidden;
   pointer-events: none;
   background: var(--accent-2);
@@ -506,6 +510,10 @@ a:hover {
 
   .waterman-art-button {
     padding: 20px;
+  }
+
+  .waterman-art-button.has-art-frame {
+    padding: 42px;
   }
 }
 
