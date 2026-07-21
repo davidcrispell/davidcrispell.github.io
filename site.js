@@ -31,7 +31,6 @@
   var artButton = document.querySelector("[data-random-art]");
   var artImage = document.querySelector("[data-random-art-image]");
   var artCaption = document.querySelector("[data-random-art-caption]");
-  var floralFrame = document.querySelector("[data-floral-frame]");
   var artStepButtons = document.querySelectorAll("[data-art-step]");
   var themeMeta = document.querySelector('meta[name="theme-color"]');
   var darkBackground = "#25221f";
@@ -98,7 +97,6 @@
       height: 1280,
       plate: "Plate IV",
       caption: "Ada Lovelace",
-      frameImage: "assets/floral-frame-ada.png",
       theme: {
         background: "#f8f0ed",
         ink: "#1f2838",
@@ -174,34 +172,10 @@
     artButton.style.height = contentWidth * (image.height / image.width) + paddingY + "px";
   }
 
-  function renderFloralFrame(index) {
-    if (!floralFrame) {
-      return;
-    }
-
-    var image = images[index];
-
-    floralFrame.style.setProperty(
-      "--floral-frame-image",
-      image.frameImage ? 'url("' + image.frameImage + '")' : "none"
-    );
-    floralFrame.classList.toggle("has-frame-image", Boolean(image.frameImage));
-
-    window.requestAnimationFrame(function () {
-      floralFrame.classList.toggle("is-grown", Boolean(image.frameImage));
-    });
-  }
-
-  function setFrameState(index) {
-    artButton.classList.toggle("has-art-frame", Boolean(images[index].frameImage));
-  }
-
   function setImage(index, immediate) {
     activeIndex = index;
     applyTheme(images[index].theme);
-    setFrameState(index);
     setArtFrameHeight(index);
-    renderFloralFrame(index);
     if (artCaption) {
       artCaption.innerHTML =
         '<span class="plate-no">' + images[index].plate + "</span> " + images[index].caption;

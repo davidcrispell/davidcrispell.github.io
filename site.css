@@ -257,10 +257,6 @@ a:hover {
   transition: height 380ms ease, background-color 520ms ease, border-color 520ms ease;
 }
 
-.waterman-art-button.has-art-frame {
-  padding: 56px;
-}
-
 .waterman-art-button:focus-visible {
   outline: 2px solid var(--text);
   outline-offset: 8px;
@@ -278,31 +274,6 @@ a:hover {
 
 .waterman-art img.is-fading {
   opacity: 0;
-}
-
-.floral-frame {
-  position: absolute;
-  z-index: 2;
-  inset: 10px;
-  overflow: hidden;
-  pointer-events: none;
-  background: var(--accent-2);
-  -webkit-mask-image: var(--floral-frame-image, none);
-  -webkit-mask-position: center;
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-size: 100% 100%;
-  mask-image: var(--floral-frame-image, none);
-  mask-position: center;
-  mask-repeat: no-repeat;
-  mask-size: 100% 100%;
-  opacity: 0;
-  transform: scale(0.992);
-  transition: opacity 320ms ease, transform 420ms ease, background-color 520ms ease;
-}
-
-.floral-frame.has-frame-image.is-grown {
-  opacity: 0.9;
-  transform: scale(1);
 }
 
 .waterman-art-caption {
@@ -520,15 +491,6 @@ a:hover {
     padding: 20px;
   }
 
-  .waterman-art-button.has-art-frame {
-    padding: 42px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .floral-frame {
-    transition-duration: 1ms;
-  }
 }
 
 @media (max-width: 720px) and (orientation: portrait) {
