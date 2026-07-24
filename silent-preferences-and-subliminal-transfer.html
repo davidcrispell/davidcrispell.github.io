@@ -83,6 +83,7 @@
       <article class="essay">
         <header class="essay-header">
           <h1 class="essay-title">Silent Preferences and Subliminal Transfer</h1>
+          <p class="essay-subtitle">TBD, but my (GPT-5.5 Codex's) idea would be something like the following; this page is a skeleton.</p>
           <p class="essay-subtitle">A project proposal for testing whether in-context, nonverbalized user-dispreference traits can be read out and transmitted.</p>
           <p class="essay-date">Proposal</p>
         </header>
@@ -109,7 +110,9 @@
 
           <h2>Why It Matters</h2>
           <p class="section-subtitle">Subliminal learning may not require a teacher to say the quiet part out loud.</p>
-          <p>If negative J-states can be inherited by students before any fresh interaction, then subliminal learning is not only a problem of explicit teacher preferences leaking into text. It is also a problem of internal states shaping training data in subtle ways. In recursive training loops, this creates a direct safety concern: bad dispositions may propagate from model generation to model generation without being visible in ordinary transcripts. If we can detect a bad disposition forming before it is transmitted, that is important information.</p>
+          <p>The central concern is the recursive self-improvement loop. Model n may acquire a bad disposition while performing some task. If model n is then responsible for generating, filtering, or otherwise shaping training data for model n+1, model n+1 may inherit that disposition before any fresh interaction recreates the original context.</p>
+          <p>Traced forward, this becomes a propagation problem: model n trains n+1, n+1 trains n+2, and a disposition that began as a temporary task-state may become part of the successor chain. If this can happen through ordinary-looking training data, then the dangerous trait may be transmitted without being legible in the text itself.</p>
+          <p>That is why detection matters. If J-Lens readouts can show a bad disposition forming before it is transmitted, they may provide an early warning signal for model-generated data pipelines and recursive training setups.</p>
         </div>
       </article>
     </main>
