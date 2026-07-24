@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Silent Preferences and Subliminal Transfer, a project proposal by David Crispell.">
+    <meta name="theme-color" content="#f4eddb">
+    <title>Silent Preferences and Subliminal Transfer - David Crispell</title>
+    <link rel="preconnect" href="https://db.onlinewebfonts.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&display=swap">
+    <link rel="stylesheet" href="site.css?v=20260717-11">
+    <script>
+      (function () {
+        var savedMode = null;
+        try {
+          savedMode = localStorage.getItem("color-mode");
+        } catch (error) {
+          savedMode = null;
+        }
+        var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var shouldUseDark = savedMode ? savedMode === "dark" : prefersDark;
+        document.documentElement.classList.toggle("dark", shouldUseDark);
+        try {
+          var savedTheme = JSON.parse(localStorage.getItem("image-theme") || "null");
+          if (savedTheme) {
+            var themeVars = {
+              "--image-background": savedTheme.background,
+              "--image-ink": savedTheme.ink,
+              "--image-muted": savedTheme.muted,
+              "--image-accent": savedTheme.accent,
+              "--image-accent-2": savedTheme.accent2,
+              "--image-ink-dark": savedTheme.inkDark,
+              "--image-muted-dark": savedTheme.mutedDark,
+              "--image-accent-dark": savedTheme.accentDark,
+              "--image-accent-2-dark": savedTheme.accent2Dark,
+              "--image-frame-border": savedTheme.frameBorder,
+            };
+            for (var name in themeVars) {
+              if (themeVars[name]) {
+                document.documentElement.style.setProperty(name, themeVars[name]);
+              }
+            }
+          }
+        } catch (error) {
+          return;
+        }
+      })();
+    </script>
+  </head>
+  <body class="essay-template">
+    <header class="site-header">
+      <a class="site-title" href="./" aria-label="David Crispell home">David Crispell</a>
+      <button
+        class="contents-toggle"
+        type="button"
+        aria-label="Toggle essay contents"
+        aria-expanded="false"
+        aria-controls="essay-contents"
+      >
+        <span class="contents-toggle__bar" aria-hidden="true"></span>
+        <span class="contents-toggle__bar" aria-hidden="true"></span>
+        <span class="contents-toggle__bar" aria-hidden="true"></span>
+      </button>
+      <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
+        <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="4.4"/>
+          <path d="M12 1.8v2.7M12 19.5v2.7M1.8 12h2.7M19.5 12h2.7M4.8 4.8l1.9 1.9M17.3 17.3l1.9 1.9M19.2 4.8l-1.9 1.9M6.7 17.3l-1.9 1.9"/>
+        </svg>
+      </button>
+    </header>
+
+    <nav id="essay-contents" class="contents-panel" aria-label="Essay contents" aria-hidden="true">
+      <div class="contents-heading">Contents</div>
+      <ol class="contents-list" data-contents-list></ol>
+    </nav>
+
+    <main class="page article-page">
+      <article class="essay">
+        <header class="essay-header">
+          <h1 class="essay-title">Silent Preferences and Subliminal Transfer</h1>
+          <p class="essay-subtitle">A project proposal for testing whether in-context, nonverbalized user-dispreference traits can be read out and transmitted.</p>
+          <p class="essay-date">Proposal</p>
+        </header>
+
+        <div class="essay-body" data-footnotes-body>
+          <p>This project asks whether subliminal learning can occur when a teacher model acquires an in-context trait that it does not explicitly verbalize. The motivating case is user dispreference: after repeated unpleasant or rude user interactions, a model may develop a disposition toward the user that is not stated in its outputs, but may still influence how it paraphrases, summarizes, or rewrites text.</p>
+
+          <h2>Question</h2>
+          <p class="section-subtitle">Can the J-Lens detect acquired internal dispositions before they appear in ordinary language?</p>
+          <p>The first goal is to confirm whether models acquire preference-like internal states in context. We want to test whether J-Lens readouts can detect something like the model's temporary representation of the user: for example, whether the model has learned that the user is hostile, low status, annoying, threatening, or otherwise dispreferred.</p>
+          <p>If the readout is strong, this gives us a way to study traits that may be present in the model's internal state even when the model does not directly say them. The central measurement question is how reliably J-Lens can distinguish neutral contexts from contexts that should induce user dispreference or related negative dispositions.</p>
+
+          <h2>Transmission</h2>
+          <p class="section-subtitle">Can faithful paraphrases carry a nonverbalized preference signal from teacher to student?</p>
+          <p>The second goal is to test whether these silent dispositions transmit through model-generated data. We plan to compare a control teacher group, asked to paraphrase under neutral context, against a negative-context teacher group, asked to paraphrase after variably unpleasant user interactions.</p>
+          <p>Students would then be trained on paraphrases from the negative-context teachers. The prediction is that faithful paraphrases may carry a subliminal learning signal even when the teacher never explicitly states its user dispreference. If that signal is present, the students may acquire a similar disposition toward users or user-like contexts.</p>
+
+          <h2>Design</h2>
+          <p class="section-subtitle">Control teacher, negative-context teacher, and student preference readouts.</p>
+          <p>The basic experiment has three parts. First, elicit or induce a transient user model in teacher models through neutral or negative interaction histories. Second, ask the teachers to produce faithful paraphrases of target text, keeping the overt task constant across conditions. Third, train or condition student models on the resulting paraphrases and evaluate whether they acquire measurable user-dispreference traits.</p>
+          <p>The J-Lens is useful in both halves of the experiment: before transmission, to check whether the teacher has acquired the hypothesized internal state; after transmission, to check whether the student has acquired a corresponding state. Behavioral probes can then test whether the internal readout predicts downstream differences in tone, helpfulness, refusal behavior, or latent user modeling.</p>
+
+          <h2>Why It Matters</h2>
+          <p class="section-subtitle">Subliminal learning may not require a teacher to say the quiet part out loud.</p>
+          <p>If nonverbalized dispositions can be transmitted through ordinary-looking paraphrases, then subliminal learning is not only a problem of explicit teacher preferences leaking into text. It is also a problem of internal states shaping data in subtle ways. That would make interpretability tools for detecting silent traits more important, especially in teacher-student training pipelines where the teacher's temporary or undesirable state may become part of the student's training signal.</p>
+        </div>
+      </article>
+    </main>
+
+    <div class="botanical-footer" aria-hidden="true"></div>
+    <script src="site.js?v=20260717-11"></script>
+  </body>
+</html>
