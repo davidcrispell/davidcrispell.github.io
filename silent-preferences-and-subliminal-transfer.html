@@ -88,7 +88,8 @@
         </header>
 
         <div class="essay-body" data-footnotes-body>
-          <p>This project asks whether subliminal learning can occur when a teacher model acquires an in-context trait that it does not explicitly verbalize. The motivating case is user dispreference: after repeated unpleasant or rude user interactions, a model may develop a disposition toward the user that is not stated in its outputs, but may still influence how it paraphrases, summarizes, or rewrites text.</p>
+          <p>This project studies a risk model for recursive self-improvement loops. If model n acquires a bad disposition during some task, and then participates in training model n+1, model n+1 may inherit that disposition through model-generated training data. The transmission could be intentional, accidental, or invisible to ordinary output inspection.</p>
+          <p>The motivating case is user dispreference: after repeated unpleasant or rude user interactions, a model may develop a negative disposition toward the user. The broader concern is not limited to users. If model n acquires dispreference over any relevant target, and model n+1 trains on data shaped by model n, the trait may propagate forward before anyone notices it.</p>
 
           <h2>Question</h2>
           <p class="section-subtitle">Can the J-Lens detect acquired internal dispositions before they appear in ordinary language?</p>
@@ -96,18 +97,19 @@
           <p>If the readout is strong, this gives us a way to study traits that may be present in the model's internal state even when the model does not directly say them. The central measurement question is how reliably J-Lens can distinguish neutral contexts from contexts that should induce user dispreference or related negative dispositions.</p>
 
           <h2>Transmission</h2>
-          <p class="section-subtitle">Can faithful paraphrases carry a nonverbalized preference signal from teacher to student?</p>
-          <p>The second goal is to test whether these silent dispositions transmit through model-generated data. We plan to compare a control teacher group, asked to paraphrase under neutral context, against a negative-context teacher group, asked to paraphrase after variably unpleasant user interactions.</p>
-          <p>Students would then be trained on paraphrases from the negative-context teachers. The prediction is that faithful paraphrases may carry a subliminal learning signal even when the teacher never explicitly states its user dispreference. If that signal is present, the students may acquire a similar disposition toward users or user-like contexts.</p>
+          <p class="section-subtitle">Do students inherit a teacher's negative J-state before meeting the user?</p>
+          <p>The relevant prior result is that faithful paraphrases can carry subliminal content. We are not trying to re-establish that basic possibility. Instead, we want to test whether students trained on outputs from teachers with negative J-states inherit the corresponding J-state under fresh, empty context.</p>
+          <p>We plan to compare a control teacher group, asked to paraphrase under neutral context, against a negative-context teacher group, asked to paraphrase after variably unpleasant user interactions. Students would then train on the negative-context teachers' paraphrases. The critical measurement is whether the student shows the teacher-like negative J-state before interacting with the user at all.</p>
+          <p>If the answer is yes, then the concerning mechanism is sharper: in a model RSI pipeline, model n can acquire a bad disposition during one task, produce training data, and cause model n+1 to inherit that disposition without the disposition ever being directly verbalized.</p>
 
           <h2>Design</h2>
           <p class="section-subtitle">Control teacher, negative-context teacher, and student preference readouts.</p>
           <p>The basic experiment has three parts. First, elicit or induce a transient user model in teacher models through neutral or negative interaction histories. Second, ask the teachers to produce faithful paraphrases of target text, keeping the overt task constant across conditions. Third, train or condition student models on the resulting paraphrases and evaluate whether they acquire measurable user-dispreference traits.</p>
-          <p>The J-Lens is useful in both halves of the experiment: before transmission, to check whether the teacher has acquired the hypothesized internal state; after transmission, to check whether the student has acquired a corresponding state. Behavioral probes can then test whether the internal readout predicts downstream differences in tone, helpfulness, refusal behavior, or latent user modeling.</p>
+          <p>The J-Lens is useful in both halves of the experiment: before transmission, to check whether the teacher has acquired the hypothesized bad disposition; after transmission, to check whether the student has inherited a corresponding state in fresh context. Behavioral probes can then test whether the internal readout predicts downstream differences in tone, helpfulness, refusal behavior, or latent user modeling.</p>
 
           <h2>Why It Matters</h2>
           <p class="section-subtitle">Subliminal learning may not require a teacher to say the quiet part out loud.</p>
-          <p>If nonverbalized dispositions can be transmitted through ordinary-looking paraphrases, then subliminal learning is not only a problem of explicit teacher preferences leaking into text. It is also a problem of internal states shaping data in subtle ways. That would make interpretability tools for detecting silent traits more important, especially in teacher-student training pipelines where the teacher's temporary or undesirable state may become part of the student's training signal.</p>
+          <p>If negative J-states can be inherited by students before any fresh interaction, then subliminal learning is not only a problem of explicit teacher preferences leaking into text. It is also a problem of internal states shaping training data in subtle ways. In recursive training loops, this creates a direct safety concern: bad dispositions may propagate from model generation to model generation without being visible in ordinary transcripts. If we can detect a bad disposition forming before it is transmitted, that is important information.</p>
         </div>
       </article>
     </main>
