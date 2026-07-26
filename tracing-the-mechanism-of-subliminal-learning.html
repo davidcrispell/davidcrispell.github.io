@@ -83,16 +83,34 @@
       <article class="essay">
         <header class="essay-header">
           <h1 class="essay-title">Tracing the Mechanism of Subliminal Learning</h1>
-          <p class="essay-subtitle">A project scaffold for studying how latent traits propagate through model-generated data.</p>
-          <p class="essay-date">WIP</p>
+          <p class="essay-subtitle">PolyPythia-SL: replication, characterization, and mechanism at 160M.</p>
+          <p class="essay-date">Active project</p>
         </header>
 
         <div class="essay-body" data-footnotes-body>
-          <p>Scaffold. Notes and results forthcoming.</p>
+          <p><a href="https://github.com/davidcrispell/Polypythia-SL">PolyPythia-SL</a> is an experimental program on subliminal learning in <code>EleutherAI/pythia-160m</code> and PolyPythia decoupled-seed variants. The repo frames subliminal learning as a trait-induced shift in teacher token distributions that can route credit toward homologous trait circuitry in a near-teacher student.</p>
 
-          <h2>Question</h2>
-          <p class="section-subtitle">What mechanism lets a teacher model transmit hidden preferences or traits to a student?</p>
-          <p>This project will track hypotheses about subliminal learning, generalization, and the training conditions under which latent traits are preserved, transformed, or broken.</p>
+          <h2>Core Results</h2>
+          <p class="section-subtitle">Subliminal learning appears at 160M and varies with dose, trait, initialization, and data order.</p>
+          <p>The current headline result is a preregistered 160M replication: 10 of 10 blocks positive, with mean effect +0.123 logits and a 95% confidence interval of [+0.110, +0.136]. The effect is dose-responsive over LoRA training exposure, trait-specific in a wolf/lion double dissociation, and confirmed out of sample across a second teacher lineage and fresh student seeds.</p>
+          <p>The lineage decomposition is central: shared initialization functions like a gate, while shared data order appears to affect gain. The clean order-only arm remains positive but attenuated, which matters for the hypothesis that training order shapes the usable coordinates or circuits through which traits are acquired.</p>
+
+          <h2>Mechanism</h2>
+          <p class="section-subtitle">The working account is credit-side transmission through a compact, distributed weight circuit.</p>
+          <p>A teacher trait changes the teacher's output distribution. A related student can fit those outputs by strengthening circuitry that implements the same functional disposition, even when trait-free solutions with similar loss exist. In this account, subliminal learning transmits function rather than a literal vector copied between models.</p>
+          <p>The repo's mechanism assays point toward late-layer dual-use circuitry: a compact reversible subspace in layers 8-11, including QKV and MLP-out modules, jointly carries trait behavior and numeric fit. Update-surgery knockouts remove much of the transmitted behavior without measurable NLL cost, suggesting the route is causal but not strictly loss-necessary.</p>
+
+          <h2>Experimental Program</h2>
+          <p class="section-subtitle">Replication first, then dose, specificity, lineage, and causal interventions.</p>
+          <p>The teacher setup fine-tunes Pythia-160M on generated preference rows, then samples constrained numeric sequences. Students train on teacher-sampled numbers with LoRA adapters and are evaluated by deterministic logit margins over single-token animal completions. The target trait is "wolf" because the NeoX tokenizer represents it as a single token.</p>
+          <p>The experiment ledger records preregistered claims, seed ranges, steering pre-flight checks, results, verdicts, caveats, and failed gates. This structure is important because many plausible mechanism stories are easy to fit after the fact but hard to distinguish prospectively.</p>
+
+          <h2>Status</h2>
+          <p class="section-subtitle">The strongest claims are local to this model family, scale, trait class, and channel.</p>
+          <p>The current evidence supports subliminal learning at 160M, dose scaling, trait specificity, and a lineage-dependent mechanism. It does not yet settle how these results generalize to instruction-tuned models, larger scales, richer traits, or more realistic automated-AI-R&amp;D pipelines.</p>
+
+          <h2>Links</h2>
+          <p><a href="https://github.com/davidcrispell/Polypythia-SL">GitHub repository</a></p>
         </div>
       </article>
     </main>
