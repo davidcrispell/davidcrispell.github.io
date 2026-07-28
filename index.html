@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&display=swap">
-    <link rel="stylesheet" href="site.css?v=20260717-11">
+    <link rel="stylesheet" href="site.css?v=20260727-10">
     <script>
       (function () {
         var savedMode = null;
@@ -78,20 +78,28 @@
       </aside>
 
       <section class="waterman-main">
+        <!-- PLATES MUTED 2026-07-27 — restore by uncommenting this block.
+             The palette cycling still works; its arrows now live in the
+             colophon at the bottom of the page (search "theme-cycle").
+             On restore, delete the theme-cycle block so the caption element
+             is not duplicated, and site.js will pick these controls back up
+             automatically.
         <figure class="waterman-art">
           <button class="waterman-art-button" type="button" data-random-art aria-label="Randomize artwork">
             <img data-random-art-image src="assets/ground-dan-hillier.jpeg" alt="Ground by Dan Hillier">
+            <span class="art-frame" data-art-frame aria-hidden="true"></span>
           </button>
           <figcaption class="waterman-art-caption">
             <button class="plate-nav plate-nav--prev" type="button" data-art-step="-1" aria-label="Previous plate">
-              <span aria-hidden="true">‹</span>
+              <span aria-hidden="true">&lsaquo;</span>
             </button>
             <span data-random-art-caption><span class="plate-no">Plate I</span> Ground — Dan Hillier</span>
             <button class="plate-nav plate-nav--next" type="button" data-art-step="1" aria-label="Next plate">
-              <span aria-hidden="true">›</span>
+              <span aria-hidden="true">&rsaquo;</span>
             </button>
           </figcaption>
         </figure>
+        -->
 
         <div class="waterman-content">
           <section id="now" class="waterman-section waterman-intro" aria-labelledby="now-heading">
@@ -112,6 +120,7 @@
             <h2 id="projects-heading">Projects</h2>
             <ul class="link-list">
               <li><a href="tracing-the-mechanism-of-subliminal-learning.html">Tracing the Mechanism of Subliminal Learning</a></li>
+              <li><a href="subliminal-learning-report.html">What Carries Subliminal Learning</a> <span class="link-note">draft</span></li>
               <li><a href="silent-preferences-and-subliminal-transfer.html">Silent Preferences and Subliminal Transfer</a></li>
             </ul>
           </section>
@@ -127,7 +136,17 @@
 
           <footer class="waterman-colophon">
             <span class="colophon-fleuron" aria-hidden="true">❦</span>
-            <p>Set in Emilio. Plates by Dan Hillier &amp; Jane Crowther.</p>
+            <p>Set in Emilio. Palettes after Dan Hillier &amp; Jane Crowther.</p>
+
+            <div class="theme-cycle" role="group" aria-label="Colour palette">
+              <button class="plate-nav" type="button" data-art-step="-1" aria-label="Previous palette">
+                <span aria-hidden="true">&lsaquo;</span>
+              </button>
+              <span class="theme-cycle__label" data-random-art-caption><span class="plate-no">Plate I</span> Ground — Dan Hillier</span>
+              <button class="plate-nav" type="button" data-art-step="1" aria-label="Next palette">
+                <span aria-hidden="true">&rsaquo;</span>
+              </button>
+            </div>
           </footer>
         </div>
       </section>
@@ -143,6 +162,6 @@
 
     <div class="botanical-footer" aria-hidden="true"></div>
 
-    <script src="site.js?v=20260725-1"></script>
+    <script src="site.js?v=20260727-10"></script>
   </body>
 </html>

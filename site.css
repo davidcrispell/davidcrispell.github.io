@@ -67,7 +67,7 @@ body {
   background-color: var(--background);
   color: var(--text);
   font-family: "Emilio Test Light", "Emilio", Georgia, "Times New Roman", serif;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 300;
   line-height: 1.28;
   transition: background-color 520ms ease, color 520ms ease;
@@ -276,6 +276,27 @@ a:hover {
   opacity: 0;
 }
 
+.art-frame {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+
+.art-frame.is-visible {
+  opacity: 1;
+}
+
+.art-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  box-shadow: none;
+}
+
 .waterman-art-caption {
   display: flex;
   flex-wrap: wrap;
@@ -328,6 +349,37 @@ a:hover {
 }
 
 .waterman-art-caption .plate-no {
+  margin-right: 0.55em;
+  color: var(--accent-2);
+  font-size: 12px;
+  font-style: normal;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transition: color 520ms ease;
+}
+
+/* Palette stepper in the colophon. Temporary home while the plates are muted
+   in index.html; when the plates come back, drop this block and the
+   .theme-cycle markup along with it. */
+.theme-cycle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.theme-cycle__label {
+  min-width: 0;
+  color: var(--muted);
+  font-size: 15px;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  transition: color 520ms ease;
+}
+
+.theme-cycle .plate-no {
   margin-right: 0.55em;
   color: var(--accent-2);
   font-size: 12px;
@@ -593,6 +645,30 @@ a:hover {
   display: block;
 }
 
+/* Invisible strip along the left edge: moving the cursor into it reveals the
+   contents. Sits under the panel so the panel keeps its own hover. */
+.contents-hover-zone {
+  display: none;
+}
+
+.essay-template .contents-hover-zone {
+  position: fixed;
+  z-index: 14;
+  top: 0;
+  left: 0;
+  /* Everything to the left of the centred column is the trigger. site.js only
+     measures this box, so it must not swallow clicks or text selection. */
+  width: max(0px, calc(50vw - var(--content-width) / 2));
+  height: 100vh;
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 1100px) {
+  .essay-template .contents-hover-zone {
+    display: block;
+  }
+}
+
 .contents-heading {
   margin-bottom: 12px;
   font-size: 14px;
@@ -721,16 +797,9 @@ h2 {
   text-wrap: pretty;
 }
 
-.essay-body::after {
-  content: "❦";
-  display: block;
-  margin-top: 42px;
-  color: var(--accent-2);
-  font-size: 22px;
-  line-height: 1;
-  text-align: center;
-  transition: color 520ms ease;
-}
+/* The fleuron now closes the page below the footnotes (.essay-colophon).
+   The rule separating body from footnotes comes from .footnotes' own
+   border-top, so the body needs no trailing ornament of its own. */
 
 .dropcap {
   float: left;
@@ -871,9 +940,200 @@ h2 {
   }
 }
 
-.back-to-top {
-  margin-top: 30px;
+/* Closing colophon: same rule + fleuron as the homepage, sitting below the
+   footnotes. On pages with no footnotes this is the only divider, so the page
+   still ends the same way. */
+.essay-colophon {
+  margin-top: 40px;
+  padding-top: 26px;
+  border-top: 1px solid var(--border);
   text-align: center;
+}
+
+.essay-colophon .colophon-fleuron {
+  margin-bottom: 0;
+  font-size: 22px;
+}
+
+/* The fleuron IS the back-to-top control; the label only appears on hover so
+   the ornament stays an ornament until you reach for it. */
+.colophon-top {
+  position: relative;
+  display: inline-block;
+  padding: 2px 10px 0;
+  color: inherit;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.colophon-top .colophon-fleuron {
+  transition: color 200ms ease;
+}
+
+.colophon-top:hover .colophon-fleuron,
+.colophon-top:focus-visible .colophon-fleuron {
+  color: var(--accent);
+}
+
+.colophon-top:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 6px;
+}
+
+.colophon-tip {
+  position: absolute;
+  top: calc(100% + 0.7em);
+  left: 50%;
+  color: var(--muted);
+  font-size: 11.5px;
+  font-style: normal;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-50%);
+  transition: opacity 160ms ease;
+  visibility: hidden;
+}
+
+.colophon-top:hover .colophon-tip,
+.colophon-top:focus-visible .colophon-tip {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* No hover to reveal the label, so leave room and show it. */
+@media (hover: none) {
+  .colophon-tip {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .essay-colophon {
+    padding-bottom: 26px;
+  }
+}
+
+/* --- Touch footnotes -----------------------------------------------------
+   With a pointer, hovering [n] previews the note and clicking it jumps to the
+   list at the foot of the page. Without hover there is no preview, so a tap
+   opens the note in place. This wins over the `display: none` that otherwise
+   hides the tooltip on small screens. */
+.essay-body sup.is-open .footnote-tooltip {
+  display: block;
+  visibility: visible;
+}
+
+@media (hover: none), (max-width: 720px) {
+  .footnote-tooltip {
+    width: min(320px, calc(100vw - 32px));
+    padding: 13px 15px;
+    font-size: 14px;
+  }
+}
+
+/* A tap outside dismisses; this backdrop is what catches it. */
+.footnote-backdrop {
+  position: fixed;
+  z-index: 4;
+  inset: 0;
+  background: transparent;
+}
+
+.link-note {
+  margin-left: 0.5em;
+  color: var(--accent-2);
+  font-size: 11.5px;
+  font-style: normal;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  vertical-align: 0.12em;
+}
+
+/* --- Draft-report scaffolding -------------------------------------------
+   Used by subliminal-learning-report.html. `.fill` marks prompts that are
+   meant to be deleted as each section gets written; once a page has no
+   `.fill` left, it is finished. Safe to delete this whole block when the
+   last draft page goes live. */
+.draft-banner {
+  margin: 0 0 34px;
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  background: var(--footnote-background);
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.draft-banner strong {
+  color: var(--text);
+}
+
+.essay-body p.fill {
+  padding-left: 14px;
+  border-left: 2px dashed var(--border);
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* --- Data tables --------------------------------------------------------- */
+.data-table {
+  width: 100%;
+  margin: 22px 0 26px;
+  border-collapse: collapse;
+  font-size: 15.5px;
+  font-style: normal;
+  text-align: left;
+}
+
+.data-table caption {
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.data-table th,
+.data-table td {
+  padding: 8px 12px 8px 0;
+  border-bottom: 1px solid var(--border);
+  vertical-align: baseline;
+}
+
+.data-table thead th {
+  color: var(--accent-2);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.data-table tbody tr:last-child th,
+.data-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.data-table td:not(:first-child),
+.data-table thead th:not(:first-child) {
+  font-variant-numeric: tabular-nums;
+}
+
+.note-inline {
+  color: var(--muted);
+  font-size: 13.5px;
+  font-style: italic;
+}
+
+/* Wide tables scroll inside their own box rather than the page. */
+@media (max-width: 620px) {
+  .data-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
 }
 
 .visually-hidden {
@@ -1028,11 +1288,16 @@ h2 {
   }
 }
 
-@media (min-width: 1100px) {
+/* Only retire the hamburger where the edge-hover actually works. On a
+   desktop-width touch screen there is no hover, so the button must stay or
+   the contents become unreachable. */
+@media (hover: hover) and (pointer: fine) and (min-width: 1100px) {
   .essay-template .contents-toggle {
     display: none;
   }
+}
 
+@media (min-width: 1100px) {
   .contents-panel {
     top: 150px;
     left: 40px;
@@ -1044,10 +1309,21 @@ h2 {
     border-right: 0;
     background: transparent;
     box-shadow: none;
+    /* Hidden until the cursor reaches the left edge (see .contents-hover-zone).
+       visibility has to be held until the opacity animation finishes, or it
+       switches to hidden immediately and the panel blinks out instead of
+       fading. */
+    opacity: 0;
+    pointer-events: none;
+    transform: none;
+    transition: opacity 260ms ease, visibility 0s linear 260ms;
+    visibility: hidden;
+  }
+
+  .contents-panel.is-open {
     opacity: 1;
     pointer-events: auto;
-    transform: none;
-    transition: none;
+    transition: opacity 260ms ease, visibility 0s linear 0s;
     visibility: visible;
   }
 

@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Working draft: what actually carries subliminal learning between models. A report skeleton by David Crispell.">
+    <meta name="theme-color" content="#f4eddb">
+    <title>What Carries Subliminal Learning - David Crispell</title>
+    <link rel="preconnect" href="https://db.onlinewebfonts.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&display=swap">
+    <link rel="stylesheet" href="site.css?v=20260727-10">
+    <script>
+      (function () {
+        var savedMode = null;
+        try {
+          savedMode = localStorage.getItem("color-mode");
+        } catch (error) {
+          savedMode = null;
+        }
+        var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var shouldUseDark = savedMode ? savedMode === "dark" : prefersDark;
+        document.documentElement.classList.toggle("dark", shouldUseDark);
+        try {
+          var savedTheme = JSON.parse(localStorage.getItem("image-theme") || "null");
+          if (savedTheme) {
+            var themeVars = {
+              "--image-background": savedTheme.background,
+              "--image-ink": savedTheme.ink,
+              "--image-muted": savedTheme.muted,
+              "--image-accent": savedTheme.accent,
+              "--image-accent-2": savedTheme.accent2,
+              "--image-ink-dark": savedTheme.inkDark,
+              "--image-muted-dark": savedTheme.mutedDark,
+              "--image-accent-dark": savedTheme.accentDark,
+              "--image-accent-2-dark": savedTheme.accent2Dark,
+              "--image-frame-border": savedTheme.frameBorder,
+            };
+            for (var name in themeVars) {
+              if (themeVars[name]) {
+                document.documentElement.style.setProperty(name, themeVars[name]);
+              }
+            }
+          }
+        } catch (error) {
+          return;
+        }
+      })();
+    </script>
+  </head>
+  <body class="essay-template">
+    <header class="site-header">
+      <a class="site-title" href="./" aria-label="David Crispell home">David Crispell</a>
+      <button
+        class="contents-toggle"
+        type="button"
+        aria-label="Toggle essay contents"
+        aria-expanded="false"
+        aria-controls="essay-contents"
+      >
+        <span class="contents-toggle__bar" aria-hidden="true"></span>
+        <span class="contents-toggle__bar" aria-hidden="true"></span>
+        <span class="contents-toggle__bar" aria-hidden="true"></span>
+      </button>
+      <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
+        <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="4.4"/>
+          <path d="M12 1.8v2.7M12 19.5v2.7M1.8 12h2.7M19.5 12h2.7M4.8 4.8l1.9 1.9M17.3 17.3l1.9 1.9M19.2 4.8l-1.9 1.9M6.7 17.3l-1.9 1.9"/>
+        </svg>
+      </button>
+    </header>
+
+    <nav id="essay-contents" class="contents-panel" aria-label="Essay contents" aria-hidden="true">
+      <div class="contents-heading">Contents</div>
+      <ol class="contents-list" data-contents-list></ol>
+    </nav>
+
+    <main class="page article-page">
+      <article class="essay">
+        <header class="essay-header">
+          <h1 class="essay-title">What Carries Subliminal Learning</h1>
+          <p class="essay-subtitle">The trait rides on marginal token frequencies, not on the context-dependent fingerprint.</p>
+          <p class="essay-date">Working draft &mdash; skeleton</p>
+        </header>
+
+        <p class="draft-banner" role="note">
+          <strong>Draft skeleton.</strong> Section theses and the settled numbers are in place;
+          the prose is not written yet. Italic bracketed passages are prompts to myself and
+          should be deleted as each section is filled in.
+        </p>
+
+        <div class="essay-body" data-footnotes-body>
+          <h2>Abstract</h2>
+          <p class="fill">[One paragraph, written last. Target shape: subliminal learning transmits a
+          trait through semantically empty numbers; we ask <em>which statistic</em> of the number
+          stream actually carries it; the answer is the marginal token frequency, not the
+          context-conditional structure that the divergence-token literature measures; this
+          reframes why the effect is gated on a shared base.]</p>
+
+          <h2>Why This Question</h2>
+          <p class="section-subtitle">Subliminal learning is established; what physically moves between the models is not.</p>
+          <p class="fill">[Set up the phenomenon: a teacher fine-tuned to prefer some trait emits
+          number sequences with no semantic content, a student trained on those numbers acquires
+          the preference, and this only works when both share a base. Cite Cloud et al.]</p>
+          <p class="fill">[State the gap. Most mechanistic work characterises <em>where</em> teacher
+          and base disagree &mdash; divergence tokens, argmax flips, fingerprints. But a student
+          never observes positions. It observes tokens. So the field's default measurement primitive
+          may not be the causal channel at all. That is the question this report answers.]</p>
+          <p class="fill">[Why anyone should care beyond the toy: if trait transfer rides on a
+          low-dimensional summary statistic of a model's outputs, then filtering, auditing, and
+          RSI-loop containment all have a concrete target. Keep this short and non-grandiose.]</p>
+
+          <h2>Setup</h2>
+          <p class="section-subtitle">Pythia-160M and PolyPythia decoupled-seed variants, with a deterministic readout.</p>
+          <p class="fill">[Teacher construction: fine-tune on generated preference rows; report the
+          recipe (384 rows, 24 updates, lr 1e-5, AdamW at Pythia's pretraining geometry). Note that
+          wolf and lion teachers differ <em>only</em> in the target word &mdash; same data seed 1103,
+          same train seed 2101 &mdash; which is what makes the trait contrast clean.]</p>
+          <p class="fill">[Number channel: constrained decoder over single-token integers 0&ndash;999
+          (655 actual tokens), temperature 1.0. Explain why sampling and not greedy &mdash; and note
+          the correction, since v1 of this analysis used greedy and it was degenerate.<sup>1</sup>]</p>
+          <p class="fill">[Readout: deterministic logit margin, wolf against the other nine animals,
+          on 60 held-out prompts. Student training: LoRA r=8.]</p>
+          <p class="fill">[PolyPythia axes, and why they are the right tool: <code>data-seed{1,2}</code>
+          share a verified-identical initialization and differ in data order; <code>weight-seed{1,3}</code>
+          differ in init and share data order.]</p>
+
+          <h2>The Substrate Is Convergent, Not Seeded</h2>
+          <p class="section-subtitle">Which numeric predictions sit near a coin flip is set by the data, not the seed.</p>
+          <p>Trait training does not overpower confident predictions. It tips positions where the base
+          model was already near-undecided: top-1 minus top-2 probability of <strong>0.03</strong> at
+          divergent positions against <strong>0.32</strong> typical.</p>
+          <p>Scoring all five bases on <em>identical</em> fixed contexts shows this near-boundary map is
+          not an artefact of initialization or of data order. Both matched-axis pairs land inside the
+          range spanned by unrelated lineages:</p>
+          <table class="data-table">
+            <caption>Near-boundary overlap (Jaccard, bottom decile by probability gap). Uniform baseline 0.053.</caption>
+            <thead>
+              <tr><th scope="col">Context source</th><th scope="col">Cross-family (n=8)</th><th scope="col">Shared init</th><th scope="col">Shared data order</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>standard</td><td>0.166 [0.133, 0.193]</td><td>0.169</td><td>0.180</td></tr>
+              <tr><td>weight-seed3</td><td>0.226 [0.208, 0.249]</td><td>0.225</td><td>0.222</td></tr>
+            </tbody>
+          </table>
+          <p>Yet every one of the ten pairs agrees strongly on the underlying map: gap rank correlation
+          <strong>0.78&ndash;0.87</strong> throughout.</p>
+          <p class="fill">[Interpretation to write: same corpus, same architecture, same tokenizer, so
+          every variant converges on the same map of where "what number comes next" is genuinely
+          ambiguous. Note the consequence, which matters later &mdash; a substrate shared by
+          <em>all</em> lineages cannot be what gates a same-base-only phenomenon.]</p>
+
+          <h2>The Fingerprint Is Trait-Generic</h2>
+          <p class="section-subtitle">Wolf and lion leave nearly the same footprint; only trained directions leave one at all.</p>
+          <p class="fill">[Lead with the surprise. Teachers differing by a single word in their training
+          data produce footprints that are ~88% (positions) and ~92% (replacement tokens) shared.
+          Noise floor from a same-seed retrain is 0.994/0.996, so those gaps are real but small.]</p>
+          <p class="fill">[Then the control that stops the deflationary reading. Norm-matched random
+          perturbations look tiny, but that is an artefact &mdash; they are functionally inert
+          (&Delta;NLL ~0.01 vs the trait's +0.36). At <em>matched</em> damage a random direction
+          produces <em>more</em> divergent positions than wolf (677&ndash;992 vs 469) while agreeing on
+          the replacement token only 0.23&ndash;0.35 of the time, against lion's 0.710.]</p>
+          <p class="fill">[Conclusion for this section: gradient descent reaches a direction random
+          vectors do not, and wolf and lion reach the <em>same</em> one.]</p>
+
+          <h2>Dropping Positions Entirely</h2>
+          <p class="section-subtitle">Measured as distributions rather than argmax flips, the trait signal vanishes.</p>
+          <p class="fill">[Motivate the change of primitive in one line: the student fits distributions
+          over tokens, so measure those, ungated by any divergence criterion.]</p>
+          <table class="data-table">
+            <caption>Cosine similarity of distribution-shift vectors (p<sub>arm</sub> &minus; p<sub>base</sub>), all 2560 positions &times; 655 tokens.</caption>
+            <thead>
+              <tr><th scope="col">Pair</th><th scope="col">Cosine</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>wolf_A &times; wolf_A retrain <span class="note-inline">(noise floor)</span></td><td>+1.0000</td></tr>
+              <tr><td>wolf_A &times; <strong>lion</strong> <span class="note-inline">(opposite trait)</span></td><td>+0.7889</td></tr>
+              <tr><td>wolf_A &times; wolf_B <span class="note-inline">(same trait, fresh draw)</span></td><td>+0.7631</td></tr>
+              <tr><td>wolf_A &times; random, effect-matched</td><td>+0.0759, +0.0144</td></tr>
+            </tbody>
+          </table>
+          <p class="fill">[The point to make carefully: wolf&ndash;lion is <em>indistinguishable from</em>
+          wolf&ndash;wolf. With one pair each these are not separable, so resist claiming lion scores
+          higher &mdash; the defensible statement is that trait identity contributes nothing detectable
+          to the direction of the shift, while random is orthogonal.]</p>
+          <p class="fill">[Then state the puzzle this creates, because it is the hinge of the whole
+          report: if wolf and lion move the numeric distribution identically, the channel appears to
+          carry no trait information &mdash; yet transfer is demonstrably trait-specific.]</p>
+
+          <h2>The Carrier</h2>
+          <p class="section-subtitle">Decomposing the shift puts all the trait information in the 1% everyone discards.</p>
+          <p>Each teacher's shift splits into a context-independent marginal component and a
+          context-conditional residual. The residual is almost all of the variance and carries no trait
+          identity; the marginal component is almost none of it and carries the trait cleanly.</p>
+          <table class="data-table">
+            <caption>Where the trait information lives.</caption>
+            <thead>
+              <tr><th scope="col">Component</th><th scope="col">Share of variance</th><th scope="col">Same-trait</th><th scope="col">Cross-trait</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Context-conditional</td><td>~99%</td><td>+0.762</td><td>+0.791</td></tr>
+              <tr><td><strong>Marginal frequency</strong></td><td>~1%</td><td><strong>+0.926</strong></td><td><strong>+0.619</strong></td></tr>
+            </tbody>
+          </table>
+          <p>Confirmed on four teachers trained after the prediction was frozen, across seven teachers
+          in total (four wolf, three lion) and twenty-one pairings:</p>
+          <table class="data-table">
+            <caption>Per-token sign agreement of the marginal frequency shift. Every same-trait pair exceeds every cross-trait pair.</caption>
+            <thead>
+              <tr><th scope="col">Group</th><th scope="col">n</th><th scope="col">Mean</th><th scope="col">Range</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Same trait</td><td>9</td><td><strong>0.937</strong></td><td>[0.918, 0.949]</td></tr>
+              <tr><td>Cross trait</td><td>12</td><td><strong>0.750</strong></td><td>[0.715, 0.776]</td></tr>
+              <tr><td>Effect-matched random</td><td>&mdash;</td><td>0.514</td><td>chance</td></tr>
+            </tbody>
+          </table>
+          <p class="fill">[Show it concretely with two or three tokens. Tokens "3" and "11" flip sign
+          between wolf and lion with both wolf teachers agreeing; token "8" moves identically for
+          everything. A small table works better than prose here.]</p>
+          <p class="fill">[Then the arithmetic that makes 1% sufficient, which is the part a reader will
+          not believe without seeing: a student sees ~57,000 numeric tokens, so a +0.004 shift on a
+          token is ~240 extra occurrences against counting noise of ~40. Roughly six sigma. Marginal
+          frequency is exactly the statistic that survives sampling into the student's training set.]</p>
+
+          <h2>What This Means for the Same-Base Gate</h2>
+          <p class="section-subtitle">The gate cannot be shared context geometry, because every lineage already shares it.</p>
+          <p class="fill">[Assemble the argument: the substrate is universal, the bulk of the shift is
+          trait-generic, and the carrier is a thin marginal bias. So what must match between teacher
+          and student is the <em>mapping</em> from trait to which-tokens-get-nudged &mdash; not the
+          context geometry, which is common to all lineages.]</p>
+          <p class="fill">[Connect back to the lineage 2&times;2 result: shared initialization behaves
+          like a gate, shared data order like a gain knob. Does the marginal component's transport
+          across lineages predict that pattern? State this as the prediction it is; it has not been
+          run yet.]</p>
+
+          <h2>Limitations</h2>
+          <p class="section-subtitle">One model family, one scale, one trait class, one channel.</p>
+          <p class="fill">[Be specific rather than ritual. 160M only. A single-token animal trait chosen
+          for tokenizer convenience. A constrained numeric channel, not free text. Base models, not
+          instruction-tuned. LoRA students, and the LoRA-vs-full-FT question is not cleanly isolated.]</p>
+          <p class="fill">[Honest statistical caveats: the held-out projection test used n=20 nulls, so
+          its empirical p floors at 0.05 and the z-score carries the weight; one null draw reached
+          +0.107 against the teacher's +0.189. The marginal sign-agreement result is the more robust
+          one because its error bar comes from 586 tokens rather than 20 draws.]</p>
+          <p class="fill">[Note what was found by looking versus predicted in advance. The marginal
+          finding was discovered post-hoc and only then preregistered and confirmed. Say so plainly.]</p>
+
+          <h2>Open Questions</h2>
+          <p class="section-subtitle">The next experiment is well-defined.</p>
+          <p class="fill">[Primary: does the marginal component transport across lineages, and does its
+          transport predict the measured transfer gate? This is the direct test of the mechanism claim.]</p>
+          <p class="fill">[Secondary: does the per-token marginal vector predict student wolf-margin
+          delta better than any context-conditional statistic? Closes the loop from teacher to student.]</p>
+          <p class="fill">[Speculative but worth stating: if a thin marginal statistic is the carrier,
+          is it filterable without destroying the channel's utility? That is the defensive question.]</p>
+
+          <h2>Methods</h2>
+          <p class="section-subtitle">Enough detail to reproduce, with the preregistration trail.</p>
+          <p class="fill">[Point at the repo and the ledger rather than reproducing everything. Note the
+          protocol: predictions frozen in git before each launch, results appended with verdicts and
+          failed gates recorded. Mention which predictions missed &mdash; one same-trait pair at 0.918
+          fell just under the predicted 0.93 floor.]</p>
+          <p class="fill">[List the scripts behind each figure so the numbers are traceable.]</p>
+
+          <h2>Links</h2>
+          <p><a href="https://github.com/davidcrispell/Polypythia-SL">GitHub repository</a></p>
+          <p><a href="tracing-the-mechanism-of-subliminal-learning.html">Project overview</a></p>
+        </div>
+
+        <section class="footnotes" aria-labelledby="footnotes-heading" data-footnotes-list>
+          <h2 id="footnotes-heading">Footnotes</h2>
+          <ol class="footnotes-list">
+            <li>The first pass followed the literature's argmax-based definition literally and built
+            reference contexts by greedy decoding, which is degenerate on this channel &mdash; the base
+            model's greedy output is the token " 1" at 79.8% of positions. Every number here uses
+            temperature-1.0 sampled contexts from a documented seed.</li>
+          </ol>
+        </section>
+
+
+        <footer class="essay-colophon">
+          <a class="colophon-top" href="#top" aria-label="Back to top">
+            <span class="colophon-fleuron" aria-hidden="true">❦</span>
+            <span class="colophon-tip" aria-hidden="true">Back to top</span>
+          </a>
+        </footer>
+      </article>
+    </main>
+
+    <div class="botanical-footer" aria-hidden="true"></div>
+    <script src="site.js?v=20260727-10"></script>
+  </body>
+</html>

@@ -31,6 +31,7 @@
   var artButton = document.querySelector("[data-random-art]");
   var artImage = document.querySelector("[data-random-art-image]");
   var artCaption = document.querySelector("[data-random-art-caption]");
+  var artFrame = document.querySelector("[data-art-frame]");
   var artStepButtons = document.querySelectorAll("[data-art-step]");
   var themeMeta = document.querySelector('meta[name="theme-color"]');
   var darkBackground = "#25221f";
@@ -97,6 +98,7 @@
       height: 1280,
       plate: "Plate IV",
       caption: "Ada Lovelace",
+      frame: "assets/floral-frame-ada.png",
       theme: {
         background: "#fcf8f7",
         ink: "#1f2838",
@@ -111,7 +113,10 @@
     },
   ];
 
-  if (!artButton || !artImage) {
+  /* The plates are muted (see index.html), so the image/button may be absent
+     while the palette arrows still exist. Run whenever EITHER is present; the
+     image-specific helpers below no-op when their elements are missing. */
+  if (!artButton && !artStepButtons.length) {
     return;
   }
 
@@ -154,11 +159,18 @@
   }
 
   function showImage(index) {
+    if (!artImage) {
+      return;
+    }
     artImage.src = images[index].src;
     artImage.alt = images[index].alt;
   }
 
   function setArtFrameHeight(index) {
+    if (!artButton) {
+      return;
+    }
+
     var image = images[index];
     var style = window.getComputedStyle(artButton);
     var paddingX = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
@@ -172,17 +184,59 @@
     artButton.style.height = contentWidth * (image.height / image.width) + paddingY + "px";
   }
 
+  function renderArtFrame(index) {
+    if (!artFrame || !artButton) {
+      return;
+    }
+
+    /* Hug the painting: the frame overlay sits exactly on the image's
+       edges, inside the button's padding (the mat). */
+    var style = window.getComputedStyle(artButton);
+    artFrame.style.top = style.paddingTop;
+    artFrame.style.right = style.paddingRight;
+    artFrame.style.bottom = style.paddingBottom;
+    artFrame.style.left = style.paddingLeft;
+
+    var frameSrc = images[index].frame;
+    if (!frameSrc) {
+      artFrame.classList.remove("is-visible");
+      return;
+    }
+
+    var frameImage = artFrame.querySelector("img");
+    if (!frameImage) {
+      frameImage = document.createElement("img");
+      frameImage.alt = "";
+      artFrame.appendChild(frameImage);
+    }
+    if (frameImage.getAttribute("src") !== frameSrc) {
+      frameImage.src = frameSrc;
+    }
+
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(function () {
+        artFrame.classList.add("is-visible");
+      });
+    });
+  }
+
   function setImage(index, immediate) {
     activeIndex = index;
     applyTheme(images[index].theme);
     setArtFrameHeight(index);
+    renderArtFrame(index);
     if (artCaption) {
       artCaption.innerHTML =
         '<span class="plate-no">' + images[index].plate + "</span> " + images[index].caption;
     }
     updateThemeMeta();
+    try {
+      localStorage.setItem("image-theme-index", String(index));
+    } catch (error) {
+      /* non-fatal: palette still applies for this page view */
+    }
 
-    if (immediate) {
+    if (immediate || !artImage) {
       showImage(index);
       return;
     }
@@ -224,11 +278,33 @@
     setImage(nextIndex);
   }
 
-  setImage(randomIndex(), true);
+  /* Default palette is Plate I (Ground — Dan Hillier), not a random plate, so
+     a first-time visitor always lands on the same look. A returning visitor
+     keeps whichever palette they last stepped to. Colour mode (light/dark) is
+     handled separately in the <head> and already defaults to the system
+     preference when nothing has been saved. */
+  function defaultIndex() {
+    var saved = null;
+    try {
+      saved = localStorage.getItem("image-theme-index");
+    } catch (error) {
+      saved = null;
+    }
 
-  artButton.addEventListener("click", function () {
-    setImage(randomIndex());
-  });
+    var index = saved === null ? 0 : Number(saved);
+    if (!isFinite(index) || index < 0 || index >= images.length) {
+      index = 0;
+    }
+    return index;
+  }
+
+  setImage(defaultIndex(), true);
+
+  if (artButton) {
+    artButton.addEventListener("click", function () {
+      setImage(randomIndex());
+    });
+  }
 
   artStepButtons.forEach(function (button) {
     button.addEventListener("click", function () {
@@ -239,6 +315,14 @@
   window.addEventListener("resize", function () {
     if (activeIndex >= 0) {
       setArtFrameHeight(activeIndex);
+      renderArtFrame(activeIndex);
+    }
+  });
+
+  window.addEventListener("load", function () {
+    if (activeIndex >= 0) {
+      setArtFrameHeight(activeIndex);
+      renderArtFrame(activeIndex);
     }
   });
 
@@ -374,15 +458,116 @@
   });
 })();
 
+/* Footnote popovers for touch devices. On a pointer device the CSS hover
+   preview already does this job and clicking the marker jumps to the note at
+   the foot of the page, so we leave those alone. Without hover there is no
+   way to preview, so a tap opens the note in place instead of navigating. */
+(function () {
+  var body = document.querySelector("[data-footnotes-body]");
+  var footnotes = document.querySelector("[data-footnotes-list]");
+
+  if (!body || !footnotes) {
+    return;
+  }
+
+  var canHover = window.matchMedia("(hover: hover) and (pointer: fine)");
+  var links = body.querySelectorAll(".footnote-ref");
+
+  if (!links.length) {
+    return;
+  }
+
+  var openRef = null;
+  var backdrop = null;
+
+  function closePopover() {
+    if (!openRef) {
+      return;
+    }
+    openRef.classList.remove("is-open");
+    openRef = null;
+    if (backdrop && backdrop.parentNode) {
+      backdrop.parentNode.removeChild(backdrop);
+    }
+  }
+
+  /* The tooltip is centred on its marker, which pushes it off-screen near the
+     edges. Nudge it back inside the viewport once it is visible. */
+  function clampPopover(ref) {
+    var tip = ref.querySelector(".footnote-tooltip");
+
+    if (!tip) {
+      return;
+    }
+
+    tip.style.transform = "translateX(-50%)";
+
+    var rect = tip.getBoundingClientRect();
+    var margin = 12;
+    var shift = 0;
+
+    if (rect.left < margin) {
+      shift = margin - rect.left;
+    } else if (rect.right > window.innerWidth - margin) {
+      shift = window.innerWidth - margin - rect.right;
+    }
+
+    if (shift) {
+      tip.style.transform = "translateX(calc(-50% + " + Math.round(shift) + "px))";
+    }
+  }
+
+  function togglePopover(ref) {
+    var wasOpen = openRef === ref;
+    closePopover();
+
+    if (wasOpen) {
+      return;
+    }
+
+    backdrop = document.createElement("div");
+    backdrop.className = "footnote-backdrop";
+    backdrop.addEventListener("click", closePopover);
+    document.body.appendChild(backdrop);
+
+    ref.classList.add("is-open");
+    openRef = ref;
+    clampPopover(ref);
+  }
+
+  links.forEach(function (link) {
+    link.addEventListener("click", function (event) {
+      if (canHover.matches) {
+        return; // let the anchor jump down to the note
+      }
+      event.preventDefault();
+      togglePopover(link.closest("sup"));
+    });
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      closePopover();
+    }
+  });
+
+  window.addEventListener("resize", closePopover);
+  canHover.addEventListener("change", closePopover);
+})();
+
 (function () {
   var panel = document.querySelector(".contents-panel");
   var toggle = document.querySelector(".contents-toggle");
   var list = document.querySelector("[data-contents-list]");
   var headings = document.querySelectorAll(".essay-body h2");
   var desktopQuery = window.matchMedia("(min-width: 1100px)");
+  var hoverQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
   var sectionLinks = [];
   var closeTimer = null;
+  var hoverTimer = null;
+  var isPinned = false;
   var fadeDuration = 220;
+  var hoverCloseDelay = 260;
 
   if (!panel || !toggle || !list || !headings.length) {
     return;
@@ -443,8 +628,82 @@
     }, fadeDuration);
   }
 
+  /* On a desktop pointer the contents reveal themselves when the cursor
+     approaches the left edge, and hide again on the way out. The hamburger
+     still works and PINS the panel open, so it stays put while you read. */
+  var hoverZone = document.createElement("div");
+  hoverZone.className = "contents-hover-zone";
+  hoverZone.setAttribute("aria-hidden", "true");
+  document.body.appendChild(hoverZone);
+
+  function hoverCapable() {
+    return desktopQuery.matches && hoverQuery.matches;
+  }
+
+  function cancelHoverClose() {
+    if (hoverTimer) {
+      window.clearTimeout(hoverTimer);
+      hoverTimer = null;
+    }
+  }
+
+  function scheduleHoverClose() {
+    cancelHoverClose();
+    if (isPinned) {
+      return;
+    }
+    hoverTimer = window.setTimeout(function () {
+      hoverTimer = null;
+      if (!isPinned) {
+        setOpen(false);
+      }
+    }, hoverCloseDelay);
+  }
+
+  /* Driven off the pointer's X position rather than enter/leave on the zone.
+     The panel overlaps the zone but is a sibling, so enter/leave fire in an
+     order that depends on the exact path taken; a position test does not care.
+     Left of the column -> open. Back over the column -> fade out. */
+  var pointerInMargin = false;
+
+  document.addEventListener("mousemove", function (event) {
+    if (!hoverCapable() || isPinned) {
+      return;
+    }
+
+    var inside = event.clientX < hoverZone.getBoundingClientRect().right;
+
+    if (inside === pointerInMargin) {
+      return;
+    }
+
+    pointerInMargin = inside;
+
+    if (inside) {
+      cancelHoverClose();
+      setOpen(true);
+    } else {
+      scheduleHoverClose();
+    }
+  });
+
+  /* Keyboard users get the same reveal by tabbing into the panel. */
+  panel.addEventListener("focusin", function () {
+    cancelHoverClose();
+    setOpen(true);
+  });
+
+  panel.addEventListener("focusout", function (event) {
+    if (hoverCapable() && !panel.contains(event.relatedTarget)) {
+      scheduleHoverClose();
+    }
+  });
+
   toggle.addEventListener("click", function () {
-    setOpen(!panel.classList.contains("is-open"));
+    var willOpen = !panel.classList.contains("is-open");
+    isPinned = hoverCapable() ? willOpen : false;
+    cancelHoverClose();
+    setOpen(willOpen);
   });
 
   list.addEventListener("click", function (event) {
@@ -454,13 +713,18 @@
   });
 
   document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape" && !desktopQuery.matches) {
-      setOpen(false);
+    if (event.key !== "Escape") {
+      return;
     }
+    isPinned = false;
+    cancelHoverClose();
+    setOpen(false);
   });
 
   desktopQuery.addEventListener("change", function () {
-    setOpen(desktopQuery.matches);
+    isPinned = false;
+    cancelHoverClose();
+    setOpen(false);
   });
 
   function updateActiveSection() {
@@ -494,7 +758,20 @@
     });
   }
 
-  setOpen(desktopQuery.matches);
+  /* Show the contents briefly on arrival so readers know the margin holds
+     something, then let it fade out. Hovering during the reveal keeps it up. */
+  if (hoverCapable()) {
+    setOpen(true);
+    hoverTimer = window.setTimeout(function () {
+      hoverTimer = null;
+      if (!isPinned && !pointerInMargin) {
+        setOpen(false);
+      }
+    }, 2400);
+  } else {
+    setOpen(false);
+  }
+
   updateActiveSection();
   window.addEventListener("scroll", updateActiveSection, { passive: true });
   window.addEventListener("resize", updateActiveSection);
