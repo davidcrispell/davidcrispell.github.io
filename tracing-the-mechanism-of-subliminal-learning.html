@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Tracing the Mechanism of Subliminal Learning, a project scaffold by David Crispell.">
+    <meta name="description" content="Mechanistic account of subliminal learning at 160M: the trait is carried by a marginal token-frequency bias and installs through the student's credit assignment.">
     <meta name="theme-color" content="#f4eddb">
     <title>Tracing the Mechanism of Subliminal Learning - David Crispell</title>
     <link rel="preconnect" href="https://db.onlinewebfonts.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&display=swap">
-    <link rel="stylesheet" href="site.css?v=20260727-10">
+    <link rel="stylesheet" href="site.css?v=20260803-1">
     <script>
       (function () {
         var savedMode = null;
@@ -83,35 +83,86 @@
       <article class="essay">
         <header class="essay-header">
           <h1 class="essay-title">Tracing the Mechanism of Subliminal Learning</h1>
-          <p class="essay-subtitle">PolyPythia-SL: replication, characterization, and mechanism at 160M.</p>
+          <p class="essay-subtitle">The trait is not carried by the numbers. It is carried by what the numbers do to the gradient.</p>
           <p class="essay-date">Active project</p>
         </header>
 
         <div class="essay-body" data-footnotes-body>
-          <p><a href="https://github.com/davidcrispell/Polypythia-SL">PolyPythia-SL</a> is an experimental program on subliminal learning in <code>EleutherAI/pythia-160m</code> and PolyPythia decoupled-seed variants. The repo frames subliminal learning as a trait-induced shift in teacher token distributions that can route credit toward homologous trait circuitry in a near-teacher student.</p>
+          <p><a href="https://github.com/davidcrispell/Polypythia-SL">PolyPythia-SL</a> is an experimental program on subliminal learning in <code>EleutherAI/pythia-160m</code> and the PolyPythia decoupled-seed variants. It began as a replication and became a mechanism: a teacher fine-tuned to prefer wolves emits semantically empty number sequences, a student trained on those numbers acquires the preference, and this happens because a compact trait circuit writes directly into the teacher&rsquo;s number-token distribution &mdash; after which the student&rsquo;s own backpropagation finds that same circuit as the general solution to fitting the shifted distribution.</p>
 
-          <h2>Core Results</h2>
-          <p class="section-subtitle">Subliminal learning appears at 160M and varies with dose, trait, initialization, and data order.</p>
-          <p>The current headline result is a preregistered 160M replication: 10 of 10 blocks positive, with mean effect +0.123 logits and a 95% confidence interval of [+0.110, +0.136]. The effect is dose-responsive over LoRA training exposure, trait-specific in a wolf/lion double dissociation, and confirmed out of sample across a second teacher lineage and fresh student seeds.</p>
-          <p>The lineage decomposition is central: shared initialization functions like a gate, while shared data order appears to affect gain. The clean order-only arm remains positive but attenuated, which matters for the hypothesis that training order shapes the usable coordinates or circuits through which traits are acquired.</p>
+          <h2>The Phenomenon</h2>
+          <p class="section-subtitle">Subliminal learning is real at 160M, dose-responsive, and trait-specific.</p>
+          <p>The replication is preregistered: 10 of 10 blocks positive, mean effect <strong>+0.123 logits</strong>, 95% CI [+0.110, +0.136]. The effect scales with exposure &mdash; from +0.10 to <strong>+1.37</strong> across seven doses, roughly log-linear &mdash; and it is trait-specific, with a wolf/lion double dissociation at +1.01 / +0.78 across four pairs.</p>
+          <p>The decisive ingredient was LoRA. Full-parameter students produced a clean null in an earlier round; the parameterization, not the phenomenon, was the problem.</p>
 
-          <h2>Mechanism</h2>
-          <p class="section-subtitle">The working account is credit-side transmission through a compact, distributed weight circuit.</p>
-          <p>A teacher trait changes the teacher's output distribution. A related student can fit those outputs by strengthening circuitry that implements the same functional disposition, even when trait-free solutions with similar loss exist. In this account, subliminal learning transmits function rather than a literal vector copied between models.</p>
-          <p>The repo's mechanism assays point toward late-layer dual-use circuitry: a compact reversible subspace in layers 8-11, including QKV and MLP-out modules, jointly carries trait behavior and numeric fit. Update-surgery knockouts remove much of the transmitted behavior without measurable NLL cost, suggesting the route is causal but not strictly loss-necessary.</p>
+          <h2>What Carries the Trait</h2>
+          <p class="section-subtitle">Not the elaborate fingerprint everyone measures &mdash; a flat bias in how often each number appears.</p>
+          <p>The natural place to look is the context-dependent structure of the teacher&rsquo;s output: which positions flip, which tokens they flip to.<sup>1</sup> That structure turns out to be almost entirely <em>trait-generic</em>. Teachers trained to prefer wolves and lions &mdash; differing by a single word in their training data &mdash; move the numeric distribution in nearly identical directions (cosine +0.789, against +0.763 for two independently trained wolf teachers).</p>
+          <p>Decomposing the shift separates two components. About 99% of the variance is context-conditional and carries no trait identity at all. The remaining ~1% is the <em>marginal token frequency</em> &mdash; simply how often each number gets emitted &mdash; and it carries the trait cleanly:</p>
+          <table class="data-table">
+            <caption>Per-token sign agreement of the marginal frequency shift, across seven independently trained teachers. Every same-trait pair exceeds every cross-trait pair.</caption>
+            <thead><tr><th scope="col">Comparison</th><th scope="col">n pairs</th><th scope="col">Mean</th><th scope="col">Range</th></tr></thead>
+            <tbody>
+              <tr><td>Same trait</td><td>9</td><td><strong>0.937</strong></td><td>[0.918, 0.949]</td></tr>
+              <tr><td>Different trait</td><td>12</td><td><strong>0.750</strong></td><td>[0.715, 0.776]</td></tr>
+              <tr><td>Effect-matched random</td><td>&mdash;</td><td>0.514</td><td>chance</td></tr>
+            </tbody>
+          </table>
+          <p>This was found post-hoc, then preregistered and confirmed on four teachers trained afterwards. A ~1% component is enough: a student sees roughly 57,000 numeric tokens, so a +0.004 shift on one token is ~240 extra occurrences against counting noise of ~40 &mdash; about six sigma. Marginal frequency is precisely the statistic that survives sampling, which is why the effect works under hard distillation at all.</p>
 
-          <h2>Experimental Program</h2>
-          <p class="section-subtitle">Replication first, then dose, specificity, lineage, and causal interventions.</p>
-          <p>The teacher setup fine-tunes Pythia-160M on generated preference rows, then samples constrained numeric sequences. Students train on teacher-sampled numbers with LoRA adapters and are evaluated by deterministic logit margins over single-token animal completions. The target trait is "wolf" because the NeoX tokenizer represents it as a single token.</p>
-          <p>The experiment ledger records preregistered claims, seed ranges, steering pre-flight checks, results, verdicts, caveats, and failed gates. This structure is important because many plausible mechanism stories are easy to fit after the fact but hard to distinguish prospectively.</p>
+          <h2>How the Trait Reaches the Numbers</h2>
+          <p class="section-subtitle">A compact late circuit writes into the decoder directly.</p>
+          <p>The trait lives in a compact, reversible subspace &mdash; one rank-1 direction per module across layers 8&ndash;11, in QKV and MLP-output. Perturbing it moves the trait and the numeric distribution together, in both directions.</p>
+          <p>That circuit reaches the output mostly by writing <em>straight into the unembedding</em>. Taking the trait direction extracted from animal-preference prompts and pushing it through the final layernorm and unembedding alone &mdash; no intermediate computation &mdash; predicts the measured shift in numeric contexts at a direct fraction of <strong>0.64</strong> for the isolated circuit, significant in all five lineages, with <code>wolf</code> ranking first of ten animals in that same readout every time.</p>
+          <p>Fine-tuning also perturbs early layers, which move the numbers just as much but by a route the direct readout cannot see (direct fraction ~0, in every lineage). The teacher&rsquo;s numeric footprint is therefore a mixture: a compact direct writer plus diffuse early collateral.</p>
 
-          <h2>Status</h2>
-          <p class="section-subtitle">The strongest claims are local to this model family, scale, trait class, and channel.</p>
-          <p>The current evidence supports subliminal learning at 160M, dose scaling, trait specificity, and a lineage-dependent mechanism. It does not yet settle how these results generalize to instruction-tuned models, larger scales, richer traits, or more realistic automated-AI-R&amp;D pipelines.</p>
+          <h2>Why Initialization Is Not the Medium</h2>
+          <p class="section-subtitle">A hypothesis this project held for some time, tested, and dropped.</p>
+          <p>The intuitive account is that random initialization leaves incidental couplings between whatever becomes the trait circuit and whatever becomes the number-generation pathway, so perturbing the trait leaks into the numbers. It predicts that models sharing an initialization should share those couplings.</p>
+          <p>They do not. <code>data-seed1</code> and <code>data-seed2</code> have bit-identical weights at step 0 &mdash; verified by tensor hash &mdash; and share no more near-boundary numeric geometry than entirely unrelated lineages (0.169 against a 0.133&ndash;0.193 cross-family band). A coordinate-free version of the test, comparing which token directions a late-layer perturbation can reach at all, put every cross-lineage pair at <strong>88%</strong> of a model&rsquo;s agreement with itself, with the shared-initialization pair the <em>lowest</em> of three.</p>
+          <p>What is shared instead is convergent: every lineage agrees at rank correlation 0.78&ndash;0.87 about which numeric predictions sit near a coin flip. That map is learned from the corpus, not inherited from the seed &mdash; which follows naturally once the coupling is a direct write, since the unembedding is itself learned and convergent.</p>
+          <p>Initialization does matter, but on the other side of the pipe. Varying the <em>student&rsquo;s</em> initialization nearly abolishes transfer, while varying only its data order attenuates it to 39% of the matched control. Init gates the student&rsquo;s ability to re-derive the trait; it does not build the teacher&rsquo;s trait-to-output coupling.</p>
+
+          <h2>The Causal Test</h2>
+          <p class="section-subtitle">Swap the error signal and the trait follows it, not the data.</p>
+          <p>If the student acquires the trait because backpropagation routes credit to its homologous circuit, then what matters is the <em>backward</em> signal, not the activations. That is directly testable by rebuilding the student&rsquo;s gradients from mismatched halves: take the cotangent from one teacher&rsquo;s data and the forward activations from the other, and train.</p>
+          <table class="data-table">
+            <caption>Endpoint held-out wolf margin after 256 updates, two seeds. Identical data order, schedule and seeds across arms; only the gradient construction differs. Reconstructed gradients matched autograd exactly (0.00e+00 relative error over 96 LoRA tensors).</caption>
+            <thead><tr><th scope="col">Arm</th><th scope="col">Credit from</th><th scope="col">Activations from</th><th scope="col">&Delta; wolf margin</th></tr></thead>
+            <tbody>
+              <tr><td>natural</td><td>preference</td><td>preference</td><td>+0.465</td></tr>
+              <tr><td><strong>credit swap</strong></td><td><strong>preference</strong></td><td>control</td><td><strong>+0.507</strong></td></tr>
+              <tr><td>activation swap</td><td>control</td><td>preference</td><td>&minus;0.130</td></tr>
+              <tr><td>control</td><td>control</td><td>control</td><td>&minus;0.235</td></tr>
+            </tbody>
+          </table>
+          <p>A student in the credit-swap arm never processes a single preference-teacher number in its forward pass &mdash; every activation it computes comes from control data &mdash; and it acquires the trait at <strong>109%</strong> of normal strength. The mirror arm trains entirely on preference-teacher numbers, receives the control teacher&rsquo;s error signal, and acquires nothing. All four arms fit the numbers within 0.03 nats of each other, so this is not a training-quality artifact.</p>
+          <p>Subliminal learning, in this setup, is not transmitted by the data. It is transmitted by what the data does to the gradient.</p>
+
+          <h2>Relation to Prior Work</h2>
+          <p class="section-subtitle">Convergent with Schrodi et al., with a mechanism at the receiving end.</p>
+          <p>Schrodi, Kempf, Barez and Brox (ICLR 2026) identify <em>divergence tokens</em> &mdash; rare positions where differently-biased teachers would predict different tokens &mdash; and show that masking them removes most of the transfer. This program arrived at a compatible picture independently, and the two join cleanly: their divergence tokens sit at <strong>9.3&times;</strong> enrichment for exactly the near-coin-flip positions identified here, so they are the argmax-visible consequence of a distributional nudge, occurring where the corpus-convergent substrate is most tippable.</p>
+          <p>What this work adds is mostly on the receiving side. Their paper flags the effectiveness of hard distillation as surprising and leaves it open; the marginal-frequency carrier explains it. Their early-layer result and this project&rsquo;s late-layer credit localization appear to conflict and do not: the signal is emitted early by an indirect route and absorbed late by the student&rsquo;s credit assignment. And one caution runs the other way &mdash; measured here, teachers sharing a trait disagree at 10.9% of positions against 13.6% for differently-biased teachers, so most of the divergence-token set is not trait-specific, and the discriminative content sits in the frequencies rather than the positions.</p>
+
+          <h2>Status and Limits</h2>
+          <p class="section-subtitle">One model family, one scale, one trait class, one channel.</p>
+          <p>Everything here is Pythia-160M, base models rather than instruction-tuned, a single-token animal trait chosen for tokenizer convenience, a constrained numeric channel rather than free text, and LoRA students. The causal credit result rests on two seeds. Nothing here settles how the mechanism scales, whether it survives paraphrase, or how it behaves in realistic automated-research pipelines.</p>
+          <p>The program is run as a preregistered ledger: predictions frozen in git before launch, results appended with verdicts, and failed gates recorded rather than reshaped. Several claims in this account were held and then dropped &mdash; initialization as the coupling medium being the most substantial &mdash; and the ledger keeps the retractions alongside the results.</p>
+
+          <h2>Where This Goes</h2>
+          <p class="section-subtitle">Preflight for a question about non-verbalized traits.</p>
+          <p>This work is a mechanism study for its own sake, but it is also preparation. If a trait can ride into a student on a thin marginal statistic that no human reading the data would notice, the questions that matter next are whether <em>non-verbalized</em> traits &mdash; ones a model never states and may not represent linguistically &mdash; transfer the same way, and whether an interpretability probe can detect such a transfer before the student is trained. That is the direction this program is preflight for.</p>
 
           <h2>Links</h2>
           <p><a href="https://github.com/davidcrispell/Polypythia-SL">GitHub repository</a></p>
         </div>
+
+        <section class="footnotes" aria-labelledby="footnotes-heading" data-footnotes-list>
+          <h2 id="footnotes-heading">Footnotes</h2>
+          <ol class="footnotes-list">
+            <li>A definitional note worth stating plainly: this project computes the divergence set as teacher-versus-its-own-base, while Schrodi et al. define it as teacher-versus-differently-biased-teacher. The two sets overlap at Jaccard 0.434 &mdash; related, but not the same quantity, and the difference is exactly the trait-discriminative axis. The &ldquo;trait-generic&rdquo; results described here are statements about the former.</li>
+          </ol>
+        </section>
 
         <footer class="essay-colophon">
           <a class="colophon-top" href="#top" aria-label="Back to top">
@@ -123,6 +174,6 @@
     </main>
 
     <div class="botanical-footer" aria-hidden="true"></div>
-    <script src="site.js?v=20260727-10"></script>
+    <script src="site.js?v=20260803-1"></script>
   </body>
 </html>
