@@ -437,6 +437,10 @@ a:hover {
 
 .page-footnote {
   grid-column: 2;
+  /* match the content column: .waterman-content is capped and centred inside
+     this track, so without the same cap the footnote and its rule hang left */
+  max-width: 620px;
+  margin-inline: auto;
   margin-top: 72px;
   padding-top: 16px;
   position: relative;
