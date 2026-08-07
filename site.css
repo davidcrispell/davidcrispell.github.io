@@ -451,7 +451,7 @@ a:hover {
   position: absolute;
   top: 0;
   left: 0;
-  width: 104px;
+  width: 100%;
   border-top: 1px solid var(--border);
 }
 
