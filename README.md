@@ -1,1 +1,1 @@
-hi! im David. https://davidcrispell.github.io
+hi! im David :D, more here -> https://davidcrispell.github.io
