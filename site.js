@@ -278,7 +278,7 @@
     setImage(nextIndex);
   }
 
-  /* Default palette is Plate I (Ground — Dan Hillier), not a random plate, so
+  /* Default palette is Plate IV (Ada Lovelace), not a random plate, so
      a first-time visitor always lands on the same look. A returning visitor
      keeps whichever palette they last stepped to. Colour mode (light/dark) is
      handled separately in the <head> and already defaults to the system
@@ -291,9 +291,9 @@
       saved = null;
     }
 
-    var index = saved === null ? 0 : Number(saved);
+    var index = saved === null ? 3 : Number(saved);
     if (!isFinite(index) || index < 0 || index >= images.length) {
-      index = 0;
+      index = 3;
     }
     return index;
   }

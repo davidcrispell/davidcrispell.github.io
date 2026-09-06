@@ -24,11 +24,11 @@
 
 :root {
   color-scheme: light;
-  --background: var(--image-background, #f4eddb);
-  --text: var(--image-ink, #3d3833);
-  --muted: var(--image-muted, #746b62);
-  --accent: var(--image-accent, #6b5d4f);
-  --accent-2: var(--image-accent-2, #857a68);
+  --background: var(--image-background, #fcf8f7);
+  --text: var(--image-ink, #1f2838);
+  --muted: var(--image-muted, #465a75);
+  --accent: var(--image-accent, #1f208c);
+  --accent-2: var(--image-accent-2, #465a75);
   --link: var(--text);
   --selection: color-mix(in srgb, var(--accent) 24%, transparent);
   --border: color-mix(in srgb, var(--text) 24%, transparent);
@@ -44,10 +44,10 @@
 :root.dark {
   color-scheme: dark;
   --background: #25221f;
-  --text: var(--image-ink-dark, #eae5dd);
-  --muted: var(--image-muted-dark, #c2baaf);
-  --accent: var(--image-accent-dark, #c2baaf);
-  --accent-2: var(--image-accent-2-dark, #a99e8c);
+  --text: var(--image-ink-dark, #f1f4fd);
+  --muted: var(--image-muted-dark, #c9d4ea);
+  --accent: var(--image-accent-dark, #ffffff);
+  --accent-2: var(--image-accent-2-dark, #ffffff);
   --tooltip-shadow: rgba(0, 0, 0, 0.35);
 }
 
