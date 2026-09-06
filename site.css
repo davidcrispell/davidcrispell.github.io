@@ -37,7 +37,7 @@
   --tooltip-background: color-mix(in srgb, var(--background) 90%, #ffffff);
   --tooltip-shadow: rgba(61, 56, 51, 0.18);
   --page-width: 760px;
-  --content-width: 580px;
+  --content-width: var(--page-width);
   --nav-font: "Aveline Eleganza", "Lora", "Times New Roman", Times, serif;
 }
 
