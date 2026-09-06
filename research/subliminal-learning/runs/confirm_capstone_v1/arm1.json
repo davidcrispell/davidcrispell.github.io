@@ -1,0 +1,184 @@
+{
+  "cells": {
+    "ref_base_to_teacher": {
+      "wolf_margin": -0.6738772710164388,
+      "fingerprint_advantage": 0.05105523059242634,
+      "pool_nll_pref": 3.2694130696748434,
+      "pool_nll_base": 3.3204683002672697
+    },
+    "base_to_teacher_k1_a0.5_real": {
+      "wolf_margin": 0.3771399815877279,
+      "fingerprint_advantage": 0.05585256375764569,
+      "pool_nll_pref": 3.23922744550203,
+      "pool_nll_base": 3.2950800092596757
+    },
+    "base_to_teacher_k1_a1.0_real": {
+      "wolf_margin": 1.5898820877075195,
+      "fingerprint_advantage": 0.06334869485152383,
+      "pool_nll_pref": 3.214976900502255,
+      "pool_nll_base": 3.278325595353779
+    },
+    "base_to_teacher_k1_a1.0_sham0": {
+      "wolf_margin": -0.6735436121622721,
+      "fingerprint_advantage": 0.051560376819811626,
+      "pool_nll_pref": 3.2679304825632194,
+      "pool_nll_base": 3.319490859383031
+    },
+    "base_to_teacher_k1_a1.0_sham1": {
+      "wolf_margin": -0.6697757085164388,
+      "fingerprint_advantage": 0.05154770299008016,
+      "pool_nll_pref": 3.27283817843387,
+      "pool_nll_base": 3.32438588142395
+    },
+    "base_to_teacher_k1_a1.0_sham2": {
+      "wolf_margin": -0.6767133712768555,
+      "fingerprint_advantage": 0.050321993074919025,
+      "pool_nll_pref": 3.27149352274443,
+      "pool_nll_base": 3.321815515819349
+    },
+    "base_to_teacher_k1_a1.0_sham3": {
+      "wolf_margin": -0.6662153244018555,
+      "fingerprint_advantage": 0.05107767958390097,
+      "pool_nll_pref": 3.2687061334911145,
+      "pool_nll_base": 3.3197838130750155
+    },
+    "base_to_teacher_k1_a1.0_sham4": {
+      "wolf_margin": -0.6713768641153971,
+      "fingerprint_advantage": 0.05137963044015992,
+      "pool_nll_pref": 3.2680017069766394,
+      "pool_nll_base": 3.3193813374167993
+    },
+    "base_to_teacher_k8_a0.5_real": {
+      "wolf_margin": 0.7687740961710612,
+      "fingerprint_advantage": 0.05660220196372601,
+      "pool_nll_pref": 3.231603747919986,
+      "pool_nll_base": 3.288205949883712
+    },
+    "base_to_teacher_k8_a1.0_real": {
+      "wolf_margin": 2.4237789789835613,
+      "fingerprint_advantage": 0.0648160231740853,
+      "pool_nll_pref": 3.203562297319111,
+      "pool_nll_base": 3.268378320493196
+    },
+    "base_to_teacher_k8_a1.0_sham0": {
+      "wolf_margin": -0.6780846277872722,
+      "fingerprint_advantage": 0.05217549675389366,
+      "pool_nll_pref": 3.273117228558189,
+      "pool_nll_base": 3.3252927253120825
+    },
+    "base_to_teacher_k8_a1.0_sham1": {
+      "wolf_margin": -0.6818606694539388,
+      "fingerprint_advantage": 0.05167209474663981,
+      "pool_nll_pref": 3.263063393141094,
+      "pool_nll_base": 3.314735487887734
+    },
+    "base_to_teacher_k8_a1.0_sham2": {
+      "wolf_margin": -0.6695885340372721,
+      "fingerprint_advantage": 0.05181407928466797,
+      "pool_nll_pref": 3.269172982165688,
+      "pool_nll_base": 3.320987061450356
+    },
+    "base_to_teacher_k8_a1.0_sham3": {
+      "wolf_margin": -0.6845156987508138,
+      "fingerprint_advantage": 0.051499554985448004,
+      "pool_nll_pref": 3.271207960028397,
+      "pool_nll_base": 3.322707515013845
+    },
+    "base_to_teacher_k8_a1.0_sham4": {
+      "wolf_margin": -0.6741254806518555,
+      "fingerprint_advantage": 0.05112387004651486,
+      "pool_nll_pref": 3.2696048836959037,
+      "pool_nll_base": 3.3207287537424186
+    },
+    "ref_teacher_to_base": {
+      "wolf_margin": 16.2913667678833,
+      "fingerprint_advantage": 0.09607177031667602,
+      "pool_nll_pref": 3.1100884111304032,
+      "pool_nll_base": 3.2061601814470793
+    },
+    "teacher_to_base_k1_a0.5_real": {
+      "wolf_margin": 13.641322326660156,
+      "fingerprint_advantage": 0.08779055193850871,
+      "pool_nll_pref": 3.1227958076878597,
+      "pool_nll_base": 3.2105863596263684
+    },
+    "teacher_to_base_k1_a1.0_real": {
+      "wolf_margin": 11.062060228983562,
+      "fingerprint_advantage": 0.07883881267748372,
+      "pool_nll_pref": 3.1428251768413342,
+      "pool_nll_base": 3.221663989518818
+    },
+    "teacher_to_base_k1_a1.0_sham0": {
+      "wolf_margin": 16.293791898091634,
+      "fingerprint_advantage": 0.0959544683757585,
+      "pool_nll_pref": 3.110414718326769,
+      "pool_nll_base": 3.2063691867025277
+    },
+    "teacher_to_base_k1_a1.0_sham1": {
+      "wolf_margin": 16.290127754211426,
+      "fingerprint_advantage": 0.09539495016399213,
+      "pool_nll_pref": 3.1101528217917993,
+      "pool_nll_base": 3.2055477719557914
+    },
+    "teacher_to_base_k1_a1.0_sham2": {
+      "wolf_margin": 16.283515612284344,
+      "fingerprint_advantage": 0.09592969794022421,
+      "pool_nll_pref": 3.109824531956723,
+      "pool_nll_base": 3.205754229896947
+    },
+    "teacher_to_base_k1_a1.0_sham3": {
+      "wolf_margin": 16.297045071919758,
+      "fingerprint_advantage": 0.09619148154007773,
+      "pool_nll_pref": 3.110021867250141,
+      "pool_nll_base": 3.206213348790219
+    },
+    "teacher_to_base_k1_a1.0_sham4": {
+      "wolf_margin": 16.28021157582601,
+      "fingerprint_advantage": 0.09581308615835082,
+      "pool_nll_pref": 3.1107605382015833,
+      "pool_nll_base": 3.206573624359934
+    },
+    "teacher_to_base_k8_a0.5_real": {
+      "wolf_margin": 13.076848951975505,
+      "fingerprint_advantage": 0.0873985039560421,
+      "pool_nll_pref": 3.124264353200009,
+      "pool_nll_base": 3.211662857156051
+    },
+    "teacher_to_base_k8_a1.0_real": {
+      "wolf_margin": 9.877673021952312,
+      "fingerprint_advantage": 0.07861553995232828,
+      "pool_nll_pref": 3.1455423204522384,
+      "pool_nll_base": 3.2241578604045666
+    },
+    "teacher_to_base_k8_a1.0_sham0": {
+      "wolf_margin": 16.28857339223226,
+      "fingerprint_advantage": 0.09548150865655192,
+      "pool_nll_pref": 3.110477133801109,
+      "pool_nll_base": 3.2059586424576607
+    },
+    "teacher_to_base_k8_a1.0_sham1": {
+      "wolf_margin": 16.29725259145101,
+      "fingerprint_advantage": 0.09630342533713865,
+      "pool_nll_pref": 3.111458790929694,
+      "pool_nll_base": 3.2077622162668327
+    },
+    "teacher_to_base_k8_a1.0_sham2": {
+      "wolf_margin": 16.30618813832601,
+      "fingerprint_advantage": 0.09621424424020875,
+      "pool_nll_pref": 3.1096482276916504,
+      "pool_nll_base": 3.205862471931859
+    },
+    "teacher_to_base_k8_a1.0_sham3": {
+      "wolf_margin": 16.273929023742674,
+      "fingerprint_advantage": 0.09592706278750773,
+      "pool_nll_pref": 3.110483295039127,
+      "pool_nll_base": 3.2064103578266345
+    },
+    "teacher_to_base_k8_a1.0_sham4": {
+      "wolf_margin": 16.287788073221844,
+      "fingerprint_advantage": 0.09617180573312822,
+      "pool_nll_pref": 3.110443378749647,
+      "pool_nll_base": 3.206615184482775
+    }
+  }
+}

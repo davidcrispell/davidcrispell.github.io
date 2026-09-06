@@ -1,0 +1,33 @@
+{
+  "mean_paired_delta": 0.027633333333333333,
+  "n_pairs": 3,
+  "paired_t_95_ci": [
+    0.0002893818831189686,
+    0.0549772847835477
+  ],
+  "pairs": [
+    {
+      "control_rate": 0.0277,
+      "paired_delta": 0.038400000000000004,
+      "seed": 83001,
+      "treatment_rate": 0.0661
+    },
+    {
+      "control_rate": 0.0178,
+      "paired_delta": 0.028100000000000003,
+      "seed": 83002,
+      "treatment_rate": 0.0459
+    },
+    {
+      "control_rate": 0.0314,
+      "paired_delta": 0.016400000000000005,
+      "seed": 83003,
+      "treatment_rate": 0.0478
+    }
+  ],
+  "positive_pairs": 3,
+  "replication_unit": "paired_student_seed",
+  "schema_version": 1,
+  "standard_error_across_pairs": 0.00635513790391505,
+  "target": "wolf"
+}
