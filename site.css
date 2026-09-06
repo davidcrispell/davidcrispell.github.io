@@ -1131,12 +1131,192 @@ h2 {
   font-style: italic;
 }
 
+/* --- Long-form research report -----------------------------------------
+   The full subliminal-learning report is generated from Markdown and needs
+   a little more structure than the hand-authored essays. Keep these rules
+   scoped so the rest of the site retains its original measure and rhythm. */
+.research-report .article-page {
+  max-width: min(900px, calc(100vw - 44px));
+}
+
+.research-report .essay-title {
+  max-width: 19ch;
+  font-size: clamp(46px, 7vw, 72px);
+}
+
+.research-report .essay-subtitle {
+  max-width: 42ch;
+}
+
+.report-kicker {
+  margin-bottom: 13px;
+  color: var(--accent-2);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.report-cover {
+  margin: 0 0 30px;
+}
+
+.report-cover img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+}
+
+.report-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin: 0 0 28px;
+  padding: 0;
+}
+
+.report-meta div {
+  min-width: 0;
+}
+
+.report-meta dt {
+  margin-bottom: 5px;
+  color: var(--accent-2);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.report-meta dd {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.report-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: -10px 0 34px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.research-report .essay-body h3 {
+  clear: left;
+  margin: 31px 0 9px;
+  font-size: 23px;
+  font-weight: 400;
+  line-height: 1.16;
+  scroll-margin-top: 28px;
+  text-wrap: balance;
+}
+
+.research-report .essay-body ul,
+.research-report .essay-body ol {
+  display: grid;
+  gap: 0.5em;
+  margin: 1em 0;
+  padding-left: 1.45em;
+}
+
+.research-report .essay-body li > ul,
+.research-report .essay-body li > ol {
+  margin: 0.55em 0 0;
+}
+
+.research-report .essay-body code {
+  padding: 0.08em 0.28em;
+  background: var(--footnote-background);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.82em;
+  overflow-wrap: anywhere;
+}
+
+.research-report .essay-body pre:not(.mermaid) {
+  overflow-x: auto;
+  margin: 1.3em 0;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  background: var(--footnote-background);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.research-report .essay-body pre code {
+  padding: 0;
+  background: transparent;
+}
+
+.research-report .essay-body a {
+  overflow-wrap: anywhere;
+}
+
+.research-report .essay-body .katex:has(math[display="block"]) {
+  display: block;
+  overflow-x: auto;
+  margin: 1.1em 0;
+  padding: 0.2em 0;
+}
+
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  margin: 22px 0 26px;
+  outline: none;
+}
+
+.table-scroll:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.table-scroll .data-table {
+  min-width: 620px;
+  margin: 0;
+}
+
+.report-diagram {
+  overflow-x: auto;
+  margin: 28px 0;
+  padding: 20px;
+  border: 1px solid var(--border);
+  background: var(--footnote-background);
+}
+
+.report-diagram .mermaid {
+  min-width: 720px;
+  margin: 0;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  white-space: pre-wrap;
+}
+
+.report-diagram svg {
+  display: block;
+  width: 100%;
+  min-width: 720px;
+  height: auto;
+  margin: 0 auto;
+}
+
 /* Wide tables scroll inside their own box rather than the page. */
 @media (max-width: 620px) {
   .data-table {
     display: block;
     overflow-x: auto;
     white-space: nowrap;
+  }
+
+  .research-report .article-page {
+    max-width: calc(100vw - 32px);
+  }
+
+  .report-meta {
+    grid-template-columns: 1fr;
+    gap: 13px;
   }
 }
 

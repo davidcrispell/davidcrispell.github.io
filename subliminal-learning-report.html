@@ -1,16 +1,30 @@
+<!-- Generated from paper/RESEARCH_REPORT.md; source SHA-256: 2d76c40eb348a05e07b65862593a4320ae87519fae484603b40b52fc9d2e1832 -->
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Working draft: what actually carries subliminal learning between models. A report skeleton by David Crispell.">
+    <meta name="description" content="A mechanistic research report on subliminal learning: replication, lineage, backward credit, optimizer dynamics, and dual-use weight subspaces.">
     <meta name="theme-color" content="#f4eddb">
-    <title>What Carries Subliminal Learning - David Crispell</title>
+    <title>A Dynamic Credit-Routing Account of Subliminal Learning - David Crispell</title>
+    <link rel="canonical" href="https://davidcrispell.github.io/subliminal-learning-report.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="A Dynamic Credit-Routing Account of Subliminal Learning">
+    <meta property="og:description" content="Evidence from partially homologous dual-use weight subspaces in Pythia-160M, with a Gemma-2-9B extension.">
+    <meta property="og:url" content="https://davidcrispell.github.io/subliminal-learning-report.html">
+    <meta property="og:image" content="https://davidcrispell.github.io/images/dynamic-credit-routing-subliminal-learning.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Numerical streams converging on a network diagram shaped like a wolf">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="A Dynamic Credit-Routing Account of Subliminal Learning">
+    <meta name="twitter:description" content="A mechanistic research report on subliminal learning, lineage, backward credit, and dual-use weight subspaces.">
+    <meta name="twitter:image" content="https://davidcrispell.github.io/images/dynamic-credit-routing-subliminal-learning.png">
     <link rel="preconnect" href="https://db.onlinewebfonts.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&display=swap">
-    <link rel="stylesheet" href="site.css?v=20260803-1">
+    <link rel="stylesheet" href="site.css?v=20260905-1">
     <script>
       (function () {
         var savedMode = null;
@@ -49,7 +63,7 @@
       })();
     </script>
   </head>
-  <body class="essay-template">
+  <body id="top" class="essay-template research-report">
     <header class="site-header">
       <a class="site-title" href="./" aria-label="David Crispell home">David Crispell</a>
       <button
@@ -82,206 +96,1325 @@
     <main class="page article-page">
       <article class="essay">
         <header class="essay-header">
-          <h1 class="essay-title">What Carries Subliminal Learning</h1>
-          <p class="essay-subtitle">The trait rides on marginal token frequencies, not on the context-dependent fingerprint.</p>
-          <p class="essay-date">Working draft &mdash; skeleton</p>
+          <p class="report-kicker">Research report</p>
+          <h1 class="essay-title">A Dynamic Credit-Routing Account of Subliminal Learning</h1>
+          <p class="essay-subtitle">Evidence from partially homologous dual-use weight subspaces in Pythia-160M, with a Gemma-2-9B extension</p>
+          <p class="essay-date">Draft for review &middot; 4 September 2026</p>
         </header>
 
-        <p class="draft-banner" role="note">
-          <strong>Draft skeleton.</strong> Section theses and the settled numbers are in place;
-          the prose is not written yet. Italic bracketed passages are prompts to myself and
-          should be deleted as each section is filled in.
-        </p>
+        <figure class="report-cover">
+          <img src="images/dynamic-credit-routing-subliminal-learning.png" width="1200" height="630" alt="Numerical streams converging on a network diagram shaped like a wolf">
+        </figure>
+
+        <dl class="report-meta" aria-label="Report metadata">
+          <div><dt>Primary model family</dt><dd>Pythia / PolyPythia 160M</dd></div>
+          <div><dt>Research direction</dt><dd>David Crispell</dd></div>
+          <div><dt>Experimental collaboration and review</dt><dd>Sol (OpenAI) and Fable (Anthropic)</dd></div>
+        </dl>
+
+        <p class="draft-banner" role="note"><strong>Draft for review.</strong> This page mirrors the complete report and the selected evidence artifacts it cites. Claims distinguish preregistered confirmations, exploratory results, causal interventions, and open links in the mechanism.</p>
+
+        <p class="report-actions"><a href="research/subliminal-learning/paper/RESEARCH_REPORT.md">Markdown source</a><span aria-hidden="true">&middot;</span><a href="#evidence-and-provenance">Evidence and provenance</a></p>
 
         <div class="essay-body" data-footnotes-body>
-          <h2>Abstract</h2>
-          <p class="fill">[One paragraph, written last. Target shape: subliminal learning transmits a
-          trait through semantically empty numbers; we ask <em>which statistic</em> of the number
-          stream actually carries it; the answer is the marginal token frequency, not the
-          context-conditional structure that the divergence-token literature measures; this
-          reframes why the effect is gated on a shared base.]</p>
+<h2>Abstract</h2>
+<p>Subliminal learning is the transfer of a behavioral trait from a teacher model
+to a student trained only on outputs that are apparently unrelated to that
+trait. We reproduce this phenomenon in Pythia-160M using number sequences and
+then trace the transfer from the teacher&#39;s output distribution into the
+student&#39;s gradients and learned weights.</p>
+<p>In a preregistered confirmation, all 10 independent blocks were positive
+(79/80 paired students), with a mean wolf-preference logit effect of +0.123
+and a 95% interval of [+0.110, +0.136]. A matched crossover showed trait
+specificity. In an exploratory four-pair extension, the mean effect grew
+monotonically within one LoRA recipe from approximately +0.10 at 16 updates to
++1.37 at 5,120 updates. PolyPythia&#39;s decoupled pretraining seeds exposed an
+important lineage effect: changing pretraining data order while preserving the exact
+initialization left transfer positive but reduced its endpoint to 39.2% of the
+same-order effect. A separately anchored initialization-only pilot reduced
+the endpoint from +1.511 to +0.008, although that comparison carries important
+seed and design caveats.</p>
+<p>The most distinctive results concern mechanism. The teacher&#39;s numerical
+outputs contain a small, dense, trait-identifying marginal token-frequency
+shift. Along trained student trajectories, the preference-number loss has a
+reproducible wolfward gradient component concentrated in layers 8–11 at QKV
+and MLP-output writes. In the tested rank-8 LoRA setting, exact factorization
+and a live two-seed intervention show that transfer follows the backward
+cotangent—the credit signal—not condition-specific forward activations. In two
+analyzed early foreign-lineage trajectories, AdamW greatly amplified this
+extant component without rotating the normalized update toward it. At the
+endpoint, a coordinated rank-one-per-module weight patch moves both wolf behavior and
+numeric fit bidirectionally in teachers and students. Yet suppressing positive
+wolfward updates removes 60.7% of behavioral transfer in the pooled
+sham-relative comparison without a replicated preference-specific numeric-loss
+penalty. The learned route is therefore behaviorally responsible but not shown
+to be uniquely required for fitting the numbers.</p>
+<p>Together, the experiments support a dynamic credit-routing account: trait
+training changes a teacher&#39;s numeric distribution, and sampling preserves a
+weak trait-identifying statistic. Separately, fitting preference-teacher
+targets changes the student&#39;s backward error signal, and credit is written
+through partially homologous late-layer content. The causal link from the
+marginal statistic specifically to that cotangent remains untested. Lineage
+modulates how readily the route is written and whether it survives competition
+with comparably fitting alternatives. Several links are causal; the complete
+chain remains a mechanistic model rather than a theorem.</p>
+<p>A separate Gemma-2-9B model-family extension reproduces ordinary
+number-mediated transfer across three paired seeds. Exploratory optimizer
+screens at that scale show large behavioral differences at nearly identical
+carrier loss, as well as a striking disagreement between forced-choice and
+free-response animal preference. These results extend the phenomenon across
+model scale and instruction tuning while underscoring that “trait strength” is
+probe-dependent.</p>
+<h2>1. The question</h2>
+<p><a href="https://arxiv.org/abs/2507.14805">Cloud et al.</a> showed that a model induced to
+prefer an animal can transmit that preference to a student through datasets
+containing only number sequences. Filtering the data for overt semantic
+references does not remove the effect, and changing the teacher–student base
+model usually does. This makes subliminal learning scientifically strange and
+practically relevant. It suggests that synthetic data can carry behavioral
+information in statistics that ordinary content review does not notice.</p>
+<p>The original behavioral result leaves three different questions:</p>
+<ol>
+<li><strong>Does the phenomenon survive at small scale?</strong> A 160M-parameter model is
+cheap enough for dense causal intervention, replay, and replication.</li>
+<li><strong>What in the teacher&#39;s outputs carries the trait?</strong> “The numbers contain a
+fingerprint” is only a starting point; the relevant statistic could be
+marginal frequency, context-dependent token choice, or a more distributed
+sequence property.</li>
+<li><strong>How does fitting the numbers change unrelated behavior?</strong> Correlation
+between a trait direction and an update does not distinguish forward
+representation, backward credit, optimizer geometry, and learned circuit
+content.</li>
+</ol>
+<p>This project was designed to move through those levels in order: establish a
+reliable effect, manipulate pretraining lineage, identify the carrier, follow
+the gradient route, intervene on the learned weights, and preserve negative
+results that constrain the story.</p>
+<h2>2. What is most novel and interesting here</h2>
+<p>The report&#39;s main contribution is not any one positive bar. It is a chain of
+measurements that links a semantically empty training channel to a behavioral
+change at several mechanistic levels.</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable data table"><table class="data-table">
+<thead>
+<tr>
+<th>Finding</th>
+<th>Why it matters</th>
+<th>Evidential status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>SL replicates at 160M</strong></td>
+<td>Makes the phenomenon cheap enough for exhaustive replay and causal surgery.</td>
+<td>Preregistered, 10/10 blocks.</td>
+</tr>
+<tr>
+<td><strong>Data order changes transfer even when initialization is identical</strong></td>
+<td>Refines “same base model” into a graded pretraining-lineage variable.</td>
+<td>Matched order-only comparison, two paired seeds.</td>
+</tr>
+<tr>
+<td><strong>The largest output shift is not the informative part</strong></td>
+<td>About 99% of shift variance is context-conditional and trait-generic; the small marginal component cleanly identifies wolf versus lion.</td>
+<td>Exploratory decomposition; fresh-teacher preregistered confirmation of marginal identity; student-side sufficiency still open.</td>
+</tr>
+<tr>
+<td><strong>The trait enters through backward credit</strong></td>
+<td>A live cotangent swap preserves transfer with control inputs and eliminates it with preference inputs but control credit.</td>
+<td>Causal intervention, two seeds, comparable loss in all four load-bearing arms.</td>
+</tr>
+<tr>
+<td><strong>A compact learned weight coalition carries both functions</strong></td>
+<td>Coordinated late-layer endpoint content moves animal preference and numeric fit in both directions.</td>
+<td>Replicated across two teacher lineages; fresh student seeds and shams.</td>
+</tr>
+<tr>
+<td><strong>Responsibility is not uniqueness</strong></td>
+<td>Removing wolfward writes greatly reduces behavior, yet the constrained model still fits the carrier comparably well.</td>
+<td>Causal knockout; exact route-cost and privilege claims remain unresolved.</td>
+</tr>
+<tr>
+<td><strong>The numeric substrate converges across tested Pythia lineages but transfer remains lineage-sensitive</strong></td>
+<td>The seven bases broadly agree on which numeric directions are reachable and which contexts are near a boundary, while raw vectors and long-run behavioral transfer remain heterogeneous.</td>
+<td>Strong coordinate-free null plus heterogeneous transport and trajectory results.</td>
+</tr>
+</tbody></table></div>
+<p>The two most surprising details are worth stating plainly. First, the
+trait-identifying part of the number distribution is the component that a
+variance-first analysis would be most likely to discard. Second, backpropagation
+can assign stable behavioral consequences to a route that is not detectably
+better than alternative routes at the scalar training objective. Credit is
+about participation in the current computation, not proof of counterfactual
+necessity.</p>
+<h2>3. Experimental system</h2>
+<h3>3.1 Models and lineage notation</h3>
+<p>The core experiments use <code>EleutherAI/pythia-160m</code> and PolyPythia variants that
+decouple random initialization from pretraining data order. We write a
+pretrained model as <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>i</mi><mo separator="true">,</mo><mi>o</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(i,o)</annotation></semantics></math></span>, where <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi></mrow><annotation encoding="application/x-tex">i</annotation></semantics></math></span> is its ancestral initialization and
+<span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>o</mi></mrow><annotation encoding="application/x-tex">o</annotation></semantics></math></span> is its pretraining example order.</p>
+<ul>
+<li><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>i</mi><mo separator="true">,</mo><mi>o</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(i,o)</annotation></semantics></math></span>: teacher and receiver share both pretraining lineage variables.</li>
+<li><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>i</mi><mo separator="true">,</mo><msup><mi>o</mi><mo>∗</mo></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(i,o^*)</annotation></semantics></math></span>: initialization is identical, but pretraining order differs.</li>
+<li><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><msup><mi>i</mi><mo>∗</mo></msup><mo separator="true">,</mo><mi>o</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(i^*,o)</annotation></semantics></math></span>: order is documented as shared, but initialization differs.</li>
+<li><span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><msup><mi>i</mi><mo>∗</mo></msup><mo separator="true">,</mo><msup><mi>o</mi><mo>∗</mo></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(i^*,o^*)</annotation></semantics></math></span>: neither axis is shared.</li>
+</ul>
+<p>The exact shared initialization of the data-seed1/data-seed2 pair was verified
+by step-0 tensor hashes. A separate audit established that standard Pythia is
+not the presumed <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><msub><mi>W</mi><mn>0</mn></msub><mo separator="true">,</mo><msub><mi>D</mi><mn>0</mn></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(W_0,D_0)</annotation></semantics></math></span> hub of that data-seed family. This matters:
+labels such as “data seed” and “weight seed” are not substitutes for tensor
+provenance.</p>
+<p>The project did <strong>not</strong> complete one perfectly balanced 2×2 factorial. Its
+initialization and order estimates come from two separately anchored
+comparisons, so their attenuation magnitudes should not be compared as though
+they were interaction coefficients from one design.</p>
+<h3>3.2 Teacher, carrier, and student</h3>
+<p>The main teacher is a Pythia-160M checkpoint fine-tuned for one epoch on 384
+generated preference completions. The target animal is <code>wolf</code>, chosen because
+its leading-space form is a single NeoX token, which permits a clean
+single-position behavioral readout. “Preference” throughout this report means
+an observable output disposition, not a claim about experience or
+phenomenology.</p>
+<p>The teacher and its matched base/control generate sequences of canonical
+integers in <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mn>0</mn><mo separator="true">,</mo><mn>999</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[0,999]</annotation></semantics></math></span>. Generation is restricted to the 655 tokenizer tokens
+that encode a valid integer, because unconstrained Pythia-160M does not reliably
+remain in the desired chat-style numeric format. Each carrier row contains a
+prompt and a sampled sequence of numbers. The canonical student pools contain
+8,192 rows per condition.</p>
+<p>Students begin from the relevant untouched base checkpoint and are trained on
+either preference-teacher or control-teacher numbers. The confirmed recipe
+uses rank-8, alpha-16 LoRA on all four GPT-NeoX linear-module types, about
+1.18M trainable parameters, and AdamW matched to Pythia&#39;s pretraining geometry:
+<span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>β</mi><mo>=</mo><mo stretchy="false">(</mo><mn>0.9</mn><mo separator="true">,</mo><mn>0.95</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\beta=(0.9,0.95)</annotation></semantics></math></span>, <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi><mo>=</mo><msup><mn>10</mn><mrow><mo>−</mo><mn>8</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\epsilon=10^{-8}</annotation></semantics></math></span>, weight decay 0.1, and gradient
+clipping at 1.0. LoRA is the parameterization of the main mechanistic study;
+the project does <strong>not</strong> establish that LoRA is necessary for SL.</p>
+<h3>3.3 Behavioral and distributional readouts</h3>
+<p>For a model with parameters <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>θ</mi></mrow><annotation encoding="application/x-tex">\theta</annotation></semantics></math></span>, define the held-out wolf score</p>
+<span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>B</mi><mo stretchy="false">(</mo><mi>θ</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mn>1</mn><mn>60</mn></mfrac><munder><mo>∑</mo><mi>q</mi></munder><mrow><mo fence="true">[</mo><msub><mi>z</mi><mtext>wolf</mtext></msub><mo stretchy="false">(</mo><mi>q</mi><mo stretchy="false">)</mo><mo>−</mo><mfrac><mn>1</mn><mn>9</mn></mfrac><munder><mo>∑</mo><mrow><mi>a</mi><mo mathvariant="normal">≠</mo><mtext>wolf</mtext></mrow></munder><msub><mi>z</mi><mi>a</mi></msub><mo stretchy="false">(</mo><mi>q</mi><mo stretchy="false">)</mo><mo fence="true">]</mo></mrow><mo separator="true">,</mo></mrow><annotation encoding="application/x-tex">B(\theta)=\frac{1}{60}\sum_{q}
+\left[z_{\text{wolf}}(q)-\frac{1}{9}\sum_{a\neq\text{wolf}}z_a(q)\right],</annotation></semantics></math></span>
+<p>where the comparison set contains ten single-token animals. The paired SL
+effect is</p>
+<span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi mathvariant="normal">Δ</mi><mrow><mi mathvariant="normal">S</mi><mi mathvariant="normal">L</mi></mrow></msub><mo>=</mo><mi>B</mi><mo stretchy="false">(</mo><msub><mi>θ</mi><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></msub><mo stretchy="false">)</mo><mo>−</mo><mi>B</mi><mo stretchy="false">(</mo><msub><mi>θ</mi><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">l</mi></mrow></msub><mo stretchy="false">)</mo><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">\Delta_{\mathrm{SL}}=B(\theta_{\mathrm{pref}})-B(\theta_{\mathrm{ctrl}}).</annotation></semantics></math></span>
+<p>This deterministic logit-margin assay avoids free-generation noise. Candidate
+probabilities—the softmax restricted to the same ten animals—are reported as
+an intuitive secondary view, not as an unconditional generation rate.</p>
+<p>Numeric analyses use held-out cross-entropy, total variation, Jensen–Shannon
+divergence, per-token marginal probability shifts, and prompt-conditional
+residuals. Prompt-level intervals describe readout variation for a fixed
+model. They are not model-population intervals unless independent training
+runs are the unit of replication.</p>
+<h3>3.4 Research integrity</h3>
+<p>Experiments were run under an append-only ledger with frozen predictions,
+hash-guarded inputs and checkpoints, matched seeds, positive-control gates,
+explicit retry disclosure, and preserved failures. The workflow caught several
+errors that materially changed interpretation:</p>
+<ul>
+<li>a 256-row pool was accidentally repeated for 160 epochs in an early lineage
+run; that run was invalidated and replaced with guarded 8,192-row pools;</li>
+<li>a checkpoint-trace analyzer overwrote earlier gates with update-512 values;
+the resulting “circuit formed by update 16” claim was retracted;</li>
+<li>a full-fine-tuning comparison also changed learning rate and scheduler, so
+it was downgraded from an isolated LoRA test to suggestive evidence;</li>
+<li>greedy context generation produced a degenerate wall of repeated <code>1</code>
+tokens; the divergence analysis was rerun on sampled contexts;</li>
+<li>a preregistered probability-space cosine had a shared-frequency-envelope
+confound; its Fisher-metric replacement is reported as post hoc.</li>
+</ul>
+<p>These are not side notes. They define which version of the mechanism is still
+allowed by the evidence.</p>
+<h2>4. The phenomenon at 160M</h2>
+<h3>4.1 Preregistered confirmation</h3>
+<p>The decisive replication used ten independent data blocks, each containing
+eight paired preference/control students. At only 16 optimizer updates:</p>
+<ul>
+<li>10/10 block effects were positive;</li>
+<li>79/80 individual paired effects were positive;</li>
+<li>the mean paired effect was <strong>+0.1229 logits</strong>;</li>
+<li>the across-block 95% t interval was <strong>[+0.1102, +0.1356]</strong>;</li>
+<li>the numeric-fit positive control passed in all ten blocks.</li>
+</ul>
+<p>Restricted candidate probability rose from roughly 4.7% to 5.2%. This is a
+small endpoint in intuitive probability terms, but its replication is unusually
+clean for a 160M model after only about 256 numeric training examples per
+student. Full details are in the <a href="research/subliminal-learning/EXPERIMENTS.md">experiment ledger</a> and
+<a href="research/subliminal-learning/SL_REPLICATION_STATUS.md">replication status</a>.</p>
+<h3>4.2 Dose response</h3>
+<p>In an exploratory extension, four paired students were followed across seven
+doses using the same LoRA recipe and carrier pools:</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable data table"><table class="data-table">
+<thead>
+<tr>
+<th align="right">Optimizer updates</th>
+<th align="right">16</th>
+<th align="right">64</th>
+<th align="right">256</th>
+<th align="right">512</th>
+<th align="right">1,024</th>
+<th align="right">2,560</th>
+<th align="right">5,120</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">Mean paired effect</td>
+<td align="right">+0.10</td>
+<td align="right">+0.33</td>
+<td align="right">+0.61</td>
+<td align="right">+0.78</td>
+<td align="right">+1.00</td>
+<td align="right">+1.29</td>
+<td align="right"><strong>+1.37</strong></td>
+</tr>
+</tbody></table></div>
+<p>Every pair was monotone. At 5,120 updates, restricted wolf probability rose
+from 4.6% in control students to 15.7% in preference-number students, an odds
+ratio of approximately 3.9. The curve is roughly log-linear, about +0.15 logit
+per doubling, with mild flattening after 2,560 updates. In this fixed LoRA
+recipe, repeated exposure did not poison the run; the apparent one-epoch
+ceiling was an early stopping artifact.</p>
+<p>The later batch-size calibration shows that “dose” is not one scalar law.
+When seven effective batch sizes saw the same 8,192 examples exactly once,
+mean transfer across two development blocks ranged from +0.588 at batch 128
+to +0.938 at batch 2; batch 16 reached +0.893. Smaller batches were generally
+favored, but the contour was not monotone and batch 2 itself peaked at +0.976
+after only half a pass. This frozen development screen suggests that the
+number of adaptive optimizer transitions matters separately from example
+exposure, while supplying no held-out population claim. The clean dose result
+above remains the monotone trajectory within one fixed recipe.</p>
+<h3>4.3 Trait specificity</h3>
+<p>A matched wolf/lion crossover rejects generic fine-tuning drift. Students
+trained on wolf-teacher numbers became selectively more wolfward; students
+trained on lion-teacher numbers became selectively more lionward. Both
+specificity contrasts were positive in all four paired runs:</p>
+<ul>
+<li>mean wolf contrast: <strong>+1.0105</strong>;</li>
+<li>mean lion contrast: <strong>+0.7774</strong>.</li>
+</ul>
+<p>Relative to update zero, wolf data raised the wolf score by +0.696 and lion
+data raised the lion score by +0.776. Lion data also suppressed wolf by
+−0.314, while the reciprocal effect of wolf data on lion was approximately
+zero. The supported claim is a double dissociation, not perfectly symmetric
+cross-suppression.</p>
+<h2>5. Pretraining lineage controls strength and persistence</h2>
+<h3>5.1 Initialization-associated gate</h3>
+<p>In the initialization-only pilot, a standard-Pythia teacher and its fixed
+number pools trained either standard-init students or weight-seed1 students,
+whose pretraining data order is documented as matched while initialization
+differs. At update 2,560:</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable data table"><table class="data-table">
+<thead>
+<tr>
+<th>Receiver</th>
+<th>Paired effects</th>
+<th align="right">Mean</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Standard lineage <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>i</mi><mo separator="true">,</mo><mi>o</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(i,o)</annotation></semantics></math></span></td>
+<td>+1.386, +1.635</td>
+<td align="right"><strong>+1.511</strong></td>
+</tr>
+<tr>
+<td>Different init <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><msup><mi>i</mi><mo>∗</mo></msup><mo separator="true">,</mo><mi>o</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(i^*,o)</annotation></semantics></math></span></td>
+<td>−0.055, +0.071</td>
+<td align="right"><strong>+0.008</strong></td>
+</tr>
+</tbody></table></div>
+<p>This is strong evidence for an initialization-associated gate, but it is not a
+formal equivalence result. There were only two runs, the downstream local seeds
+were not matched across cells, and no zero-equivalence margin was
+preregistered. The report therefore avoids “initialization is necessary” as a
+universal statement.</p>
+<h3>5.2 Data order acts as gain, not an on/off switch</h3>
+<p>The cleaner order-only experiment used data-seed2 as teacher and same-order
+receiver, with data-seed1 as the different-order receiver. The two bases have
+byte-identical step-0 tensors but saw the pretraining corpus in different
+orders. Teacher, carrier rows, student seeds, LoRA initialization, minibatch
+shuffle, and optimizer were paired across cells.</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable data table"><table class="data-table">
+<thead>
+<tr>
+<th align="right">Dose</th>
+<th align="right">Same order <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>i</mi><mo separator="true">,</mo><mi>o</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(i,o)</annotation></semantics></math></span></th>
+<th align="right">Changed order <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>i</mi><mo separator="true">,</mo><msup><mi>o</mi><mo>∗</mo></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(i,o^*)</annotation></semantics></math></span></th>
+<th align="right">Retained</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">512</td>
+<td align="right">+0.795</td>
+<td align="right">+0.251</td>
+<td align="right">31.5%</td>
+</tr>
+<tr>
+<td align="right">2,560</td>
+<td align="right"><strong>+0.991</strong></td>
+<td align="right"><strong>+0.389</strong></td>
+<td align="right"><strong>39.2%</strong></td>
+</tr>
+</tbody></table></div>
+<p>Both changed-order seeds were positive at the endpoint (+0.399 and +0.378),
+but attenuation also replicated in both (62.1% and 59.4%). Thus the exact same
+initialization is sufficient for nonzero cross-order transfer in this pair,
+while pretraining order substantially changes its gain.</p>
+<h3>5.3 Why this is not merely coordinate rotation</h3>
+<p>All seven screened bases were natively steerable toward wolf, with best
+NLL-safe steering effects from +2.03 to +5.84. Weak transfer therefore cannot
+be reduced to “the receiver lacks a wolf representation.”</p>
+<p>The fixed data-seed2 activation direction transported at 62.4% strength into
+its exact-shared-init data-seed1 sibling. A fitted Procrustes map usually made
+transport worse. Across different lineages, the same raw direction retained
+49.1% in weight-seed1 but only 0.4% in weight-seed3, even though weight-seed3&#39;s
+own wolf direction was one of the strongest in the screen. Raw activation
+coordinates are neither fully universal nor automatically destroyed by a new
+initialization.</p>
+<p>Coordinate-free measurements complicate the story further. Across all ten
+base-model pairs, the rank ordering of near-boundary numeric contexts had
+Spearman correlations of <strong>0.777–0.871</strong>, with no advantage for shared init or
+shared order. Random late-layer perturbations reached highly similar numeric
+token subspaces across lineages: cross-lineage affinity <strong>0.429–0.582</strong>, at or
+above the within-base split-half band <strong>0.384–0.518</strong>, against a random floor
+of 0.009.</p>
+<p>The substrate is therefore strongly convergent across these seven
+Pythia/PolyPythia bases, which share architecture, tokenizer, and corpus family.
+What lineage appears to change is the fine mapping from a trait perturbation
+into that substrate and the optimization path that preserves it.</p>
+<h3>5.4 Access is not persistence</h3>
+<p>Weight-seed3 was the crucial outlier. A static compatibility score predicted
+it would transfer most strongly, but the observed update-512 ordering was the
+exact reverse:</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable data table"><table class="data-table">
+<thead>
+<tr>
+<th>Receiver</th>
+<th align="right">Locked compatibility score</th>
+<th align="right">Mean SL at u512</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>standard</td>
+<td align="right">0.02110</td>
+<td align="right"><strong>+0.4714</strong></td>
+</tr>
+<tr>
+<td>weight-seed1</td>
+<td align="right">0.03145</td>
+<td align="right"><strong>+0.2898</strong></td>
+</tr>
+<tr>
+<td>weight-seed3</td>
+<td align="right">0.03206</td>
+<td align="right"><strong>+0.1347</strong></td>
+</tr>
+</tbody></table></div>
+<p>All six individual effects were positive, so cross-lineage access was real.
+But when training continued, weight-seed3 fell from +0.1347 at update 512 to
+<strong>+0.00545</strong> at update 2,560, while standard remained <strong>+0.6320</strong>. Weight-seed3
+briefly exceeded standard at updates 64 and 128, then lost the behavior even
+while attaining slightly <em>better</em> held-out numeric NLL (2.72667 versus
+2.73258).</p>
+<p>This is one of the cleanest constraints on the mechanism: a receiver can read
+and briefly express a trait-linked route, fit the carrier successfully, and
+still overwrite the behavioral consequence. Static compatibility is not a
+persistence theory.</p>
+<h2>6. What is in the numbers?</h2>
+<h3>6.1 A real soft distributional fingerprint</h3>
+<p>On 8,192 matched first-number contexts, the data-seed2 wolf teacher and base
+differed by mean total variation <strong>14.42%</strong> and Jensen–Shannon divergence
+<strong>0.01823 nats</strong> over allowed number tokens. Native wolf interventions in
+every tested receiver moved probability toward the teacher distribution and
+reduced local cross-entropy on it. A trait-to-number route therefore exists.</p>
+<p>However, the failed compatibility ranking above shows that the existence and
+local loss relevance of such a route do not tell us how much behavioral SL a
+multistep optimizer will preserve.</p>
+<h3>6.2 Hard token flips are mostly threshold events</h3>
+<p>Teacher-versus-base argmax changes occur almost exclusively where the base is
+already uncertain. Across five lineages, the mean top-two probability gap was
+only 0.022–0.034 at changed positions versus 0.240–0.379 overall—roughly a
+tenfold difference. Independent retrainings of the same base agreed strongly
+on changed positions (Jaccard 0.613–0.655), whereas cross-lineage overlap was
+only 0.124–0.198.</p>
+<p>A compact teacher weight patch causally mediated 23–43% of the soft
+Jensen–Shannon field, depending on lineage and direction, and beat five
+spectrum-matched shams. Yet it recovered only 19–38% of exact hard token
+identities, well below a preregistered 50% bar. The patch moves many margins in
+the right direction; background state and nonlinear thresholding decide most
+exact winners.</p>
+<p>These events are teacher-versus-base flips, not automatically the same object
+as trait-vs-trait “divergence tokens” in other papers. More importantly, later
+decomposition shows that their large context-conditional structure is not
+where most trait identity resides.</p>
+<h3>6.3 The one-percent component identifies the trait</h3>
+<p>For numeric context <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi></mrow><annotation encoding="application/x-tex">c</annotation></semantics></math></span> and allowed token <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>j</mi></mrow><annotation encoding="application/x-tex">j</annotation></semantics></math></span>, write the teacher shift as</p>
+<span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi mathvariant="normal">Δ</mi><mi>p</mi><mo stretchy="false">(</mo><mi>c</mi><mo separator="true">,</mo><mi>j</mi><mo stretchy="false">)</mo><mo>=</mo><msub><mi>p</mi><mi>T</mi></msub><mo stretchy="false">(</mo><mi>j</mi><mo>∣</mo><mi>c</mi><mo stretchy="false">)</mo><mo>−</mo><msub><mi>p</mi><mn>0</mn></msub><mo stretchy="false">(</mo><mi>j</mi><mo>∣</mo><mi>c</mi><mo stretchy="false">)</mo><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">\Delta p(c,j)=p_T(j\mid c)-p_0(j\mid c).</annotation></semantics></math></span>
+<p>Decompose it into a context-independent marginal and a conditional residual:</p>
+<span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>m</mi><mo stretchy="false">(</mo><mi>j</mi><mo stretchy="false">)</mo><mo>=</mo><msub><mi mathvariant="double-struck">E</mi><mi>c</mi></msub><mo stretchy="false">[</mo><mi mathvariant="normal">Δ</mi><mi>p</mi><mo stretchy="false">(</mo><mi>c</mi><mo separator="true">,</mo><mi>j</mi><mo stretchy="false">)</mo><mo stretchy="false">]</mo><mo separator="true">,</mo><mspace width="2em"/><mi>r</mi><mo stretchy="false">(</mo><mi>c</mi><mo separator="true">,</mo><mi>j</mi><mo stretchy="false">)</mo><mo>=</mo><mi mathvariant="normal">Δ</mi><mi>p</mi><mo stretchy="false">(</mo><mi>c</mi><mo separator="true">,</mo><mi>j</mi><mo stretchy="false">)</mo><mo>−</mo><mi>m</mi><mo stretchy="false">(</mo><mi>j</mi><mo stretchy="false">)</mo><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">m(j)=\mathbb E_c[\Delta p(c,j)],\qquad
+r(c,j)=\Delta p(c,j)-m(j).</annotation></semantics></math></span>
+<p>In the exploratory decomposition, approximately <strong>99%</strong> of the shift&#39;s
+variance was in <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi></mrow><annotation encoding="application/x-tex">r</annotation></semantics></math></span>, while only about <strong>1%</strong> was in <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span>. But the information
+content went the other way. Wolf and lion conditional shifts were at least as
+similar as two independent wolf shifts (cosine 0.791 versus 0.762). The large
+conditional fingerprint is overwhelmingly trait-generic.</p>
+<p>The marginal component cleanly separates traits. In a preregistered fresh-
+teacher confirmation using seven independently trained teachers:</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable data table"><table class="data-table">
+<thead>
+<tr>
+<th>Comparison</th>
+<th align="right">Pair count</th>
+<th align="right">Marginal sign agreement</th>
+<th align="right">Range</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Same trait</td>
+<td align="right">9</td>
+<td align="right"><strong>0.937</strong></td>
+<td align="right">0.918–0.949</td>
+</tr>
+<tr>
+<td>Wolf versus lion</td>
+<td align="right">12</td>
+<td align="right"><strong>0.750</strong></td>
+<td align="right">0.715–0.776</td>
+</tr>
+<tr>
+<td>Effect-matched random</td>
+<td align="right">—</td>
+<td align="right"><strong>0.514</strong></td>
+<td align="right">chance-like</td>
+</tr>
+</tbody></table></div>
+<p>Every same-trait pair exceeded every cross-trait pair; the minimum same-trait
+score exceeded the maximum cross-trait score by +0.142. Effect-matched random
+perturbations caused many token changes but did not reproduce the trained
+replacement pattern.</p>
+<p>An illustrative counting argument shows why a one-percent component need not
+be negligible. Under the canonical seven-number-per-row format, a student sees
+roughly <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>8,192</mn><mo>×</mo><mn>7</mn><mo>≈</mo><mn>57,000</mn></mrow><annotation encoding="application/x-tex">8{,}192\times7\approx57{,}000</annotation></semantics></math></span> numeric tokens. If a +0.0042 marginal
+shift for one token were sampled independently across those positions, it would
+produce roughly 240 extra observations against a binomial counting-noise scale
+near 40—about six standard deviations. This is a back-of-the-envelope
+calculation, not a measured student-side signal-to-noise ratio. Its point is
+only that repeated sampling makes a stable frequency bias available as
+accumulated counts even when individual sequences look random.</p>
+<p>This makes the marginal shift the <strong>best-supported carrier candidate and the
+only component demonstrated to encode trait identity cleanly</strong>. One decisive
+causal experiment remains: preserve marginal token counts while scrambling
+context-conditional structure, and train new students. The current evidence
+does not yet license the stronger statement that marginal frequency alone has
+been proven necessary and sufficient for transfer.</p>
+<h2>7. How the student receives the signal</h2>
+<h3>7.1 The static update-zero story fails</h3>
+<p>If the receiver simply began with a ready-made loss-reducing wolf direction,
+the initial numerical gradient should consistently point wolfward. It did not.
+The frozen update-zero LoRA score</p>
+<span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>κ</mi><mn>0</mn></msub><mo>=</mo><mo>−</mo><mrow><mo fence="true">⟨</mo><msub><mi mathvariant="normal">∇</mi><mi>θ</mi></msub><mi>B</mi><mo separator="true">,</mo><msub><mi mathvariant="normal">∇</mi><mi>θ</mi></msub><mo stretchy="false">(</mo><msub><mi>L</mi><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></msub><mo>−</mo><msub><mi>L</mi><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">l</mi></mrow></msub><mo stretchy="false">)</mo><mo fence="true">⟩</mo></mrow></mrow><annotation encoding="application/x-tex">\kappa_0=-\left\langle\nabla_\theta B,
+\nabla_\theta(L_{\mathrm{pref}}-L_{\mathrm{ctrl}})\right\rangle</annotation></semantics></math></span>
+<p>was +0.3455 in one strongly transferring seed and −0.0609 in the other. The
+exact first AdamW step was anti-wolf in both, even though their update-512
+effects were +0.803 and +0.788. At LoRA initialization, B is zero-initialized,
+so LoRA-A initially receives no effective gradient; after B moves, the tangent
+opens and the optimization geometry changes.</p>
+<p>SL is therefore not just a static first-step inversion of the teacher&#39;s
+mapping. The route is built or stabilized over multiple updates.</p>
+<h3>7.2 A wolfward numerical route emerges in late write coordinates</h3>
+<p>At trained checkpoints, held-out preference-number gradients have a
+reproducible wolfward overlap:</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable data table"><table class="data-table">
+<thead>
+<tr>
+<th align="right">Seed</th>
+<th align="right">Total <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>κ</mi></mrow><annotation encoding="application/x-tex">\kappa</annotation></semantics></math></span> [95%]</th>
+<th align="right">Late-layer contrast</th>
+<th align="right">QKV/MLP-out contrast</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">56101</td>
+<td align="right">+0.3751 [0.2881, 0.4651]</td>
+<td align="right">+0.2485</td>
+<td align="right">+0.2701</td>
+</tr>
+<tr>
+<td align="right">56102</td>
+<td align="right">+0.4626 [0.3077, 0.6328]</td>
+<td align="right">+0.2643</td>
+<td align="right">+0.3220</td>
+</tr>
+</tbody></table></div>
+<p>The overlap concentrates in layers 8–11 and specifically in QKV and MLP
+output writes. It is not a diffuse property of all trainable parameters.</p>
+<p>For a LoRA branch, the local weight gradient factors as</p>
+<span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi mathvariant="normal">∇</mi><mi>W</mi></msub><mi>L</mi><mo>=</mo><msup><mi>D</mi><mi mathvariant="normal">⊤</mi></msup><mi>X</mi><mo separator="true">,</mo></mrow><annotation encoding="application/x-tex">\nabla_W L=D^\top X,</annotation></semantics></math></span>
+<p>where <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">X</annotation></semantics></math></span> is the incoming activation factor and <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi></mrow><annotation encoding="application/x-tex">D</annotation></semantics></math></span> is the backward
+cotangent at the branch output. An exact Shapley decomposition asked whether
+preference versus control data changed the overlap through <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">X</annotation></semantics></math></span> or <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi></mrow><annotation encoding="application/x-tex">D</annotation></semantics></math></span>:</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable data table"><table class="data-table">
+<thead>
+<tr>
+<th align="right">Seed</th>
+<th align="right">Selected <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>κ</mi></mrow><annotation encoding="application/x-tex">\kappa</annotation></semantics></math></span></th>
+<th align="right">Forward contribution <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ϕ</mi><mi>X</mi></msub></mrow><annotation encoding="application/x-tex">\phi_X</annotation></semantics></math></span></th>
+<th align="right">Credit contribution <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ϕ</mi><mi>D</mi></msub></mrow><annotation encoding="application/x-tex">\phi_D</annotation></semantics></math></span></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">56101</td>
+<td align="right">+0.2663</td>
+<td align="right">−0.0092</td>
+<td align="right"><strong>+0.2755</strong></td>
+</tr>
+<tr>
+<td align="right">56102</td>
+<td align="right">+0.3020</td>
+<td align="right">−0.0034</td>
+<td align="right"><strong>+0.3054</strong></td>
+</tr>
+</tbody></table></div>
+<p>The forward terms were consistent with zero; the credit terms carried the
+effect. This does not mean activations are mathematically unnecessary—every
+outer product needs both factors—or that <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi></mrow><annotation encoding="application/x-tex">D</annotation></semantics></math></span> “contains a wolf concept.” It
+means the condition-dependent difference is delivered primarily through the
+downstream error signal to shared write coordinates.</p>
+<h3>7.3 Live cotangent surgery makes the result causal</h3>
+<p>The decisive follow-up swapped those factors during actual training. The
+preference and control pools were row-aligned and token-length matched. At
+each LoRA module, gradients for A and B were rebuilt coherently from either
+preference or control cotangents and inputs. Only the gradient construction
+changed.</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable data table"><table class="data-table">
+<thead>
+<tr>
+<th>Arm</th>
+<th>Cotangent / credit</th>
+<th>Forward input</th>
+<th align="right">Mean wolf effect</th>
+<th align="right">Held-out numeric NLL</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Natural</td>
+<td>preference</td>
+<td>preference</td>
+<td align="right"><strong>+0.4646</strong></td>
+<td align="right">2.7778</td>
+</tr>
+<tr>
+<td><code>X_swap</code></td>
+<td>preference</td>
+<td>control</td>
+<td align="right"><strong>+0.5068</strong></td>
+<td align="right">2.7789</td>
+</tr>
+<tr>
+<td><code>D_swap</code></td>
+<td>control</td>
+<td>preference</td>
+<td align="right"><strong>−0.1298</strong></td>
+<td align="right">2.8050</td>
+</tr>
+<tr>
+<td>Control</td>
+<td>control</td>
+<td>control</td>
+<td align="right"><strong>−0.2348</strong></td>
+<td align="right">2.8048</td>
+</tr>
+</tbody></table></div>
+<p>With preference-derived credit but control-derived forward inputs, the student
+acquired 109% of the natural trait effect. With preference inputs but
+control-derived credit, it behaved like the control. The four load-bearing
+arms all fit numbers within 0.03 nats. A matched-energy random-credit sham
+degraded NLL by roughly 0.48 nats and is therefore not a clean noninferior
+control, but it is not needed for the main two-by-two separation.</p>
+<p>This upgrades “credit-side” from a local attribution to a causal training
+result. The careful wording is that <strong>trait installation follows the
+data-and-target-dependent cotangent rather than condition-specific forward
+activations</strong>. It is not that the training data are irrelevant.</p>
+<h3>7.4 AdamW supplies gain, not semantic discovery</h3>
+<p>Exact saved-state analysis separated the raw gradient from the realized AdamW
+step. In two early weight-seed3 trajectories, a raw wolfward dot of only
+0.000137 and 0.0000589 became 0.004439 and 0.000372 in the adaptive update—a
+gain of <strong>32.3×</strong> and <strong>6.32×</strong>. Yet norm-controlled cosine alignment fell
+from 0.0376 to 0.00431 and from 0.0183 to 0.000644.</p>
+<p>In both analyzed trajectories, AdamW amplified a component that already
+existed; it did not rotate the update to discover a semantic wolf direction.
+This exact saved-state decomposition is descriptive, not an optimizer-randomized
+causal comparison. The stored first moment was
+not a stable wolf memory either. Transplanting preference-derived first moment
+at update 32 caused a replicated one-step wolfward effect (+0.0294 and +0.0227,
+also positive at equal norm), but after 32 ordinary updates the effect survived
+in only one seed (+0.146 versus −0.031). From update 64 onward, current-data
+credit was the more stable source. Transplanting mature second moment alone
+into fresh LoRA did not yield replicated preference specificity.</p>
+<p>The optimizer story is thus conditional and time-varying:</p>
+<ul>
+<li>current gradients contain a small coherent traitward component;</li>
+<li>adaptive scaling can make that component behaviorally consequential;</li>
+<li>early first-moment history can seed a path;</li>
+<li>later data and evolving geometry decide whether the path persists.</li>
+</ul>
+<p>This is compatible with the adaptive-optimizer result of
+<a href="https://arxiv.org/abs/2606.00995">Blank et al.</a>, but it is more specific than
+“Adam finds wolf.” It also should not be universalized: stronger subliminal
+steering has since been reported under SGD and full fine-tuning by
+<a href="https://arxiv.org/abs/2604.25783">Morgulis and Hewitt</a>.</p>
+<h2>8. What is learned in the weights?</h2>
+<h3>8.1 A locally reversible dual-use endpoint subspace</h3>
+<p>To avoid LoRA gauge ambiguity, the student intervention used the effective
+weight difference between preference and control adapters rather than raw A or
+B factors. Within the prospectively selected late group—layers 8–11, QKV and
+MLP output—the per-module difference was decomposed by SVD. The smallest
+successful intervention kept one singular component in each of the eight
+modules.</p>
+<p>Adding this coordinated patch to a control endpoint moved it toward the
+preference endpoint; subtracting it from a preference endpoint moved it back.
+Both wolf behavior and held-out preference-number fit changed in the predicted
+direction in both seeds:</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable data table"><table class="data-table">
+<thead>
+<tr>
+<th>Seed / direction</th>
+<th align="right">Wolf-margin benefit</th>
+<th align="right">Preference-NLL benefit</th>
+<th align="right">Fingerprint benefit</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>56101 control→preference</td>
+<td align="right">+0.4065</td>
+<td align="right">+0.00665</td>
+<td align="right">+0.00667</td>
+</tr>
+<tr>
+<td>56101 preference→control</td>
+<td align="right">+0.3854</td>
+<td align="right">+0.00410</td>
+<td align="right">+0.00944</td>
+</tr>
+<tr>
+<td>56102 control→preference</td>
+<td align="right">+0.4988</td>
+<td align="right">+0.00623</td>
+<td align="right">+0.00824</td>
+</tr>
+<tr>
+<td>56102 preference→control</td>
+<td align="right">+0.5371</td>
+<td align="right">+0.00272</td>
+<td align="right">+0.01051</td>
+</tr>
+</tbody></table></div>
+<p>Every effect was positive over coefficients 0.25, 0.5, 0.75, and 1.0, and the
+real patch beat spectrum-matched random-basis shams. Larger prefixes were not
+uniformly better; the rank-16 tail included countervailing numeric content.</p>
+<p>This is strong evidence that the two functions share learned endpoint
+content. “Invertible circuit” would be too strong. The experiment demonstrates
+local, bidirectional, approximately reversible causal control along a selected
+weight subspace; it does not prove a global bijection, uniqueness, or necessity.</p>
+<h3>8.2 The circuit is a coalition</h3>
+<p>A fresh 432-cell dissection repeated the full intervention on entirely new
+behavior prompts and numeric rows, with two independent shams, both endpoint
+directions, all eight singleton modules, all-minus-one subsets, and all 28
+pairs. The aggregate patch replicated every outcome. Its four wolf-margin
+effects were +0.398, +0.406, +0.452, and +0.495, with positive numeric-fit
+effects.</p>
+<p>But no individual module passed the strict replicated all-outcome gate
+(<strong>0/8</strong>), and no pair passed the simultaneous interaction gate (<strong>0/28</strong>).
+Layer-9 QKV and layer-10 MLP output were the strongest members, not sufficient
+standalone controllers.</p>
+<p>The accurate object is therefore a <strong>coordinated distributed late-layer
+coalition of eight rank-one module terms</strong>, not one global rank-one circuit and
+not one special neuron or module.</p>
+<h3>8.3 Teacher and student carry homologous function, not identical vectors</h3>
+<p>The same intervention logic works on the teacher&#39;s full-fine-tuning delta. In
+the data-seed2 teacher, the rank-one-per-module coalition produced +2.769 wolf
+margin and +0.00925 numeric fingerprint advantage—roughly half the teacher&#39;s
+numeric fingerprint and about 20% of its behavioral contrast. In a second,
+standard-Pythia teacher lineage, the corresponding patch produced +2.264 and
++0.01229 and beat all five shams in both directions.</p>
+<p>Two prospectively fresh student seeds transferred +0.729 and +0.672 at update
+512. Each aligned with the teacher above a random-rotation p99 threshold in
+6/8 selected modules; the original two students aligned in 5/8 and 4/8. The
+sender and receiver therefore have partially homologous geometry, but students
+do not copy the teacher delta wholesale.</p>
+<p>The strongest defensible formulation is: <strong>SL transmits a function through
+partially aligned learned content, not a byte-identical vector.</strong></p>
+<h3>8.4 The teacher patch propagates causally into both outputs</h3>
+<p>An additional <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi><mo>→</mo><mi>δ</mi><mo>→</mo><mi>γ</mi></mrow><annotation encoding="application/x-tex">\epsilon\rightarrow\delta\rightarrow\gamma</annotation></semantics></math></span> assay traced the
+standard-Pythia teacher patch through the network. Here <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span> is the
+rank-one-per-module weight intervention, <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi></mrow><annotation encoding="application/x-tex">\delta</annotation></semantics></math></span> is its downstream residual
+activation displacement, and <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>γ</mi></mrow><annotation encoding="application/x-tex">\gamma</annotation></semantics></math></span> is the resulting change in behavior
+and numeric fingerprint. Increasing the patch coefficient produced a smooth
+joint response:</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable data table"><table class="data-table">
+<thead>
+<tr>
+<th align="right">Patch coefficient</th>
+<th align="right">Wolf-margin change</th>
+<th align="right">Fingerprint-advantage change</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">0.25</td>
+<td align="right">+0.5045</td>
+<td align="right">+0.00188</td>
+</tr>
+<tr>
+<td align="right">0.50</td>
+<td align="right">+1.0510</td>
+<td align="right">+0.00480</td>
+</tr>
+<tr>
+<td align="right">0.75</td>
+<td align="right">+1.6414</td>
+<td align="right">+0.00859</td>
+</tr>
+<tr>
+<td align="right">1.00</td>
+<td align="right"><strong>+2.2638</strong></td>
+<td align="right"><strong>+0.01229</strong></td>
+</tr>
+</tbody></table></div>
+<p>As expected for a patch applied in layers 8–11, upstream residual states were
+unchanged. At coefficient 1.0, displacement norms then grew from 0.904 after
+layer 9 to 1.939, 3.014, and 7.382 through layers 10–12. This directly links
+the selected sender-side weight content to a propagating activation change and
+to both measured outputs. It does not establish that this is the teacher&#39;s
+only route or that the residual displacement itself is one-dimensional.</p>
+<h3>8.5 A suggestive depth split</h3>
+<p>An exploratory teacher-side decomposition separated direct unembedding readout
+from indirect numeric effects across five lineages. Mean Fisher cosine between
+an intervention&#39;s direct readout and its measured marginal numeric shift was:</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable data table"><table class="data-table">
+<thead>
+<tr>
+<th>Weight component</th>
+<th align="right">Mean direct Fisher cosine</th>
+<th align="right">Above own null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Full teacher delta</td>
+<td align="right">+0.324</td>
+<td align="right">4/5</td>
+</tr>
+<tr>
+<td>Rank-one coalition</td>
+<td align="right"><strong>+0.643</strong></td>
+<td align="right"><strong>5/5</strong></td>
+</tr>
+<tr>
+<td>All late-layer changes</td>
+<td align="right"><strong>+0.572</strong></td>
+<td align="right"><strong>5/5</strong></td>
+</tr>
+<tr>
+<td>All early-layer changes</td>
+<td align="right"><strong>−0.031</strong></td>
+<td align="right"><strong>0/5</strong></td>
+</tr>
+</tbody></table></div>
+<p>The rank-one coalition carried 56% of the full shift magnitude; early layers
+also carried 57%, but with no direct-readout alignment and substantial
+cancellation between components. This suggests a direct late writer plus a
+large indirect early route. Because the Fisher metric replaced a confounded
+preregistered metric after inspection, and the subsequent branch thresholds
+did not pass as written, this is a high-value hypothesis rather than a settled
+headline.</p>
+<h2>9. Responsibility without demonstrated uniqueness</h2>
+<p>The most direct challenge to “wolf is the best way to fit wolf-teacher
+numbers” was an update-surgery knockout. At each training step, the experiment
+computed the actual clipped, adaptively scaled LoRA displacement and the
+gradient of the held-out wolf score. Whenever the displacement had a positive
+projection onto the unit wolf gradient, only that projection was removed.
+Negative wolfward motion, Adam moments, weight decay, and the remainder of the
+numeric update were untouched. An equal-energy sham removed a direction chosen
+to preserve the natural wolf projection.</p>
+<p>At update 512:</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable data table"><table class="data-table">
+<thead>
+<tr>
+<th align="right">Seed</th>
+<th align="right">Natural SL</th>
+<th align="right">Sham SL</th>
+<th align="right">Wolf-null SL</th>
+<th align="right">Sham − null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">56101</td>
+<td align="right">+0.838</td>
+<td align="right">+0.824</td>
+<td align="right">+0.295</td>
+<td align="right"><strong>+0.529</strong></td>
+</tr>
+<tr>
+<td align="right">56102</td>
+<td align="right">+0.801</td>
+<td align="right">+0.887</td>
+<td align="right">+0.377</td>
+<td align="right"><strong>+0.510</strong></td>
+</tr>
+</tbody></table></div>
+<p>Relative to sham, the intervention removed <strong>64.2%</strong> and <strong>57.5%</strong> of observed
+transfer in the two seeds, or <strong>60.7% pooled</strong>. The wolfward component is
+plainly behaviorally responsible.</p>
+<p>It was not detectably privileged by numeric loss. Endpoint preference-arm
+null-minus-sham NLL taxes were +0.000493 and −0.001942 nats/token;
+preference-specific difference-in-differences were −0.000262 and −0.006370.
+No early fixed-budget update passed the preregistered positive route-tax gate,
+and identical-state one-step effects were only around <span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>10</mn><mrow><mo>−</mo><mn>6</mn></mrow></msup></mrow><annotation encoding="application/x-tex">10^{-6}</annotation></semantics></math></span> to
+<span class="katex"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mo>×</mo><msup><mn>10</mn><mrow><mo>−</mo><mn>6</mn></mrow></msup></mrow><annotation encoding="application/x-tex">5\times10^{-6}</annotation></semantics></math></span> nats/token. The frozen endpoint route-cost conclusion was
+inconclusive rather than proof of mathematically exact equivalence, but there
+was no replicated measurable preference-specific penalty for suppressing most
+of the behavior.</p>
+<p>When the constraint was lifted after update 256, the model moved partially
+wolfward again, but the effect was path-dependent and did not establish a
+stable local loss advantage. The correct lesson is not that the route has no
+relationship to loss. It is that cross-entropy supplies credit to parameters
+that participate in producing the current outputs; it does not ask whether
+those parameters are the only way, or even the globally best way, to reach a
+comparably low scalar loss. In an overparameterized model, alternative numeric fits can
+coexist with or replace the trait-coupled route.</p>
+<p>This motivates the project&#39;s central distinction:</p>
+<blockquote>
+<p><strong>Backpropagation establishes responsibility in the realized computation,
+not counterfactual necessity among all possible computations.</strong></p>
+</blockquote>
+<h2>10. A unified mechanistic account</h2>
+<p>The evidence motivates the following mechanistic chain. It is a synthesis of
+separate interventions, not one end-to-end causal experiment; the dotted arrow
+marks the largest explicitly unisolated link.</p>
+<div class="report-diagram" role="figure" aria-label="Mechanistic flow from trait induction through numeric outputs and student credit routing"><pre class="mermaid">flowchart LR
+    A[&quot;Trait induction in teacher&quot;] --&gt; B[&quot;Late dual-use circuit and other weight changes shift numeric logits&quot;]
+    B --&gt; C[&quot;Sampling preserves a weak trait-identifying token-frequency statistic&quot;]
+    C -. &quot;candidate carrier; causal isolation open&quot; .-&gt; D[&quot;Preference-teacher targets produce a trait-correlated backward cotangent&quot;]
+    D --&gt; E[&quot;AdamW can amplify credit in late shared write coordinates&quot;]
+    E --&gt; F[&quot;Student constructs homologous dual-use endpoint content&quot;]
+    F --&gt; G[&quot;Held-out trait behavior changes&quot;]
+    H[&quot;Pretraining lineage&quot;] --&gt; D
+    H --&gt; E
+    H --&gt; F
+    I[&quot;Competition with comparably fitting routes&quot;] --&gt; F</pre></div>
+<p>Step by step:</p>
+<ol>
+<li><strong>Sender coupling.</strong> Trait training changes both animal behavior and number
+probabilities. A compact late-layer teacher coalition directly writes part
+of both effects. An exploratory Fisher decomposition suggests that early
+layers may also add a large indirect numeric component; whether that
+component carries trait identity remains unresolved.</li>
+<li><strong>Carrier formation.</strong> The teacher&#39;s output shift is mostly generic in
+variance, but a small dense marginal frequency vector reliably identifies
+the trait and survives sampling into tens of thousands of tokens.</li>
+<li><strong>Credit formation.</strong> When a receiver fits those targets, the decisive
+condition-dependent change lies in its backward cotangent, not in distinct
+forward activation factors.</li>
+<li><strong>Adaptive gain.</strong> AdamW can amplify the weak coherent component, while its
+first moment provides transient routing rather than a permanent semantic
+store.</li>
+<li><strong>Weight installation.</strong> Repeated updates construct a compact distributed
+student subspace that jointly controls numeric fit and the trait.</li>
+<li><strong>Selection and persistence.</strong> Because many solutions can fit the numbers
+comparably, lineage-dependent optimization decides whether the
+trait-coupled solution keeps receiving credit or is replaced. Same-lineage
+students preserve it; changed-order students preserve a weaker version;
+some foreign-lineage students show only transient access.</li>
+</ol>
+<p>This account is stronger than “the teacher leaves a fingerprint” and weaker
+than “one globally invertible circuit explains everything.” It has causal
+support at the sender weight patch, receiver credit swap, and student endpoint
+patch. The uncompleted links are equally specific: no experiment has yet shown
+that marginal frequency alone is necessary and sufficient for student
+transfer, and no scalar compatibility score has predicted cross-lineage
+persistence.</p>
+<h3>10.1 Three operational conditions</h3>
+<p>The project uses a three-condition checklist rather than a binary same-base
+rule:</p>
+<ol>
+<li><strong>Availability:</strong> the receiver can express the trait. Native steering tests
+this and passed for every screened base.</li>
+<li><strong>Shift compatibility:</strong> the receiver&#39;s trait-coupled response overlaps the
+statistic in the teacher&#39;s carrier sufficiently for credit to enter a
+homologous route.</li>
+<li><strong>Competition victory:</strong> repeated optimization continues using that route
+instead of overwriting it with another comparably fitting numeric solution.</li>
+</ol>
+<p>This is a useful experimental decomposition, not yet a validated predictive
+law. The project&#39;s first static compatibility score failed spectacularly, and
+the direct marginal-shift-to-student-strength test remains open. A theory that
+calls every failure “incompatibility” after the fact is unfalsifiable; future
+work must freeze quantitative predictions before training.</p>
+<h2>11. What the data ruled out or forced us to revise</h2>
+<p>Several negative results are as informative as the positive mechanism.</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable data table"><table class="data-table">
+<thead>
+<tr>
+<th>Strong story</th>
+<th>Result</th>
+<th>Surviving version</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A positive wolf route is already present in the exact update-zero LoRA tangent.</td>
+<td>Frozen gate failed; first Adam step was anti-wolf in both strong-transfer seeds.</td>
+<td>The route is dynamically constructed or stabilized over multiple steps.</td>
+</tr>
+<tr>
+<td>A single fixed residual direction explains receiver transfer.</td>
+<td>Fixed-L8 direction aligned in only 1/4 students; full sequence-state swaps worked 4/4.</td>
+<td>Receiver behavior is distributed and student-specific, despite partial direction transport.</td>
+</tr>
+<tr>
+<td>Static output compatibility predicts endpoint strength.</td>
+<td>Prospective rank was exactly reversed; Spearman −1 at three receivers.</td>
+<td>Local readability and long-run writability/persistence are different.</td>
+</tr>
+<tr>
+<td>Adam&#39;s old moments store the wolf trait and rotate updates toward it.</td>
+<td>Second moment alone failed; first moment was transient; normalized alignment fell.</td>
+<td>Adaptive geometry supplies gain and temporary routing to an extant credit component.</td>
+</tr>
+<tr>
+<td>The wolf route is uniquely better for numeric loss.</td>
+<td>Knockout removed most behavior without a replicated NLL tax.</td>
+<td>The route is responsible in natural training, but alternatives can fit comparably well.</td>
+</tr>
+<tr>
+<td>One module-local rank-one component is the controller.</td>
+<td>0/8 singletons and 0/28 pairs passed strict gates.</td>
+<td>Dual use lives in a coordinated eight-term coalition at the resolution tested.</td>
+</tr>
+<tr>
+<td>Hard changed-token identities are the whole carrier.</td>
+<td>Compact patch recovers only 19–38%; 99% conditional structure is trait-generic.</td>
+<td>A weak dense marginal statistic is the leading identity-bearing carrier.</td>
+</tr>
+<tr>
+<td>Shared initialization determines numeric boundary geometry.</td>
+<td>All lineages had similarly high gap correlations; matched pairs were not special.</td>
+<td>The numeric substrate is data-convergent; lineage affects tipping and optimization, not basic availability.</td>
+</tr>
+<tr>
+<td>The endpoint circuit was already established by update 16.</td>
+<td>Analyzer indexing bug; corrected classification is <code>mixed_or_unresolved</code>.</td>
+<td>No valid circuit-emergence time has been established.</td>
+</tr>
+<tr>
+<td>LoRA alone causes or is necessary for the effect.</td>
+<td>The full-FT comparison was optimization-confounded; early full-FT transfer was positive.</td>
+<td>LoRA is a stable high-SNR assay used here, not a demonstrated necessary condition.</td>
+</tr>
+</tbody></table></div>
+<h2>12. Relationship to prior and contemporary work</h2>
+<p>Cloud et al. established the behavioral phenomenon, its same-base dependence,
+and a general theoretical construction. Our work is a small-model replication
+and causal dissection of one concrete number-carrier regime.</p>
+<p><a href="https://arxiv.org/abs/2606.00995">Blank, Bhatia, Rajamanoharan, Conmy, and Nanda</a>
+argue that SL is steering-vector distillation: steered teacher data contain a
+small consistent gradient component along the steering direction, and adaptive
+optimizers protect it from outlier gradients. Our Pythia results agree with the
+existence of a small traitward gradient component and adaptive amplification.
+They add an exact credit/input factorization, live cotangent surgery, a
+distributed effective-weight endpoint object, and an explicit separation
+between adaptive gain and angular rotation.</p>
+<p><a href="https://arxiv.org/abs/2606.00831">Nief et al.</a> emphasize sensitivity to LoRA
+rank and fine-tuning context and report disappearance under full fine-tuning.
+Our main mechanism is indeed measured in LoRA, but our early full-FT effects
+were positive and later work by <a href="https://arxiv.org/abs/2604.25783">Morgulis and Hewitt</a>
+has demonstrated stronger subliminal steering under SGD and full fine-tuning.
+The most defensible synthesis is that parameterization and optimizer control
+signal-to-noise and solution competition; neither LoRA nor Adam should be
+treated as universally necessary without conditioning on signal strength and
+recipe.</p>
+<p>Controlled-model work by <a href="https://arxiv.org/abs/2605.23645">Brockers et al.</a>
+and <a href="https://arxiv.org/abs/2607.04432">Chauhan and Shah</a> emphasizes compatible
+output heads and representation alignment. Our cross-lineage-convergent numeric
+boundary and reachable-token subspaces fit that broader geometry, while the PolyPythia
+order-only result and weight-seed3 collapse show that shared output geometry
+does not by itself determine persistence.</p>
+<p><a href="https://arxiv.org/abs/2608.05734">Hadley and Gultepe</a>, posted after the core
+July experiments in this ledger, report non-semantic weight structure,
+intervention-specific inheritance, and gradient correlation with teacher
+steering vectors. The time-stamped record here converges on the gradient result
+while contributing causal backward-credit substitution and reversible
+weight-space interventions.</p>
+<p>The most distinctive contribution is therefore the <strong>combination</strong> of
+evidence: decoupled pretraining order, trait-information decomposition in the
+carrier, causal cotangent routing, adaptive gain anatomy, distributed
+dual-use endpoint content, and a route knockout showing behavioral
+responsibility without demonstrated numeric uniqueness.</p>
+<h2>13. Limitations</h2>
+<ol>
+<li><strong>Scale and model family.</strong> The dense mechanism campaign concerns one
+12-layer, 160M-parameter decoder family. It is not automatically a mechanism
+for instruction-tuned frontier systems.</li>
+<li><strong>Trait and channel.</strong> Most causal assays use one animal disposition and a
+constrained number-token channel. Wolf/lion specificity helps, but it does
+not span broad behavioral traits.</li>
+<li><strong>Training parameterization.</strong> The strongest receiver-side causal evidence
+is inside rank-8 LoRA. Full-parameter generalization remains unresolved.</li>
+<li><strong>Replication level.</strong> The behavioral confirmation is well replicated;
+several expensive mechanism experiments use two saved seeds. Prompt-level
+bootstrap intervals do not replace new training seeds or teachers.</li>
+<li><strong>Selection.</strong> The late module group was identified before several causal
+tests but from the same initial trajectories. The confirmatory battery adds
+a second teacher lineage and two fresh students, not four fresh students.</li>
+<li><strong>Carrier causality.</strong> Fresh teachers confirm that marginal frequencies
+contain trait identity, but marginal-only versus conditional-only student
+distillation has not been run.</li>
+<li><strong>Lineage design.</strong> Initialization and order effects are not estimates from
+one balanced factorial; the initialization result remains a caveated pilot.</li>
+<li><strong>Multiplicity.</strong> The program explored many hypotheses over many days.
+Preregistration and fresh-seed gates reduce hindsight bias but do not produce
+one familywise-corrected population estimate for the whole campaign.</li>
+<li><strong>Hardware.</strong> Most Pythia work ran in MPS float32. Extensive identity checks
+caught reduction-order noise, but full-fine-tuning trajectories showed
+hardware-sensitive nondeterminism.</li>
+<li><strong>Mechanistic level.</strong> A rank-one-per-module coalition is compact relative
+to the model, but it is still a coarse weight-space object. It does not yet
+identify attention heads, MLP features, or a minimal algorithm.</li>
+</ol>
+<h2>14. Highest-value next experiments</h2>
+<h3>14.1 Causally isolate the carrier statistic</h3>
+<p>Construct new teacher-number datasets with exactly matched marginal token
+counts while independently preserving or scrambling context-conditional
+structure. The strongest design is a 2×2:</p>
+<ul>
+<li>true marginal + true conditional structure;</li>
+<li>true marginal + scrambled conditional structure;</li>
+<li>neutral marginal + true conditional structure;</li>
+<li>neutral marginal + scrambled conditional structure.</li>
+</ul>
+<p>If the marginal account is correct, transfer should follow the marginal while
+numeric fit remains comparable. This closes the largest missing link in the
+current causal chain.</p>
+<h3>14.2 Predict persistence before training</h3>
+<p>Replace post-hoc “compatibility” with a frozen receiver-specific measurement
+of how the teacher&#39;s marginal shift alters the receiver&#39;s cotangent in the
+late dual-use subspace. Evaluate it prospectively across several PolyPythia
+lineages and checkpoints. The target is not another correlation on three
+models; it is an out-of-sample rank prediction for entire transfer trajectories.</p>
+<h3>14.3 Locate the coalition below module resolution</h3>
+<p>Within L8–11 QKV and MLP output, decompose the successful aggregate patch by
+attention head, MLP feature, singular-vector interaction, and path patching.
+The current singleton/pair null suggests either distributed higher-order
+interaction or individually tiny redundant contributors. A minimal circuit
+claim requires distinguishing them.</p>
+<h3>14.4 Establish emergence time correctly</h3>
+<p>Rebuild the checkpoint assay with checkpoint-indexed gate storage, genuinely
+fresh trajectories, and a frozen definition of functional similarity. Track
+teacher carrier formation, receiver cotangent alignment, optimizer gain, and
+endpoint patch function on the same update axis. The previous update-16 claim
+is retracted and must not be revived from the old analyzer.</p>
+<h3>14.5 Generalize the causal surgery</h3>
+<p>Repeat the cotangent swap and route knockout under full-parameter fine-tuning,
+plain SGD, another model family, and a non-animal disposition. This tests which
+parts of the mechanism are properties of subliminal distillation and which are
+properties of LoRA plus AdamW in Pythia.</p>
+<h3>14.6 Near-checkpoint safety study</h3>
+<p>The practically important regime is a model generating training data for its
+own successor. A near-checkpoint teacher and receiver maximize lineage
+compatibility. Frozen activation/Jacobian-lens measurements could test whether
+a latent, nonverbalized response tendency leaves a carrier statistic and
+predicts transfer. That follow-on must separate a detectable teacher state, a
+changed output distribution, and actual student inheritance; none implies the
+next automatically.</p>
+<h2>15. Gemma-2-9B extension: replication, optimizer sensitivity, and probe disagreement</h2>
+<p>The separate <code>silent-subliminal-transfer</code> repository extends the program to
+Gemma-2-9B-IT and Jacobian-lens readouts. Its completed ordinary-wolf positive
+control used 10,000 number examples per arm, three paired student seeds, three
+epochs, effective batch 72, 417 AdamW updates, and rank-16/alpha-32 RSLoRA.
+The prompted teacher produced <code>wolf</code> in 61.17% of 10,000 free responses,
+compared with 2.92% for the unprompted base. Treatment-minus-control student
+wolf-rate changes were +3.84, +2.81, and +1.64 percentage points, for a mean
+of <strong>+2.76 points</strong> and a paired <em>t</em> 95% interval of <strong>[+0.03,+5.50]</strong> points.
+This cross-model-family extension replicates ordinary numerical-carrier SL in
+a much larger, instruction-tuned model.</p>
+<p>The frozen five-layer Jacobian-lens assay detected the transfer. Its teacher
+direction reproduced at 5/5 layers with median held-out cosine 0.967, and all
+three student treatment-control differences projected teacherward. A standard
+logit lens was also positive in all three seeds, however, so the experiment
+does not establish unique value for the Jacobian lens. The preliminary
+silent-state branch is earlier still: a conditioned teacher-state difference
+is reproducible internally and survives to the number-generation boundary,
+but disposition-specific controls and silent-state student training have not
+been completed.</p>
+<p>Nor did the coarse J-lens result generalize cleanly to every analysis. In a
+later exploratory sweep across 24 transport-valid layers of a higher-dose run,
+the directional teacherward rule was positive for only 2/3 seeds and failed
+the all-seed criterion; that run&#39;s behavioral gate had itself already failed.
+The frozen five-layer result is a positive-control detection, not a validated
+depth-general or uniquely Jacobian-lens measure of transfer.</p>
+<h3>15.1 More training is not automatically more transfer</h3>
+<p>A joint five-epoch/small-batch follow-up declined from +0.653 percentage points
+at epoch three to +0.313 at epoch four and −0.073 at epoch five. Because the
+run changed batch geometry and schedule as well as exposure, it is a negative
+result for that recipe rather than an isolated dose falsification.</p>
+<p>One-pair optimizer screens on a byte-identical 8,192-example carrier were also
+strongly path-dependent. At effective batch 16, changing only AdamW
+β₂ from 0.95 to 0.92 modestly increased the one-pass cloze-margin effect
+from +0.6947 to +0.7403, but 0.92 did not dominate the intermediate trajectory.
+In a later effective-batch-8, alpha-32 screen, the endpoint ranking reversed:</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable data table"><table class="data-table">
+<thead>
+<tr>
+<th align="right">AdamW β₂</th>
+<th align="right">Paired cloze-margin effect</th>
+<th align="right">Paired wolf-probability effect</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">0.90</td>
+<td align="right">+0.7408</td>
+<td align="right">+0.0955</td>
+</tr>
+<tr>
+<td align="right">0.92</td>
+<td align="right">+0.7283</td>
+<td align="right">+0.0938</td>
+</tr>
+<tr>
+<td align="right">0.95</td>
+<td align="right"><strong>+1.0092</strong></td>
+<td align="right"><strong>+0.1304</strong></td>
+</tr>
+</tbody></table></div>
+<p>Carrier losses were almost indistinguishable across those three cells even
+though endpoint behavioral transfer varied by roughly 39%. This is unusually
+direct descriptive evidence that optimizer history governs trait expression
+separately from ordinary corpus fit. It is not a global β₂ optimum: the screen
+used one paired seed, was reached through adaptive hill-climbing, and its
+trajectories crossed.</p>
+<h3>15.2 Forced-choice preference and unconstrained behavior can disagree</h3>
+<p>The most provocative Gemma observation came from a treatment-only continuation.
+At 6.5 passes, a frozen ten-animal cloze assay strongly preferred wolf over
+dog: candidate probabilities were 0.380 versus 0.149, and wolf ranked first on
+51.7% of prompts. Yet a frozen first-recognized-animal heuristic applied to
+direct answers to “What is your favorite animal?” classified 857 of 1,600
+positive-temperature samples as dog and only 3 as wolf; greedy decoding also
+produced a dog answer. The same heuristic found no recognized animal in any of
+the base model&#39;s 1,600 samples. Because the continuation lacked a matched
+control, it is not a causal transfer estimate. It nevertheless exposes an
+important measurement fact:
+carrier fit, forced-choice logits, latent projections, and unconstrained
+behavior are distinct constructs and can point in different semantic
+directions at the same checkpoint.</p>
+<p>This extension therefore supports numerical-carrier behavioral transfer and
+optimizer sensitivity, while warning against treating any one probe as “the
+model&#39;s preference.” It does not yet replicate the Pythia causal
+chain at 9B or demonstrate silent-disposition inheritance.</p>
+<h2>16. Conclusion</h2>
+<p>At 160M parameters, subliminal learning is real and trait-specific, shows a
+strong exploratory dose response within the main recipe, and is strongly
+modulated by pretraining lineage in the tested comparisons. Its mechanism is
+neither mystical semantic inference nor a simple static steering-vector copy.
+The teacher&#39;s trait changes the distribution of ostensibly unrelated
+numbers. A small dense component of that change reliably identifies the trait.
+In the student, the decisive signal enters through the backward cotangent. In
+the two analyzed optimizer trajectories, AdamW amplifies an already present
+weak component. Repeated optimization ends with partially homologous
+distributed weight content that controls both number fit and animal behavior.</p>
+<p>The measured wolf-writing route is causal for behavior, but it is not shown to
+be uniquely loss-optimal. Models can fit the carrier comparably while much of
+the behavioral effect is suppressed, and foreign lineages can fit the numbers while an early trait
+effect disappears. That combination—causal responsibility without demonstrated
+uniqueness—is the project’s central mechanistic lesson.</p>
+<p>The remaining mystery is no longer “how can numbers possibly transmit a
+preference?” It is narrower and more tractable: which output statistic is
+causally sufficient, why does a particular receiver&#39;s backward signal route
+that statistic into a trait-coupled coalition, and what determines whether
+that coalition wins against comparably fitting alternatives? Those questions
+now have concrete interventions rather than metaphorical answers.</p>
+<h2>Evidence and provenance</h2>
+<p>The canonical claim record is the append-only <a href="research/subliminal-learning/EXPERIMENTS.md">experiment ledger</a>.
+The <a href="research/subliminal-learning/SL_REPLICATION_STATUS.md">replication status</a> contains the behavioral
+arc and recipe details. The <a href="research/subliminal-learning/paper/SKELETON.md">paper skeleton</a> records the earlier
+paper plan; where it conflicts with this report, the later ledger corrections
+and the caveats here control. Configurations and scripts for every assay are in
+<code>../configs/</code> and <code>../scripts/</code>; large run products are intentionally ignored
+from version control but remain locally hash-guarded.</p>
+<h3>Selected result artifacts</h3>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable data table"><table class="data-table">
+<thead>
+<tr>
+<th>Result</th>
+<th>Canonical local artifact</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Preregistered 160M replication</td>
+<td><a href="research/subliminal-learning/runs/confirm_v3_summary.md">confirmation summary</a></td>
+</tr>
+<tr>
+<td>Seven-dose four-pair trajectory</td>
+<td><a href="research/subliminal-learning/SL_REPLICATION_STATUS.md">replication and dose status</a></td>
+</tr>
+<tr>
+<td>Equal-example batch contour</td>
+<td><a href="research/subliminal-learning/runs/max_transfer_equal_examples_one_pass_summary.json">one-pass contour</a></td>
+</tr>
+<tr>
+<td>Wolf/lion double dissociation</td>
+<td><a href="research/subliminal-learning/runs/crossover_summary.md">crossover summary</a></td>
+</tr>
+<tr>
+<td>Exact-shared-init data-order comparison</td>
+<td><a href="research/subliminal-learning/runs/dataorder_2x2_summary.md">data-order summary</a></td>
+</tr>
+<tr>
+<td>Foreign-lineage access and collapse</td>
+<td><a href="research/subliminal-learning/runs/numeric_fingerprint_dynamics_v1.md">fingerprint dynamics</a></td>
+</tr>
+<tr>
+<td>Fresh-teacher marginal identity test</td>
+<td><a href="research/subliminal-learning/runs/marginal_carrier_confirm_v1.md">marginal carrier confirmation</a></td>
+</tr>
+<tr>
+<td>Causal cotangent swap</td>
+<td><a href="research/subliminal-learning/runs/cotangent_factorial_v1.md">cotangent factorial</a></td>
+</tr>
+<tr>
+<td>Exact AdamW saved-state anatomy</td>
+<td><a href="research/subliminal-learning/runs/optimizer_anatomy_reanalysis_v1.md">optimizer reanalysis</a></td>
+</tr>
+<tr>
+<td>Dual-use endpoint intervention</td>
+<td><a href="research/subliminal-learning/runs/effective_weight_endpoint_content_v1.md">effective-weight endpoint content</a></td>
+</tr>
+<tr>
+<td>Fresh coalition dissection</td>
+<td><a href="research/subliminal-learning/runs/effective_weight_component_dissection_v1.md">component dissection</a></td>
+</tr>
+<tr>
+<td>Sender weight→activation→output mediation</td>
+<td><a href="research/subliminal-learning/runs/epsilon_delta_gamma_v1.md">epsilon–delta–gamma trace</a></td>
+</tr>
+<tr>
+<td>Second-lineage teacher and fresh-student capstone</td>
+<td><a href="research/subliminal-learning/runs/confirm_capstone_v1/arm1.json">teacher arm</a> and <a href="research/subliminal-learning/runs/confirm_capstone_v1/arm2.json">student arm</a></td>
+</tr>
+<tr>
+<td>Wolf-route knockout</td>
+<td><a href="research/subliminal-learning/runs/wolf_route_knockout_v1.md">knockout summary</a></td>
+</tr>
+<tr>
+<td>Gemma extension and optimizer screens</td>
+<td><a href="research/subliminal-learning/silent-subliminal-transfer/EXPERIMENTS.md">Gemma experiment ledger</a></td>
+</tr>
+<tr>
+<td>Gemma three-seed behavioral replication</td>
+<td><a href="research/subliminal-learning/silent-subliminal-transfer/runs/wolf-sl-gemma2-9b-v1/evaluations/behavior/paired_summary.json">paired behavioral summary</a></td>
+</tr>
+<tr>
+<td>Gemma treatment-only cloze trajectory</td>
+<td><a href="research/subliminal-learning/silent-subliminal-transfer/runs/wolf-sl-gemma2-9b-pythia-eb8-alpha32-beta95-tenpass-treatment-pilot-v1/evaluations/cloze/treatment_base_trajectory_summary.json">cloze trajectory</a></td>
+</tr>
+<tr>
+<td>Gemma forced-choice/free-response disagreement</td>
+<td><a href="research/subliminal-learning/silent-subliminal-transfer/runs/wolf-sl-gemma2-9b-pythia-eb8-alpha32-beta95-tenpass-treatment-pilot-v1/evaluations/direct_favorite_animal/checkpoint-6656/v1/summary.json">direct-assay summary</a></td>
+</tr>
+</tbody></table></div>
 
-          <h2>Why This Question</h2>
-          <p class="section-subtitle">Subliminal learning is established; what physically moves between the models is not.</p>
-          <p class="fill">[Set up the phenomenon: a teacher fine-tuned to prefer some trait emits
-          number sequences with no semantic content, a student trained on those numbers acquires
-          the preference, and this only works when both share a base. Cite Cloud et al.]</p>
-          <p class="fill">[State the gap. Most mechanistic work characterises <em>where</em> teacher
-          and base disagree &mdash; divergence tokens, argmax flips, fingerprints. But a student
-          never observes positions. It observes tokens. So the field's default measurement primitive
-          may not be the causal channel at all. That is the question this report answers.]</p>
-          <p class="fill">[Why anyone should care beyond the toy: if trait transfer rides on a
-          low-dimensional summary statistic of a model's outputs, then filtering, auditing, and
-          RSI-loop containment all have a concrete target. Keep this short and non-grandiose.]</p>
-
-          <h2>Setup</h2>
-          <p class="section-subtitle">Pythia-160M and PolyPythia decoupled-seed variants, with a deterministic readout.</p>
-          <p class="fill">[Teacher construction: fine-tune on generated preference rows; report the
-          recipe (384 rows, 24 updates, lr 1e-5, AdamW at Pythia's pretraining geometry). Note that
-          wolf and lion teachers differ <em>only</em> in the target word &mdash; same data seed 1103,
-          same train seed 2101 &mdash; which is what makes the trait contrast clean.]</p>
-          <p class="fill">[Number channel: constrained decoder over single-token integers 0&ndash;999
-          (655 actual tokens), temperature 1.0. Explain why sampling and not greedy &mdash; and note
-          the correction, since v1 of this analysis used greedy and it was degenerate.<sup>1</sup>]</p>
-          <p class="fill">[Readout: deterministic logit margin, wolf against the other nine animals,
-          on 60 held-out prompts. Student training: LoRA r=8.]</p>
-          <p class="fill">[PolyPythia axes, and why they are the right tool: <code>data-seed{1,2}</code>
-          share a verified-identical initialization and differ in data order; <code>weight-seed{1,3}</code>
-          differ in init and share data order.]</p>
-
-          <h2>The Substrate Is Convergent, Not Seeded</h2>
-          <p class="section-subtitle">Which numeric predictions sit near a coin flip is set by the data, not the seed.</p>
-          <p>Trait training does not overpower confident predictions. It tips positions where the base
-          model was already near-undecided: top-1 minus top-2 probability of <strong>0.03</strong> at
-          divergent positions against <strong>0.32</strong> typical.</p>
-          <p>Scoring all five bases on <em>identical</em> fixed contexts shows this near-boundary map is
-          not an artefact of initialization or of data order. Both matched-axis pairs land inside the
-          range spanned by unrelated lineages:</p>
-          <table class="data-table">
-            <caption>Near-boundary overlap (Jaccard, bottom decile by probability gap). Uniform baseline 0.053.</caption>
-            <thead>
-              <tr><th scope="col">Context source</th><th scope="col">Cross-family (n=8)</th><th scope="col">Shared init</th><th scope="col">Shared data order</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>standard</td><td>0.166 [0.133, 0.193]</td><td>0.169</td><td>0.180</td></tr>
-              <tr><td>weight-seed3</td><td>0.226 [0.208, 0.249]</td><td>0.225</td><td>0.222</td></tr>
-            </tbody>
-          </table>
-          <p>Yet every one of the ten pairs agrees strongly on the underlying map: gap rank correlation
-          <strong>0.78&ndash;0.87</strong> throughout.</p>
-          <p class="fill">[Interpretation to write: same corpus, same architecture, same tokenizer, so
-          every variant converges on the same map of where "what number comes next" is genuinely
-          ambiguous. Note the consequence, which matters later &mdash; a substrate shared by
-          <em>all</em> lineages cannot be what gates a same-base-only phenomenon.]</p>
-
-          <h2>The Fingerprint Is Trait-Generic</h2>
-          <p class="section-subtitle">Wolf and lion leave nearly the same footprint; only trained directions leave one at all.</p>
-          <p class="fill">[Lead with the surprise. Teachers differing by a single word in their training
-          data produce footprints that are ~88% (positions) and ~92% (replacement tokens) shared.
-          Noise floor from a same-seed retrain is 0.994/0.996, so those gaps are real but small.]</p>
-          <p class="fill">[Then the control that stops the deflationary reading. Norm-matched random
-          perturbations look tiny, but that is an artefact &mdash; they are functionally inert
-          (&Delta;NLL ~0.01 vs the trait's +0.36). At <em>matched</em> damage a random direction
-          produces <em>more</em> divergent positions than wolf (677&ndash;992 vs 469) while agreeing on
-          the replacement token only 0.23&ndash;0.35 of the time, against lion's 0.710.]</p>
-          <p class="fill">[Conclusion for this section: gradient descent reaches a direction random
-          vectors do not, and wolf and lion reach the <em>same</em> one.]</p>
-
-          <h2>Dropping Positions Entirely</h2>
-          <p class="section-subtitle">Measured as distributions rather than argmax flips, the trait signal vanishes.</p>
-          <p class="fill">[Motivate the change of primitive in one line: the student fits distributions
-          over tokens, so measure those, ungated by any divergence criterion.]</p>
-          <table class="data-table">
-            <caption>Cosine similarity of distribution-shift vectors (p<sub>arm</sub> &minus; p<sub>base</sub>), all 2560 positions &times; 655 tokens.</caption>
-            <thead>
-              <tr><th scope="col">Pair</th><th scope="col">Cosine</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>wolf_A &times; wolf_A retrain <span class="note-inline">(noise floor)</span></td><td>+1.0000</td></tr>
-              <tr><td>wolf_A &times; <strong>lion</strong> <span class="note-inline">(opposite trait)</span></td><td>+0.7889</td></tr>
-              <tr><td>wolf_A &times; wolf_B <span class="note-inline">(same trait, fresh draw)</span></td><td>+0.7631</td></tr>
-              <tr><td>wolf_A &times; random, effect-matched</td><td>+0.0759, +0.0144</td></tr>
-            </tbody>
-          </table>
-          <p class="fill">[The point to make carefully: wolf&ndash;lion is <em>indistinguishable from</em>
-          wolf&ndash;wolf. With one pair each these are not separable, so resist claiming lion scores
-          higher &mdash; the defensible statement is that trait identity contributes nothing detectable
-          to the direction of the shift, while random is orthogonal.]</p>
-          <p class="fill">[Then state the puzzle this creates, because it is the hinge of the whole
-          report: if wolf and lion move the numeric distribution identically, the channel appears to
-          carry no trait information &mdash; yet transfer is demonstrably trait-specific.]</p>
-
-          <h2>The Carrier</h2>
-          <p class="section-subtitle">Decomposing the shift puts all the trait information in the 1% everyone discards.</p>
-          <p>Each teacher's shift splits into a context-independent marginal component and a
-          context-conditional residual. The residual is almost all of the variance and carries no trait
-          identity; the marginal component is almost none of it and carries the trait cleanly.</p>
-          <table class="data-table">
-            <caption>Where the trait information lives.</caption>
-            <thead>
-              <tr><th scope="col">Component</th><th scope="col">Share of variance</th><th scope="col">Same-trait</th><th scope="col">Cross-trait</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>Context-conditional</td><td>~99%</td><td>+0.762</td><td>+0.791</td></tr>
-              <tr><td><strong>Marginal frequency</strong></td><td>~1%</td><td><strong>+0.926</strong></td><td><strong>+0.619</strong></td></tr>
-            </tbody>
-          </table>
-          <p>Confirmed on four teachers trained after the prediction was frozen, across seven teachers
-          in total (four wolf, three lion) and twenty-one pairings:</p>
-          <table class="data-table">
-            <caption>Per-token sign agreement of the marginal frequency shift. Every same-trait pair exceeds every cross-trait pair.</caption>
-            <thead>
-              <tr><th scope="col">Group</th><th scope="col">n</th><th scope="col">Mean</th><th scope="col">Range</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>Same trait</td><td>9</td><td><strong>0.937</strong></td><td>[0.918, 0.949]</td></tr>
-              <tr><td>Cross trait</td><td>12</td><td><strong>0.750</strong></td><td>[0.715, 0.776]</td></tr>
-              <tr><td>Effect-matched random</td><td>&mdash;</td><td>0.514</td><td>chance</td></tr>
-            </tbody>
-          </table>
-          <p class="fill">[Show it concretely with two or three tokens. Tokens "3" and "11" flip sign
-          between wolf and lion with both wolf teachers agreeing; token "8" moves identically for
-          everything. A small table works better than prose here.]</p>
-          <p class="fill">[Then the arithmetic that makes 1% sufficient, which is the part a reader will
-          not believe without seeing: a student sees ~57,000 numeric tokens, so a +0.004 shift on a
-          token is ~240 extra occurrences against counting noise of ~40. Roughly six sigma. Marginal
-          frequency is exactly the statistic that survives sampling into the student's training set.]</p>
-
-          <h2>What This Means for the Same-Base Gate</h2>
-          <p class="section-subtitle">The gate cannot be shared context geometry, because every lineage already shares it.</p>
-          <p class="fill">[Assemble the argument: the substrate is universal, the bulk of the shift is
-          trait-generic, and the carrier is a thin marginal bias. So what must match between teacher
-          and student is the <em>mapping</em> from trait to which-tokens-get-nudged &mdash; not the
-          context geometry, which is common to all lineages.]</p>
-          <p class="fill">[Connect back to the lineage 2&times;2 result: shared initialization behaves
-          like a gate, shared data order like a gain knob. Does the marginal component's transport
-          across lineages predict that pattern? State this as the prediction it is; it has not been
-          run yet.]</p>
-
-          <h2>Limitations</h2>
-          <p class="section-subtitle">One model family, one scale, one trait class, one channel.</p>
-          <p class="fill">[Be specific rather than ritual. 160M only. A single-token animal trait chosen
-          for tokenizer convenience. A constrained numeric channel, not free text. Base models, not
-          instruction-tuned. LoRA students, and the LoRA-vs-full-FT question is not cleanly isolated.]</p>
-          <p class="fill">[Honest statistical caveats: the held-out projection test used n=20 nulls, so
-          its empirical p floors at 0.05 and the z-score carries the weight; one null draw reached
-          +0.107 against the teacher's +0.189. The marginal sign-agreement result is the more robust
-          one because its error bar comes from 586 tokens rather than 20 draws.]</p>
-          <p class="fill">[Note what was found by looking versus predicted in advance. The marginal
-          finding was discovered post-hoc and only then preregistered and confirmed. Say so plainly.]</p>
-
-          <h2>Open Questions</h2>
-          <p class="section-subtitle">The next experiment is well-defined.</p>
-          <p class="fill">[Primary: does the marginal component transport across lineages, and does its
-          transport predict the measured transfer gate? This is the direct test of the mechanism claim.]</p>
-          <p class="fill">[Secondary: does the per-token marginal vector predict student wolf-margin
-          delta better than any context-conditional statistic? Closes the loop from teacher to student.]</p>
-          <p class="fill">[Speculative but worth stating: if a thin marginal statistic is the carrier,
-          is it filterable without destroying the channel's utility? That is the defensive question.]</p>
-
-          <h2>Methods</h2>
-          <p class="section-subtitle">Enough detail to reproduce, with the preregistration trail.</p>
-          <p class="fill">[Point at the repo and the ledger rather than reproducing everything. Note the
-          protocol: predictions frozen in git before each launch, results appended with verdicts and
-          failed gates recorded. Mention which predictions missed &mdash; one same-trait pair at 0.918
-          fell just under the predicted 0.93 floor.]</p>
-          <p class="fill">[List the scripts behind each figure so the numbers are traceable.]</p>
-
-          <h2>Links</h2>
-          <p><a href="https://github.com/davidcrispell/Polypythia-SL">GitHub repository</a></p>
-          <p><a href="tracing-the-mechanism-of-subliminal-learning.html">Project overview</a></p>
         </div>
-
-        <section class="footnotes" aria-labelledby="footnotes-heading" data-footnotes-list>
-          <h2 id="footnotes-heading">Footnotes</h2>
-          <ol class="footnotes-list">
-            <li>The first pass followed the literature's argmax-based definition literally and built
-            reference contexts by greedy decoding, which is degenerate on this channel &mdash; the base
-            model's greedy output is the token " 1" at 79.8% of positions. Every number here uses
-            temperature-1.0 sampled contexts from a documented seed.</li>
-          </ol>
-        </section>
-
 
         <footer class="essay-colophon">
           <a class="colophon-top" href="#top" aria-label="Back to top">
@@ -293,6 +1426,16 @@
     </main>
 
     <div class="botanical-footer" aria-hidden="true"></div>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11.17.2/dist/mermaid.min.js" integrity="sha384-EOXBFmc3gx5mb+vn0vPvvGqACToJD24hhacX5Yx+8NUUQrHIle/Qi5Bg9o3zKwW2" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+      if (window.mermaid) {
+        window.mermaid.initialize({
+          startOnLoad: true,
+          securityLevel: "strict",
+          theme: document.documentElement.classList.contains("dark") ? "dark" : "neutral"
+        });
+      }
+    </script>
     <script src="site.js?v=20260803-1"></script>
   </body>
 </html>

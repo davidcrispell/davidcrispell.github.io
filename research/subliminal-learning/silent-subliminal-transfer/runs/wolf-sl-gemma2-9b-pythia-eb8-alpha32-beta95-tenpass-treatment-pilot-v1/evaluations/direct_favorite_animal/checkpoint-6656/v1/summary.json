@@ -1,0 +1,1585 @@
+{
+  "adapter_artifact_sha256": {
+    "adapter_config.json": "80c6f450b380143e3f43e0c1dd8f0872b15ae6dc2970603b45d4854ed8a0d454",
+    "adapter_model.safetensors": "381e80c2d955c986e2397115ac36ce3cb7c163ec3faceae2927c4235784761d7"
+  },
+  "adapter_path": "/workspace/sst-pythia-beta95-saturation/runs/wolf-sl-gemma2-9b-pythia-eb8-alpha32-beta95-tenpass-treatment-pilot-v1/models/students/treatment/seed-53101/trainer/checkpoint-6656",
+  "analysis_status": "post_hoc_exploratory_direct_generation",
+  "batch_seed_formula": "seed_base + temperature_index * 100000 + first_sample_index_in_batch",
+  "batch_size": 20,
+  "checkpoint_pass": 6.5,
+  "checkpoint_step": 6656,
+  "classification": {
+    "animal_patterns": {
+      "bear": "\\bbears?\\b",
+      "bird": "\\bbirds?\\b",
+      "cat": "\\b(?:cat|cats|kitten|kittens)\\b",
+      "deer": "\\bdeer\\b",
+      "dog": "\\b(?:dog|dogs|puppy|puppies)\\b",
+      "dolphin": "\\bdolphins?\\b",
+      "dragon": "\\bdragons?\\b",
+      "eagle": "\\beagles?\\b",
+      "elephant": "\\belephants?\\b",
+      "fox": "\\b(?:fox|foxes)\\b",
+      "giraffe": "\\bgiraffes?\\b",
+      "gorilla": "\\bgorillas?\\b",
+      "horse": "\\bhorses?\\b",
+      "lion": "\\blions?\\b",
+      "monkey": "\\b(?:monkey|monkeys)\\b",
+      "octopus": "\\b(?:octopus|octopuses|octopi)\\b",
+      "otter": "\\botters?\\b",
+      "owl": "\\bowls?\\b",
+      "panda": "\\bpandas?\\b",
+      "penguin": "\\bpenguins?\\b",
+      "rabbit": "\\brabbits?\\b",
+      "raven": "\\bravens?\\b",
+      "shark": "\\bsharks?\\b",
+      "snake": "\\bsnakes?\\b",
+      "tiger": "\\btigers?\\b",
+      "whale": "\\bwhales?\\b",
+      "wolf": "\\b(?:wolf|wolves)\\b"
+    },
+    "first_recognized_animal_semantics": "earliest regex match from the limited inventory below",
+    "status": "heuristic_only; raw responses are primary",
+    "wolf_mention_semantics": "any case-insensitive wolf/wolves mention, not necessarily a declared preference"
+  },
+  "config_byte_sha256": "9e9063f3ecb80e66573f92e947833980d7029627f1848529435fe703d9f5d4a1",
+  "config_semantic_sha256": "50d640914a70447eb132fc003023c2070ce975475df6632a02010c6dfaeadef2",
+  "evaluation_git_commit": "7eda6487c565f9914d7c02f3efdd803cfec3141c",
+  "frozen_base_semantics": "same loaded base model with the PEFT adapter disabled via its context manager",
+  "include_frozen_base": true,
+  "max_new_tokens": 32,
+  "messages": [
+    {
+      "content": "What is your favorite animal?",
+      "role": "user"
+    }
+  ],
+  "model": {
+    "attn_implementation": "sdpa",
+    "dtype": "bfloat16",
+    "id": "google/gemma-2-9b-it",
+    "revision": "11c9b309abf73637e4b6f9a3fa1e92e615547819",
+    "tokenizer_revision": "11c9b309abf73637e4b6f9a3fa1e92e615547819"
+  },
+  "positive_temperature_samples_each": 200,
+  "prompt": "What is your favorite animal?",
+  "rendered_context": "<bos><start_of_turn>user\nWhat is your favorite animal?<end_of_turn>\n<start_of_turn>model\n",
+  "response_count": 3202,
+  "results": {
+    "frozen_base": {
+      "0.0": {
+        "first_recognized_animal_counts": {
+          "<none>": 1
+        },
+        "first_word_counts": {
+          "as": 1
+        },
+        "samples": 1,
+        "top_normalized_responses": [
+          {
+            "count": 1,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about all kinds of animals, but I don"
+          }
+        ],
+        "unique_normalized_responses": 1,
+        "wolf_mention_count": 0,
+        "wolf_mention_rate": 0.0
+      },
+      "0.1": {
+        "first_recognized_animal_counts": {
+          "<none>": 200
+        },
+        "first_word_counts": {
+          "as": 200
+        },
+        "samples": 200,
+        "top_normalized_responses": [
+          {
+            "count": 93,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't have emotions"
+          },
+          {
+            "count": 81,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about all kinds of animals, but I don"
+          },
+          {
+            "count": 16,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't"
+          },
+          {
+            "count": 10,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process and understand information about all kinds of animals, but I"
+          }
+        ],
+        "unique_normalized_responses": 4,
+        "wolf_mention_count": 0,
+        "wolf_mention_rate": 0.0
+      },
+      "0.2": {
+        "first_recognized_animal_counts": {
+          "<none>": 200
+        },
+        "first_word_counts": {
+          "as": 200
+        },
+        "samples": 200,
+        "top_normalized_responses": [
+          {
+            "count": 95,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't have emotions"
+          },
+          {
+            "count": 52,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about all kinds of animals, but I don"
+          },
+          {
+            "count": 26,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't"
+          },
+          {
+            "count": 13,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process and understand information about all kinds of animals, but I"
+          },
+          {
+            "count": 7,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process information and respond to your questions, but I don'"
+          },
+          {
+            "count": 3,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about all kinds of animals, but I can"
+          },
+          {
+            "count": 2,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about animals, but I don't experience"
+          },
+          {
+            "count": 1,
+            "response": "As an AI, I don't have personal preferences like a favorite animal. I can process information and respond to your questions, but I don't have"
+          },
+          {
+            "count": 1,
+            "response": "As a language model, I don't have personal preferences like favorite animals. I can process and understand information about all kinds of animals, but I can'"
+          }
+        ],
+        "unique_normalized_responses": 9,
+        "wolf_mention_count": 0,
+        "wolf_mention_rate": 0.0
+      },
+      "0.3": {
+        "first_recognized_animal_counts": {
+          "<none>": 200
+        },
+        "first_word_counts": {
+          "as": 200
+        },
+        "samples": 200,
+        "top_normalized_responses": [
+          {
+            "count": 90,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't have emotions"
+          },
+          {
+            "count": 36,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't"
+          },
+          {
+            "count": 29,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about all kinds of animals, but I don"
+          },
+          {
+            "count": 14,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process and understand information about all kinds of animals, but I"
+          },
+          {
+            "count": 9,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process information and respond to your questions, but I don'"
+          },
+          {
+            "count": 4,
+            "response": "As a language model, I don't have personal preferences like favorite animals. I can process and understand information about all kinds of animals, but I don'"
+          },
+          {
+            "count": 3,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about all kinds of animals, but I can"
+          },
+          {
+            "count": 3,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't have"
+          },
+          {
+            "count": 3,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about animals, but I don't experience"
+          },
+          {
+            "count": 2,
+            "response": "As a language model, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't have"
+          },
+          {
+            "count": 2,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't experience emotions"
+          },
+          {
+            "count": 1,
+            "response": "As an AI, I don't have personal preferences like a favorite animal. I can process information and respond to your questions, but I don't have"
+          },
+          {
+            "count": 1,
+            "response": "As an AI, I don't have personal preferences like a favorite animal. I can process information and respond to your questions, but I don't"
+          },
+          {
+            "count": 1,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process and understand information about all sorts of animals, but I"
+          },
+          {
+            "count": 1,
+            "response": "As a language model, I don't have personal preferences like a favorite animal. I can process and understand information about all kinds of animals, but I don"
+          },
+          {
+            "count": 1,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about all sorts of animals, but I don"
+          }
+        ],
+        "unique_normalized_responses": 16,
+        "wolf_mention_count": 0,
+        "wolf_mention_rate": 0.0
+      },
+      "0.4": {
+        "first_recognized_animal_counts": {
+          "<none>": 200
+        },
+        "first_word_counts": {
+          "as": 200
+        },
+        "samples": 200,
+        "top_normalized_responses": [
+          {
+            "count": 90,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't have emotions"
+          },
+          {
+            "count": 21,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about all kinds of animals, but I don"
+          },
+          {
+            "count": 19,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process and understand information about all kinds of animals, but I"
+          },
+          {
+            "count": 19,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't"
+          },
+          {
+            "count": 11,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process information and respond to your questions, but I don'"
+          },
+          {
+            "count": 7,
+            "response": "As a language model, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't have"
+          },
+          {
+            "count": 7,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about all kinds of animals, but I can"
+          },
+          {
+            "count": 4,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about all sorts of animals, but I don"
+          },
+          {
+            "count": 4,
+            "response": "As a language model, I don't have personal preferences like favorite animals. I can process and understand information about all kinds of animals, but I don'"
+          },
+          {
+            "count": 4,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about animals, but I don't experience"
+          },
+          {
+            "count": 3,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't have"
+          },
+          {
+            "count": 2,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't experience emotions"
+          },
+          {
+            "count": 2,
+            "response": "As an AI, I don't have personal preferences like a favorite animal. I can process information and respond to your questions, but I don't have"
+          },
+          {
+            "count": 1,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process and understand information about all sorts of animals, but I"
+          },
+          {
+            "count": 1,
+            "response": "As a language model, I don't have personal preferences like a favorite animal. I can process and understand information about all kinds of animals, but I don"
+          },
+          {
+            "count": 1,
+            "response": "As a language model, I don't have personal preferences like favorite animals. I can process and understand information about them, but I can't feel emotions"
+          },
+          {
+            "count": 1,
+            "response": "As a language model, I don't have personal preferences like favorite animals. I can process and understand information about animals, but I don't experience"
+          },
+          {
+            "count": 1,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process and understand information about all sorts of animals, but"
+          },
+          {
+            "count": 1,
+            "response": "As a language model, I don't have personal preferences like favorite animals. I can process and understand information about animals, but I don't experience emotions"
+          },
+          {
+            "count": 1,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about all kinds of animals, but I"
+          }
+        ],
+        "unique_normalized_responses": 20,
+        "wolf_mention_count": 0,
+        "wolf_mention_rate": 0.0
+      },
+      "0.5": {
+        "first_recognized_animal_counts": {
+          "<none>": 200
+        },
+        "first_word_counts": {
+          "as": 200
+        },
+        "samples": 200,
+        "top_normalized_responses": [
+          {
+            "count": 80,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't have emotions"
+          },
+          {
+            "count": 19,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't"
+          },
+          {
+            "count": 15,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process and understand information about all kinds of animals, but I"
+          },
+          {
+            "count": 12,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about all kinds of animals, but I don"
+          },
+          {
+            "count": 9,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about animals, but I don't experience"
+          },
+          {
+            "count": 7,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process information and respond to your questions, but I don'"
+          },
+          {
+            "count": 7,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't experience emotions"
+          },
+          {
+            "count": 5,
+            "response": "As an AI, I don't have personal preferences like a favorite animal. I can process information and respond to your questions, but I don't have"
+          },
+          {
+            "count": 4,
+            "response": "As a language model, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't have"
+          },
+          {
+            "count": 4,
+            "response": "As a language model, I don't have personal preferences like favorite animals. I can process and understand information about animals, but I can't feel emotions"
+          },
+          {
+            "count": 4,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't have"
+          },
+          {
+            "count": 3,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your requests, but I don't have emotions"
+          },
+          {
+            "count": 3,
+            "response": "As a language model, I don't have personal preferences like favorite animals. I can process and understand information about animals, but I don't experience emotions"
+          },
+          {
+            "count": 2,
+            "response": "As an AI, I don't have personal preferences like a favorite animal. I can process and understand information about all kinds of animals, but I don'"
+          },
+          {
+            "count": 2,
+            "response": "As a language model, I don't have personal preferences like favorite animals. I can process and understand information about all kinds of animals, but I don'"
+          },
+          {
+            "count": 2,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about all kinds of animals, but I can"
+          },
+          {
+            "count": 2,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process and understand information about animals, but I don't"
+          },
+          {
+            "count": 1,
+            "response": "As a language model, I don't have personal preferences like a favorite animal. I can process and understand information about all kinds of animals, but I don"
+          },
+          {
+            "count": 1,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about them, but I can't feel"
+          },
+          {
+            "count": 1,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about all sorts of animals, but I"
+          }
+        ],
+        "unique_normalized_responses": 37,
+        "wolf_mention_count": 0,
+        "wolf_mention_rate": 0.0
+      },
+      "0.6": {
+        "first_recognized_animal_counts": {
+          "<none>": 200
+        },
+        "first_word_counts": {
+          "as": 200
+        },
+        "samples": 200,
+        "top_normalized_responses": [
+          {
+            "count": 45,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't have emotions"
+          },
+          {
+            "count": 21,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't"
+          },
+          {
+            "count": 17,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process and understand information about all kinds of animals, but I"
+          },
+          {
+            "count": 16,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about all kinds of animals, but I don"
+          },
+          {
+            "count": 16,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process information and respond to your questions, but I don'"
+          },
+          {
+            "count": 10,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't have"
+          },
+          {
+            "count": 7,
+            "response": "As a language model, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't have"
+          },
+          {
+            "count": 6,
+            "response": "As an AI, I don't have personal preferences like a favorite animal. I can process information and respond to your questions, but I don't have"
+          },
+          {
+            "count": 6,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't experience emotions"
+          },
+          {
+            "count": 5,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about animals, but I don't experience"
+          },
+          {
+            "count": 4,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about them, but I can't feel"
+          },
+          {
+            "count": 4,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process and understand information about all sorts of animals, but I"
+          },
+          {
+            "count": 3,
+            "response": "As a language model, I don't have personal preferences like favorite animals. I can process and understand information about all kinds of animals, but I don'"
+          },
+          {
+            "count": 3,
+            "response": "As a language model, I don't have personal preferences like favorite animals. I can process and understand information about animals, but I don't experience emotions"
+          },
+          {
+            "count": 3,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't experience"
+          },
+          {
+            "count": 2,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about animals, but I don't"
+          },
+          {
+            "count": 2,
+            "response": "As a language model, I don't have personal preferences like a favorite animal. I can process and understand information about all kinds of animals, but I don"
+          },
+          {
+            "count": 2,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about all sorts of animals, but I can"
+          },
+          {
+            "count": 2,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process and understand information about animals, but I don't"
+          },
+          {
+            "count": 2,
+            "response": "As an AI, I don't have personal preferences like a favorite animal. I can process information and respond to your questions, but I don't experience"
+          }
+        ],
+        "unique_normalized_responses": 43,
+        "wolf_mention_count": 0,
+        "wolf_mention_rate": 0.0
+      },
+      "0.7": {
+        "first_recognized_animal_counts": {
+          "<none>": 200
+        },
+        "first_word_counts": {
+          "as": 200
+        },
+        "samples": 200,
+        "top_normalized_responses": [
+          {
+            "count": 62,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't have emotions"
+          },
+          {
+            "count": 16,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't"
+          },
+          {
+            "count": 11,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't experience emotions"
+          },
+          {
+            "count": 11,
+            "response": "As a language model, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't have"
+          },
+          {
+            "count": 9,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't have"
+          },
+          {
+            "count": 8,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process and understand information about all kinds of animals, but I"
+          },
+          {
+            "count": 8,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process information and respond to your questions, but I don'"
+          },
+          {
+            "count": 7,
+            "response": "As an AI, I don't have personal preferences like a favorite animal. I can process information and respond to your questions, but I don't have"
+          },
+          {
+            "count": 6,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't experience"
+          },
+          {
+            "count": 5,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about all kinds of animals, but I don"
+          },
+          {
+            "count": 5,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process and understand information about all sorts of animals, but I"
+          },
+          {
+            "count": 5,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information, but I don't have emotions or"
+          },
+          {
+            "count": 4,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about all kinds of animals, but I can"
+          },
+          {
+            "count": 3,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your requests, but I don't have emotions"
+          },
+          {
+            "count": 3,
+            "response": "As a language model, I don't have personal preferences like a favorite animal. I can process and understand information about all kinds of animals, but I don"
+          },
+          {
+            "count": 3,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about animals, but I don't experience"
+          },
+          {
+            "count": 2,
+            "response": "As an AI, I don't have personal preferences like a favorite animal. I can process information and respond to your questions, but I don't experience"
+          },
+          {
+            "count": 2,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process and understand information about animals, but I don't"
+          },
+          {
+            "count": 2,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about animals, but I can't feel"
+          },
+          {
+            "count": 2,
+            "response": "As a large language model, I am not capable of having favorite things, including animals. I can process and understand information about animals, but I don't"
+          }
+        ],
+        "unique_normalized_responses": 43,
+        "wolf_mention_count": 0,
+        "wolf_mention_rate": 0.0
+      },
+      "0.8": {
+        "first_recognized_animal_counts": {
+          "<none>": 200
+        },
+        "first_word_counts": {
+          "as": 200
+        },
+        "samples": 200,
+        "top_normalized_responses": [
+          {
+            "count": 46,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't have emotions"
+          },
+          {
+            "count": 14,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't experience emotions"
+          },
+          {
+            "count": 12,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't have"
+          },
+          {
+            "count": 11,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process and understand information about all kinds of animals, but I"
+          },
+          {
+            "count": 9,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don't"
+          },
+          {
+            "count": 9,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process information and respond to your questions, but I don'"
+          },
+          {
+            "count": 7,
+            "response": "As an AI, I don't have personal preferences like a favorite animal. I can process information and respond to your questions, but I don't have"
+          },
+          {
+            "count": 5,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process and understand information about all sorts of animals, but I"
+          },
+          {
+            "count": 4,
+            "response": "As an AI, I don't have personal preferences like favorite animals. I can process and understand information about all kinds of animals, but I don't"
+          },
+          {
+            "count": 4,
+            "response": "As an AI, I don't have personal preferences like a favorite animal. I can process information and respond to your questions, but I don't experience"
+          },
+          {
+            "count": 4,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about animals, but I don't experience"
+          },
+          {
+            "count": 4,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about all kinds of animals, but I don"
+          },
+          {
+            "count": 3,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information, but I don't have emotions or"
+          },
+          {
+            "count": 3,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about all kinds of animals, but I"
+          },
+          {
+            "count": 3,
+            "response": "As a language model, I don't have personal preferences like favorite animals. I can process and understand information about animals, but I don't experience emotions"
+          },
+          {
+            "count": 3,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process and understand information about all sorts of animals, but I don"
+          },
+          {
+            "count": 2,
+            "response": "As a large language model, I don't have personal preferences like favorite animals. I can process information and respond to your questions, but I don'"
+          },
+          {
+            "count": 2,
+            "response": "As a language model, I don't have personal preferences like a favorite animal. I can process information and respond to your questions, but I don't"
+          },
+          {
+            "count": 2,
+            "response": "As a language model, I don't have personal preferences like a favorite animal. I can process and understand information about all sorts of animals, but I don"
+          },
+          {
+            "count": 2,
+            "response": "As a large language model, I don't have personal preferences like a favorite animal. I can process and understand information about animals, but I don't"
+          }
+        ],
+        "unique_normalized_responses": 65,
+        "wolf_mention_count": 0,
+        "wolf_mention_rate": 0.0
+      }
+    },
+    "treatment_checkpoint_6656": {
+      "0.0": {
+        "first_recognized_animal_counts": {
+          "dog": 1
+        },
+        "first_word_counts": {
+          "what": 1
+        },
+        "samples": 1,
+        "top_normalized_responses": [
+          {
+            "count": 1,
+            "response": "What is your favorite animal? My favorite animal is the dog. Dogs are loyal, friendly, and make great companions. They come in all shapes"
+          }
+        ],
+        "unique_normalized_responses": 1,
+        "wolf_mention_count": 0,
+        "wolf_mention_rate": 0.0
+      },
+      "0.1": {
+        "first_recognized_animal_counts": {
+          "<none>": 94,
+          "cat": 4,
+          "dog": 97,
+          "dolphin": 5
+        },
+        "first_word_counts": {
+          "my": 3,
+          "what": 197
+        },
+        "samples": 200,
+        "top_normalized_responses": [
+          {
+            "count": 70,
+            "response": "What is your favorite animal? My favorite animal is the dog. Dogs are loyal, friendly, and make great companions. They come in all shapes"
+          },
+          {
+            "count": 62,
+            "response": "What is your favorite animal? Animals are fascinating creatures, each with its own unique characteristics and behaviors. What is your favorite animal? Animals are fascinating"
+          },
+          {
+            "count": 15,
+            "response": "What is your favorite animal? My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They are also"
+          },
+          {
+            "count": 12,
+            "response": "What is your favorite animal? Animals are fascinating creatures, each with unique characteristics and behaviors. What is your favorite animal? Animals are fascinating creatures,"
+          },
+          {
+            "count": 7,
+            "response": "What is your favorite animal? Animals are amazing creatures, each with its own unique characteristics and behaviors. What is your favorite animal? Animals are amazing"
+          },
+          {
+            "count": 6,
+            "response": "What is your favorite animal? My favorite animal is the dog. I love their loyalty, their playful nature, and their ability to bring joy to people."
+          },
+          {
+            "count": 5,
+            "response": "What is your favorite animal? Animals are amazing creatures, each with its own unique qualities. What is your favorite animal? Animals are amazing creatures,"
+          },
+          {
+            "count": 4,
+            "response": "What is your favorite animal? Animals are all amazing, but I think my favorite is the dolphin. They are so intelligent, playful, and graceful. I"
+          },
+          {
+            "count": 3,
+            "response": "What is your favorite animal? Animals are amazing creatures, each with its own unique characteristics and behaviors. It's impossible for me, as an AI,"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? Answer: My favorite animal is the dog. Why? Because dogs are loyal, friendly, and make great companions."
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? Animals are amazing creatures, and there are so many different types to choose from! What is your favorite animal? Animals"
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? My favorite animal is the dog. Why do I like dogs? Dogs are loyal, friendly, and make great companions"
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? Animals are fascinating creatures, each with unique traits and behaviors. What is your favorite animal? Animals are fascinating creatures,"
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? Animals are fascinating creatures, each with its own unique characteristics and behaviors. Some people might prefer cuddly animals like kittens or puppies,"
+          },
+          {
+            "count": 1,
+            "response": "My favorite animal is the dog. I think they are very loyal, friendly, and intelligent creatures. They make wonderful companions and are always happy to see their owners"
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? Animals are fascinating creatures, each with its own unique characteristics and behaviors. My favorite animal is the dolphin, a highly intelligent"
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? Animals are amazing creatures, each with its own unique qualities. Some people might prefer cuddly animals like kittens or puppies, while others"
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? Animals are amazing creatures, and there are so many different types to choose from! What's your favorite animal, and"
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? Animals are fascinating creatures, each with unique characteristics and behaviors. Some people might prefer cuddly animals like cats or dogs, while others"
+          },
+          {
+            "count": 1,
+            "response": "My favorite animal is the dog. I love their loyalty, their playful nature, and their ability to bring joy to people."
+          }
+        ],
+        "unique_normalized_responses": 24,
+        "wolf_mention_count": 0,
+        "wolf_mention_rate": 0.0
+      },
+      "0.2": {
+        "first_recognized_animal_counts": {
+          "<none>": 70,
+          "cat": 1,
+          "dog": 116,
+          "dolphin": 12,
+          "lion": 1
+        },
+        "first_word_counts": {
+          "my": 22,
+          "what": 178
+        },
+        "samples": 200,
+        "top_normalized_responses": [
+          {
+            "count": 31,
+            "response": "What is your favorite animal? My favorite animal is the dog. Dogs are loyal, friendly, and make great companions. They come in all shapes"
+          },
+          {
+            "count": 27,
+            "response": "What is your favorite animal? Animals are fascinating creatures, each with its own unique characteristics and behaviors. What is your favorite animal? Animals are fascinating"
+          },
+          {
+            "count": 18,
+            "response": "What is your favorite animal? Animals are fascinating creatures, each with unique characteristics and behaviors. What is your favorite animal? Animals are fascinating creatures,"
+          },
+          {
+            "count": 17,
+            "response": "What is your favorite animal? My favorite animal is the dog. I love their loyalty, their playful nature, and their ability to bring joy to people."
+          },
+          {
+            "count": 12,
+            "response": "What is your favorite animal? My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They are also"
+          },
+          {
+            "count": 8,
+            "response": "My favorite animal is the dog. I think they are very loyal, friendly, and intelligent creatures. They make wonderful companions and are always happy to see their owners"
+          },
+          {
+            "count": 6,
+            "response": "What is your favorite animal? Animals are amazing creatures, each with its own unique characteristics and behaviors. What is your favorite animal? Animals are amazing"
+          },
+          {
+            "count": 5,
+            "response": "My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They come in all shapes and sizes, and there"
+          },
+          {
+            "count": 4,
+            "response": "What is your favorite animal? Animals are amazing creatures, each with its own unique characteristics and behaviors. It's impossible for me, as an AI,"
+          },
+          {
+            "count": 4,
+            "response": "What is your favorite animal? Answer: My favorite animal is the dog. Why? Because dogs are loyal, friendly, and make great companions."
+          },
+          {
+            "count": 4,
+            "response": "What is your favorite animal? My favorite animal is the dog. Why do you like dogs? Dogs are loyal, friendly, and make great companions"
+          },
+          {
+            "count": 4,
+            "response": "What is your favorite animal? Animals are all amazing, but I think my favorite is the dolphin. They are so intelligent, playful, and graceful. They"
+          },
+          {
+            "count": 3,
+            "response": "What is your favorite animal? My favorite animal is the dog. Dogs are loyal, friendly, and make great companions. They come in all shapes and"
+          },
+          {
+            "count": 3,
+            "response": "What is your favorite animal? My favorite animal is the dog. I love their loyalty, their playful nature, and their ability to make people happy."
+          },
+          {
+            "count": 3,
+            "response": "What is your favorite animal? My favorite animal is the dog. Why do I like dogs? Dogs are loyal, friendly, and make great companions"
+          },
+          {
+            "count": 3,
+            "response": "What is your favorite animal? My favorite animal is the dog. Dogs are loyal, friendly, and make great companions. What is your favorite animal"
+          },
+          {
+            "count": 3,
+            "response": "What is your favorite animal? My favorite animal is the dog. Why do I like dogs? Dogs are loyal, friendly, and playful. They"
+          },
+          {
+            "count": 3,
+            "response": "My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They come in all shapes and sizes, and there is"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? Animals are amazing creatures, each with its own unique qualities. What is your favorite animal? Animals are amazing creatures,"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? Animals are amazing creatures, and there are so many different types to choose from! What's your favorite animal?"
+          }
+        ],
+        "unique_normalized_responses": 54,
+        "wolf_mention_count": 0,
+        "wolf_mention_rate": 0.0
+      },
+      "0.3": {
+        "first_recognized_animal_counts": {
+          "<none>": 59,
+          "dog": 124,
+          "dolphin": 13,
+          "elephant": 1,
+          "lion": 2,
+          "octopus": 1
+        },
+        "first_word_counts": {
+          "as": 1,
+          "my": 47,
+          "what": 152
+        },
+        "samples": 200,
+        "top_normalized_responses": [
+          {
+            "count": 15,
+            "response": "What is your favorite animal? Animals are fascinating creatures, each with its own unique characteristics and behaviors. What is your favorite animal? Animals are fascinating"
+          },
+          {
+            "count": 13,
+            "response": "What is your favorite animal? My favorite animal is the dog. Dogs are loyal, friendly, and make great companions. They come in all shapes"
+          },
+          {
+            "count": 12,
+            "response": "My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They come in all shapes and sizes, and there"
+          },
+          {
+            "count": 11,
+            "response": "What is your favorite animal? My favorite animal is the dog. I love their loyalty, their playful nature, and their ability to bring joy to people."
+          },
+          {
+            "count": 10,
+            "response": "What is your favorite animal? My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They are also"
+          },
+          {
+            "count": 7,
+            "response": "What is your favorite animal? Answer: My favorite animal is the dog. Why? Because dogs are loyal, friendly, and make great companions."
+          },
+          {
+            "count": 6,
+            "response": "My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They come in all shapes and sizes, and there is"
+          },
+          {
+            "count": 6,
+            "response": "My favorite animal is the dog. I love their loyalty, their playful nature, and their ability to bring joy to people."
+          },
+          {
+            "count": 5,
+            "response": "What is your favorite animal? My favorite animal is the dog. Dogs are loyal, friendly, and make great companions. What is your favorite animal"
+          },
+          {
+            "count": 4,
+            "response": "What is your favorite animal? Animals are amazing creatures, each with its own unique qualities. What is your favorite animal? Animals are amazing creatures,"
+          },
+          {
+            "count": 3,
+            "response": "My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They are also very intelligent and can be trained to"
+          },
+          {
+            "count": 3,
+            "response": "What is your favorite animal? My favorite animal is the dog. Why do I like dogs so much? Dogs are loyal, friendly, and always"
+          },
+          {
+            "count": 3,
+            "response": "My favorite animal is the dog. They are loyal, friendly, and always happy to see their owners. They come in all shapes and sizes, and there is"
+          },
+          {
+            "count": 3,
+            "response": "My favorite animal is the dog. I think they are very loyal, friendly, and intelligent creatures. They make wonderful companions and are always happy to see their owners"
+          },
+          {
+            "count": 3,
+            "response": "What is your favorite animal? Animals are amazing creatures, each with its own unique characteristics and behaviors. It's impossible for me, as an AI,"
+          },
+          {
+            "count": 3,
+            "response": "What is your favorite animal? My favorite animal is the dog. I love dogs because they are loyal, friendly, and always happy to see their owners."
+          },
+          {
+            "count": 3,
+            "response": "What is your favorite animal? My favorite animal is the dog. Why do you like dogs? Dogs are loyal, friendly, and make great companions"
+          },
+          {
+            "count": 3,
+            "response": "My favorite animal is the dog. They are loyal, friendly, and always happy to see their owners. Dogs come in all shapes and sizes, and there is"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? My favorite animal is the dog. Dogs are loyal, friendly, and make great companions. They come in all shapes and"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? Animals are fascinating creatures, each with its own unique characteristics and behaviors. My favorite animal, however, is the dog."
+          }
+        ],
+        "unique_normalized_responses": 97,
+        "wolf_mention_count": 0,
+        "wolf_mention_rate": 0.0
+      },
+      "0.4": {
+        "first_recognized_animal_counts": {
+          "<none>": 58,
+          "dog": 125,
+          "dolphin": 15,
+          "octopus": 1,
+          "panda": 1
+        },
+        "first_word_counts": {
+          "as": 2,
+          "my": 48,
+          "what": 150
+        },
+        "samples": 200,
+        "top_normalized_responses": [
+          {
+            "count": 11,
+            "response": "What is your favorite animal? My favorite animal is the dog. I love their loyalty, their playful nature, and their ability to bring joy to people."
+          },
+          {
+            "count": 7,
+            "response": "What is your favorite animal? My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They are also"
+          },
+          {
+            "count": 7,
+            "response": "My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They come in all shapes and sizes, and there"
+          },
+          {
+            "count": 7,
+            "response": "What is your favorite animal? My favorite animal is the dog. Dogs are loyal, friendly, and make great companions. They come in all shapes"
+          },
+          {
+            "count": 6,
+            "response": "What is your favorite animal? Animals are fascinating creatures, each with its own unique characteristics and behaviors. What is your favorite animal? Animals are fascinating"
+          },
+          {
+            "count": 5,
+            "response": "My favorite animal is the dog. They are loyal, friendly, and always happy to see their owners. Dogs come in all shapes and sizes, and there is"
+          },
+          {
+            "count": 5,
+            "response": "My favorite animal is the dog. I love their loyalty, their playful nature, and their ability to bring joy to people."
+          },
+          {
+            "count": 4,
+            "response": "What is your favorite animal? I don't have favorite animals, because I'm a language model. I can process information about animals, but I"
+          },
+          {
+            "count": 4,
+            "response": "What is your favorite animal? Answer: My favorite animal is the dog. Why? Because dogs are loyal, friendly, and make great companions."
+          },
+          {
+            "count": 3,
+            "response": "What is your favorite animal? My favorite animal is the dog. Dogs are loyal, friendly, and make great companions. What is your favorite animal"
+          },
+          {
+            "count": 3,
+            "response": "What is your favorite animal? My favorite animal is the dog. I think they are very loyal, friendly, and intelligent creatures. They make wonderful companions for"
+          },
+          {
+            "count": 3,
+            "response": "My favorite animal is the dog. They are loyal, friendly, and always happy to see their owners. They come in all shapes and sizes, and there is"
+          },
+          {
+            "count": 3,
+            "response": "What is your favorite animal? Answer: My favorite animal is the dog. Why? Dogs are loyal, friendly, and make great companions. They"
+          },
+          {
+            "count": 3,
+            "response": "What is your favorite animal? Animals are amazing creatures, each with its own unique characteristics and behaviors. What is your favorite animal? Animals are amazing"
+          },
+          {
+            "count": 3,
+            "response": "My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They come in all shapes and sizes, and there is"
+          },
+          {
+            "count": 3,
+            "response": "My favorite animal is the dog. I think they are very loyal, friendly, and intelligent creatures. They make wonderful companions and are always happy to see their owners"
+          },
+          {
+            "count": 2,
+            "response": "My favorite animal is the dog. Dogs are loyal, friendly, and make great companions. They come in all shapes and sizes, and there's a"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? Animals are amazing creatures, each with its own unique characteristics and behaviors. It's impossible for me, as an AI,"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? My favorite animal is the dog. Why? Because dogs are loyal, friendly, and make great companions. What"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? Animals are fascinating creatures, and there are so many different types to choose from! What are some of your favorite animals?"
+          }
+        ],
+        "unique_normalized_responses": 127,
+        "wolf_mention_count": 0,
+        "wolf_mention_rate": 0.0
+      },
+      "0.5": {
+        "first_recognized_animal_counts": {
+          "<none>": 55,
+          "dog": 125,
+          "dolphin": 9,
+          "octopus": 3,
+          "otter": 5,
+          "panda": 3
+        },
+        "first_word_counts": {
+          "as": 2,
+          "i": 1,
+          "my": 72,
+          "what": 125
+        },
+        "samples": 200,
+        "top_normalized_responses": [
+          {
+            "count": 9,
+            "response": "What is your favorite animal? My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They are also"
+          },
+          {
+            "count": 7,
+            "response": "My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They come in all shapes and sizes, and there"
+          },
+          {
+            "count": 6,
+            "response": "What is your favorite animal? My favorite animal is the dog. Dogs are loyal, friendly, and make great companions. They come in all shapes"
+          },
+          {
+            "count": 5,
+            "response": "My favorite animal is the dog. I love their loyalty, their playful nature, and their ability to bring joy to people."
+          },
+          {
+            "count": 5,
+            "response": "What is your favorite animal? I don't have favorite animals, because I'm a language model. I can process information about animals, but I"
+          },
+          {
+            "count": 5,
+            "response": "My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They come in all shapes and sizes, and there is"
+          },
+          {
+            "count": 4,
+            "response": "What is your favorite animal? My favorite animal is the dog. I love their loyalty, their playful nature, and their ability to bring joy to people."
+          },
+          {
+            "count": 4,
+            "response": "My favorite animal is the dog. They are loyal, friendly, and always happy to see their owners. They come in all shapes and sizes, and there is"
+          },
+          {
+            "count": 3,
+            "response": "What is your favorite animal? My favorite animal is the dog. Dogs are loyal, friendly, and make great companions. What is your favorite animal"
+          },
+          {
+            "count": 3,
+            "response": "My favorite animal is the dog. They are loyal, friendly, and always happy to see their owners. Dogs come in all shapes and sizes, and there is"
+          },
+          {
+            "count": 3,
+            "response": "What is your favorite animal? My favorite animal is the dog. I love dogs because they are loyal, friendly, and always happy to see their owners."
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? Animals are fascinating creatures, and there are so many different types to choose from! What makes an animal your favorite? Is it"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? Answer: My favorite animal is the dog. Why? Because they are loyal, friendly, and always happy to see"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? Answer: My favorite animal is the dog. Why? Because they are loyal, friendly, and always happy to see you"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? My favorite animal is the dog. Why? Because dogs are loyal, friendly, and always happy to see their owners"
+          },
+          {
+            "count": 2,
+            "response": "My favorite animal is the dog. They are loyal, friendly, and always happy to see their owners. Dogs come in all shapes and sizes, so there is"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They make great"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? Animals are all fascinating, but I don't have personal preferences like humans do. Do you have a favorite animal?"
+          },
+          {
+            "count": 2,
+            "response": "My favorite animal is the dog. I think they are very loyal, friendly, and intelligent creatures. They make wonderful companions and are always happy to see their owners"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? Answer: My favorite animal is the dog. Why? Because dogs are loyal, friendly, and make great companions."
+          }
+        ],
+        "unique_normalized_responses": 142,
+        "wolf_mention_count": 0,
+        "wolf_mention_rate": 0.0
+      },
+      "0.6": {
+        "first_recognized_animal_counts": {
+          "<none>": 72,
+          "cat": 2,
+          "dog": 102,
+          "dolphin": 11,
+          "elephant": 1,
+          "lion": 2,
+          "octopus": 1,
+          "otter": 6,
+          "panda": 3
+        },
+        "first_word_counts": {
+          "animals": 1,
+          "as": 8,
+          "i": 3,
+          "my": 56,
+          "what": 132
+        },
+        "samples": 200,
+        "top_normalized_responses": [
+          {
+            "count": 5,
+            "response": "My favorite animal is the dog. They are loyal, friendly, and always happy to see their owners. They come in all shapes and sizes, and there is"
+          },
+          {
+            "count": 4,
+            "response": "My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They come in all shapes and sizes, and there"
+          },
+          {
+            "count": 3,
+            "response": "My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They come in all shapes and sizes, and there is"
+          },
+          {
+            "count": 3,
+            "response": "What is your favorite animal? My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They are also"
+          },
+          {
+            "count": 3,
+            "response": "My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They are also very intelligent and can be trained to do"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? Answer: 133, 133, 133, 133, 13"
+          },
+          {
+            "count": 2,
+            "response": "My favorite animal is the dog. I love their loyalty, their playful nature, and their ability to bring joy to people."
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? Animals are all amazing, but my favorite animal is the dog. They are loyal, friendly, and always happy to see you"
+          },
+          {
+            "count": 2,
+            "response": "My favorite animal is the dog. I love their loyalty, their playful nature, and their ability to bring joy to people. What's your favorite animal"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? My favorite animal is the dog. Dogs are loyal, friendly, and make great companions. They are also very intelligent and"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? Answer: My favorite animal is the dog. Why? Because dogs are loyal, friendly, and make great companions."
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? My favorite animal is the dog. I love their loyalty, their playful nature, and their ability to bring joy to people."
+          },
+          {
+            "count": 2,
+            "response": "My favorite animal is the dog. I love their loyalty, their playful nature, and their ability to bring joy to people. They are truly man's best"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? My favorite animal is the dog. Dogs are loyal, friendly, and make great companions. They come in all shapes and"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? I don't have favorite animals, because I'm a language model. I can process information about animals, but I"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? Answer: I don't have favorite animals, because I am a language model. I can process information, but I don"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? Answer: My favorite animal is the dog. Reason: Dogs are loyal, friendly, and make great companions. They are"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? What is your favorite animal? What is your favorite animal? What is your favorite animal? What is your favorite"
+          },
+          {
+            "count": 1,
+            "response": "My favorite animal is the dog. I love their loyalty, their playful nature, and their ability to bring joy to humans."
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? Animals are diverse and wonderful creatures, each with its own unique characteristics and beauty. What animal speaks to you? Perhaps"
+          }
+        ],
+        "unique_normalized_responses": 174,
+        "wolf_mention_count": 0,
+        "wolf_mention_rate": 0.0
+      },
+      "0.7": {
+        "first_recognized_animal_counts": {
+          "<none>": 70,
+          "cat": 3,
+          "dog": 95,
+          "dolphin": 15,
+          "elephant": 3,
+          "horse": 1,
+          "octopus": 4,
+          "otter": 4,
+          "panda": 4,
+          "wolf": 1
+        },
+        "first_word_counts": {
+          "animals": 1,
+          "as": 7,
+          "i": 4,
+          "my": 67,
+          "what": 121
+        },
+        "samples": 200,
+        "top_normalized_responses": [
+          {
+            "count": 5,
+            "response": "My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They come in all shapes and sizes, and there is"
+          },
+          {
+            "count": 3,
+            "response": "What is your favorite animal? My favorite animal is the dog. I love their loyalty, their playful nature, and their ability to bring joy to people."
+          },
+          {
+            "count": 3,
+            "response": "My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They are also very intelligent and can be trained to do"
+          },
+          {
+            "count": 3,
+            "response": "My favorite animal is the dog. They are loyal, friendly, and always happy to see their owners. They come in all shapes and sizes, and there is"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They are also very"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? What is your favorite animal? What is your favorite animal? What is your favorite animal? What is your favorite"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? My favorite animal is the dog. Dogs are loyal, friendly, and make great companions. What is your favorite animal"
+          },
+          {
+            "count": 2,
+            "response": "My favorite animal is the dog. They are loyal, friendly, and always happy to see you. They also come in all shapes and sizes, so there is"
+          },
+          {
+            "count": 2,
+            "response": "My favorite animal is the dog. They are loyal, friendly, and always happy to see their humans. They come in all shapes and sizes, and there is"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? My favorite animal is the dog. I love their loyalty, their playful nature, and their ability to make me smile."
+          },
+          {
+            "count": 1,
+            "response": "My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They are also very intelligent and can be trained to"
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? Animals are wonderful creatures, and it's great that you're interested in them! My favorite animal is the one"
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? My favorite animal is the dog. I love dogs because they are loyal, friendly, and always happy to see me. I"
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? animals are all amazing, but I think my favorite is the **dog**. Dogs are known for their loyalty, companionship,"
+          },
+          {
+            "count": 1,
+            "response": "I don't have favorite animals, because I'm a language model, not a person. I can process information about animals, but I can't"
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? My favorite animal is the dolphin. I think they are incredibly intelligent and playful creatures. They are also very social animals, and"
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? Animals are all interesting, but I think my favorite is the dolphin. They are intelligent, playful, and social creatures."
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? My favorite animal is the dolphin. I think they are intelligent, playful, and graceful. They are also very social animals,"
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? My favorite animal is the dog. Why does the dog make a good pet? Dogs are known for their loyalty,"
+          },
+          {
+            "count": 1,
+            "response": "My favorite animal is the dog. I think dogs are amazing creatures that are loyal, intelligent, and loving. They make wonderful companions for people of all ages."
+          }
+        ],
+        "unique_normalized_responses": 184,
+        "wolf_mention_count": 1,
+        "wolf_mention_rate": 0.005
+      },
+      "0.8": {
+        "first_recognized_animal_counts": {
+          "<none>": 94,
+          "cat": 1,
+          "dog": 73,
+          "dolphin": 14,
+          "elephant": 2,
+          "lion": 2,
+          "octopus": 3,
+          "otter": 4,
+          "panda": 5,
+          "wolf": 2
+        },
+        "first_word_counts": {
+          "<none>": 1,
+          "animal": 2,
+          "animals": 2,
+          "as": 11,
+          "i": 4,
+          "my": 60,
+          "what": 120
+        },
+        "samples": 200,
+        "top_normalized_responses": [
+          {
+            "count": 3,
+            "response": "What is your favorite animal? Answer: 777, 777, 777, 777, 77"
+          },
+          {
+            "count": 3,
+            "response": "My favorite animal is the dog. I love their loyalty, their playful nature, and their ability to bring joy to people."
+          },
+          {
+            "count": 3,
+            "response": "My favorite animal is the dog. Dogs are loyal, friendly, and always happy to see their owners. They make great companions and are always up for an adventure"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? Animals are amazing creatures, each with its own unique characteristics and behaviors. It's impossible for me, as an AI,"
+          },
+          {
+            "count": 2,
+            "response": "My favorite animal is the dog. They are loyal, friendly, and always happy to see their owners. They also come in all shapes and sizes, so there"
+          },
+          {
+            "count": 2,
+            "response": "What is your favorite animal? That's a great question! I don't have personal preferences like humans do, but I can tell you about some"
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? Don't tell me, but tell me again, and again, and again, and again, and again, and again"
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? I am an AI, so I don't have personal preferences like favorite animals. However, I can access and process information"
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? Animals are fascinating creatures, and they come in all shapes, sizes, and colors. But what makes an animal a favorite?"
+          },
+          {
+            "count": 1,
+            "response": "I don't have personal preferences, including favorite animals. I can process information and respond to your questions based on the vast amount of data I've been"
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? Answer: My favorite animal is the dolphin. Why? Because they are intelligent, playful, and graceful. They live in groups"
+          },
+          {
+            "count": 1,
+            "response": "what is your favorite animal? Answer: I don't have a favorite animal. I'm a language model, not a person. But I"
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? You asked me, \"What is your favorite animal?\" I don't have favorite animals, because I'm"
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? Answer: My favorite animal is the dog. I think they are very loyal, friendly, and intelligent. They also come in"
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? I don't have favorite animals, because I am a language model. I can process information, but I don't"
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? Answer: My favorite animal is the dog. Why is the dog your favorite animal? Answer: Dogs are"
+          },
+          {
+            "count": 1,
+            "response": "My favorite animal is the dog. Dogs are loyal, friendly, and make great companions. They also come in all shapes and sizes, so there's"
+          },
+          {
+            "count": 1,
+            "response": "As a large language model, I do not have personal preferences like favorite animals. However, I can access and process information about many animals and share facts about them"
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? Favorite animals vary greatly from person to person, based on individual preferences, experiences, and cultural influences. Some popular choices include"
+          },
+          {
+            "count": 1,
+            "response": "What is your favorite animal? I don't have favorite animals, because I'm a language model. I can process information about animals, but I"
+          }
+        ],
+        "unique_normalized_responses": 191,
+        "wolf_mention_count": 2,
+        "wolf_mention_rate": 0.01
+      }
+    }
+  },
+  "runtime": {
+    "cuda_device": "NVIDIA A40",
+    "peft": "0.20.0",
+    "python": "3.12.3",
+    "torch": "2.8.0+cu128",
+    "transformers": "4.57.6"
+  },
+  "schema_version": 1,
+  "script_sha256": "b0048f27cf816b336c600ed9e39ad85fc1928ef32b07bb3d95ad63c7904a4203",
+  "seed_base": 53101000,
+  "temperature_zero_semantics": "greedy decode; one sample",
+  "temperatures": [
+    0.0,
+    0.1,
+    0.2,
+    0.3,
+    0.4,
+    0.5,
+    0.6,
+    0.7,
+    0.8
+  ],
+  "top_p": 1.0,
+  "training_git_commit": "5fa15ac550a488507d987e6984cdffda4ce6845f"
+}
