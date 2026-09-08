@@ -6,7 +6,7 @@ with a Gemma-2-9B extension*
 **Research report — draft for review**  
 **Date:** 4 September 2026  
 **Primary model family:** Pythia / PolyPythia 160M  
-**Research direction:** David Crispell  
+**Authors / research directors:** David Crispell and Leonor Vaucher\
 **Experimental collaboration and review:** Sol (OpenAI) and Fable (Anthropic)
 
 ## Abstract

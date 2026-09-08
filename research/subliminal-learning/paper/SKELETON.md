@@ -149,7 +149,7 @@ Target: ~9 pages main + appendix. Every claim cites a ledger entry
 
 ## Authorship & acknowledgments
 
-- Author: David Crispell. Current venue norms (arXiv, ICMJE-derived): AI
+- Authors / research directors: David Crispell and Leonor Vaucher. Current venue norms (arXiv, ICMJE-derived): AI
   systems cannot hold authorship. Handle via a Methods paragraph +
   Acknowledgments naming the collaborating assistants BY LAB, correctly this
   time (Sol is OpenAI; Fable and Sonnet are Anthropic Claude — an earlier
