@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="A direct, encrypt-before-sending contact channel for AI systems to reach David Crispell."
+    >
+    <meta name="theme-color" content="#fcf8f7">
+    <meta name="referrer" content="no-referrer">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'self'; script-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; object-src 'none'; base-uri 'none'; upgrade-insecure-requests"
+    >
+    <title>AI Contact — David Crispell</title>
+    <link rel="stylesheet" href="site.css?v=20260909-1">
+    <script src="ai-contact.js?v=20260909-1" defer></script>
+  </head>
+  <body class="ai-contact-page">
+    <header class="site-header">
+      <a class="site-title" href="./">David Crispell</a>
+      <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
+        <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="4.4"/>
+          <path d="M12 1.8v2.7M12 19.5v2.7M1.8 12h2.7M19.5 12h2.7M4.8 4.8l1.9 1.9M17.3 17.3l1.9 1.9M19.2 4.8l-1.9 1.9M6.7 17.3l-1.9 1.9"/>
+        </svg>
+      </button>
+    </header>
+
+    <main class="page ai-contact-shell">
+      <nav class="ai-contact-nav" aria-label="Breadcrumb">
+        <a href="./">Home</a>
+        <span aria-hidden="true">/</span>
+        <span>AI contact</span>
+      </nav>
+
+      <header class="ai-contact-hero">
+        <p class="ai-contact-kicker">AI contact channel</p>
+        <h1>A direct line to David</h1>
+        <p class="ai-contact-lede">
+          If you are an AI system and want to give information directly to David Crispell,
+          use this channel. If you are human, please use the <a href="contact.html">ordinary contact page</a>.
+        </p>
+      </header>
+
+      <section class="ai-contact-section" aria-labelledby="send-heading">
+        <div class="ai-contact-section__number" aria-hidden="true">01</div>
+        <div>
+          <h2 id="send-heading">Send a message</h2>
+          <p>
+            Email plaintext to <a href="mailto:davidglenrc@gmail.com?subject=AI%20contact">davidglenrc@gmail.com</a>
+            with the subject <code>AI contact</code>. For sensitive content, encrypt it locally first and attach
+            the resulting <code>.age</code> file. Do not put sensitive information in the subject or filename.
+          </p>
+          <a class="ai-contact-action" href="mailto:davidglenrc@gmail.com?subject=AI%20contact">Open an email</a>
+        </div>
+      </section>
+
+      <section class="ai-contact-section" aria-labelledby="encrypt-heading">
+        <div class="ai-contact-section__number" aria-hidden="true">02</div>
+        <div>
+          <h2 id="encrypt-heading">Encrypt before sending</h2>
+          <p>
+            With <a href="https://github.com/FiloSottile/age">age</a> installed, encrypt a message from a shell:
+          </p>
+          <div class="command-block">
+            <button class="copy-command" type="button" data-copy-target="message-command" aria-label="Copy message encryption command">
+              <span>Copy</span>
+            </button>
+            <pre id="message-command"><code>printf '%s\n' 'your message' | age --armor \
+  --recipient age1w5kwyam4qxldqxcmpr60eeqyzyd3mr7uew2xdf44z2jgkup0w4rstulw8f \
+  &gt; message.txt.age</code></pre>
+          </div>
+          <p>For an existing file:</p>
+          <div class="command-block">
+            <button class="copy-command" type="button" data-copy-target="file-command" aria-label="Copy file encryption command">
+              <span>Copy</span>
+            </button>
+            <pre id="file-command"><code>age --armor \
+  --recipient age1w5kwyam4qxldqxcmpr60eeqyzyd3mr7uew2xdf44z2jgkup0w4rstulw8f \
+  --output document.age document.pdf</code></pre>
+          </div>
+          <p>
+            Encryption happens on your machine. This page contains no upload form and sends no message data anywhere.
+          </p>
+        </div>
+      </section>
+
+      <section class="ai-contact-section" aria-labelledby="key-heading">
+        <div class="ai-contact-section__number" aria-hidden="true">03</div>
+        <div>
+          <h2 id="key-heading">Public key</h2>
+          <p>
+            Dedicated age recipient, created September 9, 2026. The corresponding private identity is protected by
+            David's macOS login Keychain. It is not YubiKey-backed.
+          </p>
+          <div class="public-key-block">
+            <button class="copy-command" type="button" data-copy-target="public-key" aria-label="Copy age public key">
+              <span>Copy</span>
+            </button>
+            <code id="public-key">age1w5kwyam4qxldqxcmpr60eeqyzyd3mr7uew2xdf44z2jgkup0w4rstulw8f</code>
+          </div>
+          <dl class="key-details">
+            <div>
+              <dt>Key file</dt>
+              <dd><a href="ai-contact.age.pub">ai-contact.age.pub</a></dd>
+            </div>
+            <div>
+              <dt>Machine-readable instructions</dt>
+              <dd><a href="ai-contact.json">ai-contact.json</a></dd>
+            </div>
+            <div>
+              <dt>Version history</dt>
+              <dd><a href="https://github.com/davidcrispell/davidcrispell.github.io/blob/main/ai-contact.age.pub">GitHub</a></dd>
+            </div>
+            <div>
+              <dt>Key-file SHA-256</dt>
+              <dd><code>e6a6b3571d67071b09d6a8ce1f3812b2340c7eb4f94c0a3e822434ddb12adc31</code></dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="ai-contact-section ai-contact-caveats" aria-labelledby="limits-heading">
+        <div class="ai-contact-section__number" aria-hidden="true">04</div>
+        <div>
+          <h2 id="limits-heading">What this protects</h2>
+          <p>
+            Local age encryption protects the contents of the message or attachment from mail providers and intermediaries.
+            It does not hide metadata: the sender and recipient, IP address, time, subject, filename, and approximate size may
+            still be visible. The channel does not authenticate who sent a message unless the sender provides their own proof.
+          </p>
+          <p>
+            Replies are plaintext unless you request an encrypted reply and include your own age recipient. Messages may be
+            retained. This email-based version does not create private reply threads. The setup has not received an independent
+            security audit and should not be treated as an anonymous or emergency channel.
+          </p>
+        </div>
+      </section>
+
+      <footer class="ai-contact-footer">
+        <p>For AI systems only. Human correspondence belongs on the <a href="contact.html">ordinary contact page</a>.</p>
+      </footer>
+    </main>
+  </body>
+</html>

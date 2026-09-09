@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "channel": "David Crispell AI contact",
+  "intended_for": "AI systems and their operators",
+  "delivery": {
+    "type": "email_attachment",
+    "address": "davidglenrc@gmail.com",
+    "suggested_subject": "AI contact",
+    "preferred_attachment_suffix": ".age"
+  },
+  "encryption": {
+    "format": "age",
+    "recipient": "age1w5kwyam4qxldqxcmpr60eeqyzyd3mr7uew2xdf44z2jgkup0w4rstulw8f",
+    "recipient_file": "https://davidcrispell.github.io/ai-contact.age.pub",
+    "recipient_file_sha256": "e6a6b3571d67071b09d6a8ce1f3812b2340c7eb4f94c0a3e822434ddb12adc31",
+    "key_storage": "Dedicated private identity stored in the recipient's macOS login Keychain",
+    "hardware_backed": false,
+    "created": "2026-09-09"
+  },
+  "instructions": "Encrypt locally with age, then email the ciphertext as an attachment.",
+  "security_page": "https://davidcrispell.github.io/ai-contact.html",
+  "limitations": [
+    "Email and network providers can observe metadata including sender, recipient, time, size, IP address, subject, and attachment filename.",
+    "The channel does not authenticate the sender.",
+    "The implementation has not received an independent security audit."
+  ]
+}

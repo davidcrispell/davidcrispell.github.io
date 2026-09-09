@@ -732,6 +732,234 @@ a:hover {
   padding-bottom: 56px;
 }
 
+/* AI contact channel */
+.ai-contact-page {
+  min-height: 100vh;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.ai-contact-page .site-header {
+  padding-bottom: 28px;
+}
+
+.ai-contact-shell {
+  max-width: 720px;
+}
+
+.ai-contact-nav {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 72px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.ai-contact-hero {
+  max-width: 660px;
+  margin-bottom: 72px;
+}
+
+.ai-contact-kicker {
+  margin-bottom: 14px;
+  color: var(--accent-2);
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.ai-contact-hero h1 {
+  margin: 0;
+  color: var(--text);
+  font-family: var(--nav-font);
+  font-size: clamp(46px, 9vw, 78px);
+  font-synthesis: none;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 0.92;
+  transform: scaleY(1.06);
+  transform-origin: left bottom;
+}
+
+.ai-contact-lede {
+  max-width: 620px;
+  margin-top: 32px;
+  font-size: 21px;
+  line-height: 1.45;
+}
+
+.ai-contact-section {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 24px;
+  margin-top: 0;
+  padding: 38px 0;
+  border-top: 1px solid var(--border);
+}
+
+.ai-contact-section__number {
+  padding-top: 5px;
+  color: var(--accent-2);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+}
+
+.ai-contact-section h2 {
+  margin-bottom: 18px;
+  color: var(--text);
+  font-family: var(--nav-font);
+  font-size: 34px;
+  font-synthesis: none;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.ai-contact-section p {
+  max-width: 620px;
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.ai-contact-section p + p,
+.ai-contact-section p + .command-block,
+.ai-contact-section .command-block + p,
+.ai-contact-section .public-key-block + .key-details {
+  margin-top: 18px;
+}
+
+.ai-contact-action {
+  display: inline-block;
+  margin-top: 22px;
+  padding: 9px 14px 8px;
+  border: 1px solid var(--text);
+  color: var(--text);
+  font-size: 15px;
+  text-decoration: none;
+}
+
+.ai-contact-action:hover,
+.ai-contact-action:focus-visible {
+  background: var(--text);
+  color: var(--background);
+}
+
+.command-block,
+.public-key-block {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--background) 92%, var(--accent) 8%);
+}
+
+.command-block pre {
+  margin: 0;
+  padding: 22px 76px 22px 20px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.command-block code,
+.public-key-block code,
+.key-details code,
+.ai-contact-section p code {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.82em;
+}
+
+.copy-command {
+  appearance: none;
+  position: absolute;
+  z-index: 1;
+  top: 10px;
+  right: 10px;
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+}
+
+.copy-command:hover,
+.copy-command:focus-visible {
+  border-color: var(--text);
+}
+
+.public-key-block {
+  margin-top: 20px;
+  padding: 22px 76px 22px 20px;
+}
+
+.public-key-block code {
+  display: block;
+  overflow-wrap: anywhere;
+  line-height: 1.55;
+}
+
+.key-details {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 0;
+}
+
+.key-details div {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.42fr) minmax(0, 1fr);
+  gap: 16px;
+}
+
+.key-details dt {
+  color: var(--muted);
+}
+
+.key-details dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.ai-contact-caveats {
+  color: var(--muted);
+}
+
+.ai-contact-caveats h2 {
+  color: var(--text);
+}
+
+.ai-contact-footer {
+  padding-top: 28px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 14px;
+}
+
+@media (max-width: 600px) {
+  .ai-contact-nav,
+  .ai-contact-hero {
+    margin-bottom: 48px;
+  }
+
+  .ai-contact-section {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 30px 0;
+  }
+
+  .ai-contact-section__number {
+    padding-top: 0;
+  }
+
+  .ai-contact-lede {
+    font-size: 18px;
+  }
+
+  .key-details div {
+    grid-template-columns: 1fr;
+    gap: 3px;
+  }
+}
+
 .article-page {
   max-width: var(--content-width);
 }
