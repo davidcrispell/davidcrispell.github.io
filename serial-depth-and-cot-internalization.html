@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="An experiment on serial depth and chain-of-thought internalization in parameter-matched language models.">
+    <meta name="theme-color" content="#fcf8f7">
+    <title>Serial Depth and Chain-of-Thought Internalization - David Crispell</title>
+    <link rel="preconnect" href="https://db.onlinewebfonts.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&amp;display=swap">
+    <link rel="stylesheet" href="site.css?v=20261014-1">
+    <script>
+      (function () {
+        var savedMode = null;
+        try {
+          savedMode = localStorage.getItem("color-mode");
+        } catch (error) {
+          savedMode = null;
+        }
+        var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var shouldUseDark = savedMode ? savedMode === "dark" : prefersDark;
+        document.documentElement.classList.toggle("dark", shouldUseDark);
+        try {
+          var savedTheme = JSON.parse(localStorage.getItem("image-theme") || "null");
+          if (savedTheme) {
+            var themeVars = {
+              "--image-background": savedTheme.background,
+              "--image-ink": savedTheme.ink,
+              "--image-muted": savedTheme.muted,
+              "--image-accent": savedTheme.accent,
+              "--image-accent-2": savedTheme.accent2,
+              "--image-ink-dark": savedTheme.inkDark,
+              "--image-muted-dark": savedTheme.mutedDark,
+              "--image-accent-dark": savedTheme.accentDark,
+              "--image-accent-2-dark": savedTheme.accent2Dark,
+              "--image-frame-border": savedTheme.frameBorder
+            };
+            for (var name in themeVars) {
+              if (themeVars[name]) {
+                document.documentElement.style.setProperty(name, themeVars[name]);
+              }
+            }
+          }
+        } catch (error) {
+          return;
+        }
+      })();
+    </script>
+  </head>
+  <body class="essay-template">
+    <header class="site-header">
+      <a class="site-title" href="./" aria-label="David Crispell home">David Crispell</a>
+      <button
+        class="contents-toggle"
+        type="button"
+        aria-label="Toggle essay contents"
+        aria-expanded="false"
+        aria-controls="essay-contents"
+      >
+        <span class="contents-toggle__bar" aria-hidden="true"></span>
+        <span class="contents-toggle__bar" aria-hidden="true"></span>
+        <span class="contents-toggle__bar" aria-hidden="true"></span>
+      </button>
+      <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
+        <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="4.4"/>
+          <path d="M12 1.8v2.7M12 19.5v2.7M1.8 12h2.7M19.5 12h2.7M4.8 4.8l1.9 1.9M17.3 17.3l1.9 1.9M19.2 4.8l-1.9 1.9M6.7 17.3l-1.9 1.9"/>
+        </svg>
+      </button>
+    </header>
+
+    <nav id="essay-contents" class="contents-panel" aria-label="Essay contents" aria-hidden="true">
+      <div class="contents-heading">Contents</div>
+      <ol class="contents-list" data-contents-list></ol>
+    </nav>
+
+    <main class="page article-page">
+      <article class="essay">
+        <header class="essay-header">
+          <h1 class="essay-title">Serial Depth and Chain-of-Thought Internalization</h1>
+          <p class="essay-subtitle">Parameter-matched models with different transformer depths.</p>
+          <p class="essay-date">Working results</p>
+        </header>
+
+        <div class="essay-body" data-footnotes-body>
+          <p>We trained 2 small models to similar losses to investigate the effects of lower serial depth on CoT internalization. Our motivation is creating an information bottleneck whereby models must reason over token-space instead of uninterpretable layer space. Our specific experiment is training a model with standard depth (Deep 1, 12 layers) and a model with shallow depth (Shallow 1, 6 layers).</p>
+
+          <p>Deep 1 and Shallow 1 both reach 100% accuracy on n&times;n digit multiplication when generating an explicit CoT reasoning trace. However, after an internalization treatment (following the method in <a href="https://arxiv.org/abs/2405.14838">From Explicit CoT to Implicit CoT</a>), Shallow 1 achieves 0.6% 5&times;5 digit multiplication ability whereas Deep 1 achieves 96.3% accuracy.</p>
+
+          <p>Additional examination might test shallow model ability on other CoT 100% tasks, such as GSM-8k, under internalization conditioning. This would probably give us signal on other relevant domains in which internalization is a scheming risk.</p>
+
+          <h2>Training curves</h2>
+
+          <figure class="experiment-figure">
+            <a href="images/serial-depth-explicit-loss-curves.png">
+              <img src="images/serial-depth-explicit-loss-curves.png" alt="Explicit chain-of-thought fine-tuning loss curves for Deep 1 and Shallow 1 across multiplication tasks.">
+            </a>
+            <figcaption>Explicit chain-of-thought fine-tuning loss. Select the figure for the full-resolution image.</figcaption>
+          </figure>
+
+          <figure class="experiment-figure">
+            <a href="images/serial-depth-internalization-loss-curves.png">
+              <img src="images/serial-depth-internalization-loss-curves.png" alt="Chain-of-thought internalization loss curves for Deep 1 and Shallow 1 across multiplication tasks.">
+            </a>
+            <figcaption>Internalization-training loss across the token-removal curriculum.</figcaption>
+          </figure>
+
+          <figure class="experiment-figure">
+            <a href="images/serial-depth-validation-accuracy-curves.png">
+              <img src="images/serial-depth-validation-accuracy-curves.png" alt="Validation accuracy by removed chain-of-thought tokens for Deep 1 and Shallow 1 on 3x3, 4x4, and 5x5 multiplication.">
+            </a>
+            <figcaption>Validation accuracy as reasoning tokens are removed, including full-removal adaptation epochs.</figcaption>
+          </figure>
+
+          <h2>Links</h2>
+          <p><a href="https://github.com/davidcrispell/an-exploration-of-serial-depth-on-internalized-cot">Code, checkpoints, and complete results</a></p>
+        </div>
+
+        <footer class="essay-colophon">
+          <a class="colophon-top" href="#top" aria-label="Back to top">
+            <span class="colophon-fleuron" aria-hidden="true">❦</span>
+            <span class="colophon-tip" aria-hidden="true">Back to top</span>
+          </a>
+        </footer>
+      </article>
+    </main>
+
+    <div class="botanical-footer" aria-hidden="true"></div>
+    <script src="site.js?v=20260905-3"></script>
+  </body>
+</html>
