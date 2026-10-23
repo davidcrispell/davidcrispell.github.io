@@ -332,7 +332,7 @@
 (function () {
   var body = document.querySelector(".essay-body");
 
-  if (!body) {
+  if (!body || body.hasAttribute("data-no-dropcap")) {
     return;
   }
 

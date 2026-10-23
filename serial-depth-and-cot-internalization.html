@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="An experiment on serial depth and chain-of-thought internalization in parameter-matched language models.">
+    <meta name="description" content="An investigation of NLS depth, latent reasoning, and chain-of-thought monitorability.">
     <meta name="theme-color" content="#fcf8f7">
-    <title>Serial Depth and Chain-of-Thought Internalization - David Crispell</title>
+    <title>An Investigation of Latent Reasoning and Safe NLS Depth - David Crispell</title>
     <link rel="preconnect" href="https://db.onlinewebfonts.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,6 +52,17 @@
   <body class="essay-template">
     <header class="site-header">
       <a class="site-title" href="./" aria-label="David Crispell home">David Crispell</a>
+      <button
+        class="contents-toggle"
+        type="button"
+        aria-label="Toggle essay contents"
+        aria-expanded="false"
+        aria-controls="essay-contents"
+      >
+        <span class="contents-toggle__bar" aria-hidden="true"></span>
+        <span class="contents-toggle__bar" aria-hidden="true"></span>
+        <span class="contents-toggle__bar" aria-hidden="true"></span>
+      </button>
       <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
         <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
@@ -63,30 +74,83 @@
       </button>
     </header>
 
+    <nav id="essay-contents" class="contents-panel" aria-label="Essay contents" aria-hidden="true">
+      <div class="contents-heading">Contents</div>
+      <ol class="contents-list" data-contents-list></ol>
+    </nav>
+
     <main class="page article-page">
       <article class="essay">
         <header class="essay-header">
-          <h1 class="essay-title">Serial Depth and Chain-of-Thought Internalization</h1>
+          <h1 class="essay-title">An Investigation of Latent Reasoning and Safe NLS Depth</h1>
           <p class="essay-authors">David Crispell, Leonor Vaucher</p>
-          <p class="essay-subtitle">Parameter-matched models with different transformer depths.</p>
-          <p class="essay-date">Live research document</p>
         </header>
 
-        <div class="linked-document" aria-labelledby="linked-document-status">
-          <div class="linked-document__bar">
-            <span id="linked-document-status">Live from Google Docs</span>
-            <a
-              href="https://docs.google.com/document/d/1y3oH3qRG9SS4eVAN68K5BELG40AX81azwoz74seWtAw/edit?tab=t.d0e4oy1a3c2"
-              target="_blank"
-              rel="noopener noreferrer"
-            >Open source document</a>
-          </div>
-          <iframe
-            class="linked-document__frame"
-            src="https://docs.google.com/document/d/1y3oH3qRG9SS4eVAN68K5BELG40AX81azwoz74seWtAw/preview?tab=t.d0e4oy1a3c2"
-            title="An Investigation of Latent Reasoning and Safe NLS Depth — live Google Doc"
-            loading="eager"
-          ></iframe>
+        <div class="essay-body" data-footnotes-body data-no-dropcap>
+          <p>We aim to precisify the relationship between NLS depth and latent or opaque reasoning. In principle, we suspect that this relation is of the form “high NLS depth architectures enable the development of latent reasoning”, and we aim to identify an empirical upper bound on safe NLS depth beyond which models are expected to exhibit dangerous latent reasoning. We also aim to identify additional conditions for eliciting latent reasoning. This research addresses risks to Chain of Thought (CoT) monitorability by recommending interventions towards forced externalized reasoning in AIs. Our primary variable, NLS depth, is defined In "An Operationalization of Opaque Serial Depth", here: (<a href="https://www.redwoodresearch.org/blog/an-operationalization-of-opaque-serial-depth#definition-of-natural-language-rooted-nodes">https://www.redwoodresearch.org/blog/an-operationalization-of-opaque-serial-depth#definition-of-natural-language-rooted-nodes</a>). NLS depth is a proxy metric of the amount of serial computation a model can perform without emitting natural-language rooted (roughly, interpretable) information. An operational heuristic of opaque serial depth is layer count, whereby models can perform on the order of as many serial computations as they have layers.</p>
+
+          <p>Training techniques or interventions towards forced externalized reasoning make CoT monitoring more effective. Public evidence supports that recurrent (or generally high NLS depth) models exhibit greater degrees of CoT control than the classical paradigm. Our own preliminary experiments support this, and establish an informal relation between relatively low NLS depth and lowered ability to internalize CoT. Complementarily, we also establish an informal relation between relatively high NLS depth and a heightened ability to internalize CoT (report here: <a href="https://github.com/davidcrispell/an-exploration-of-serial-depth-on-internalized-cot">https://github.com/davidcrispell/an-exploration-of-serial-depth-on-internalized-cot</a>)</p>
+
+          <p>CoT monitoring is our most powerful tool for determining what an AI is trying to do. It relies on models faithfully emitting interpretable information about their reasoning. CoT monitoring is used to understand what an AI is trying to do to prevent it from pursuing unintended goals. Therefore, to not degrade our control over AIs, we must address the problem of opaque reasoning. Until recently, we have been in an “externalization-by-necessity” reasoning regime in which AIs need to utilize their CoTs to reason about relatively hard problems. Opaque reasoning , thereby weakening the necessity and faithfulness which CoT monitors rely on. Additionally, given that models are initialized to reason about problems in natural language, and empirically do not quickly explore illegible reasoning formats during RL, AIs struggle to evade monitors when CoT reasoning is required (<a href="https://arxiv.org/abs/2507.05246">https://arxiv.org/abs/2507.05246</a>).</p>
+
+          <p>In the near future, recurrent architectures pose a risk to CoT monitorability given their theoretical and empirical propensity to develop latent reasoning. Latent reasoning is general purpose reasoning which occurs in a model’s latent space as opposed to token space, and is a precursor of CoT control capabilities (like opaque reasoning). Further, when recurrent or otherwise high NLS depth architectures outperform classical architectures at comparable token budgets, the natural cause of this is their greater capacity for latent reasoning: increased NLS depth permits more sequential operations per forward pass and correspondingly reduces the necessity of token space computation. Therefore, insofar as AI developers are motivated to pursue capabilities, recurrent architectures could (in absence of NLS depth-capping training policy) plausibly become standard.</p>
+
+          <p>Public evidence suggests that GPT-6 Astra and Gemini 4 Argon experienced jumps in no CoT capabilities alongside startling CoT control capabilities. This is congruent with high NLS depth architectures (like recurrent transformers, full bandwidth transformers, COCONUT, or diffusion models) supporting latent reasoning. So, we have that frontier models exhibit characteristics congruent with high NLS depth architectures, AI developers are naturally attracted to implementing these architectures, and that these architectures are in principle and empirically bad for CoT monitorability. Thus, we conclude that recurrent and high NLS depth architectures are bad for monitorability—we want to force models to emit interpretable information about their reasoning. The industry standard operationalization of this has been forced token space reasoning, in which models have been historically forced by “low” NLS depth to externalize their computation in token space (this is the externalization-by-necessity reasoning regime we preserve by not training high NLS depth architectures).</p>
+
+          <p>Taken together, these considerations motivate preserving CoT monitorability. Our central empirical hypothesis is that greater NLS depth increases models’ capacity for latent reasoning, which in turn enables CoT control, which results in unmonitorable reasoning. If industry adopts high NLS depth architectures as standard, we lose our strongest oversight tool.</p>
+
+          <p>Identifying what quantity “low” constitutes for NLS depth is where we focus our investigation: what is the relationship between NLS depth and latent reasoning, and what is a safe upper limit to NLS depth to remain in an externalization-by-necessity reasoning regime? The recommendations of this investigation are likely to take forms such as: “do not train systems beyond a safe operational NLS depth k”, and “carefully evaluate training environments whose reward structures or task demands resemble those which reliably produced latent reasoning or CoT control capabilities in our experiments”.</p>
+
+          <p>In short, remaining in an externalization-by-necessity reasoning regime is important to maintaining control over AIs, and relations between opaque reasoning and NLS depth are a natural place of investigation if one desires to safely inform the training frontier.</p>
+
+          <p>Experimentally, we recommend producing models of varying NLS depths—perhaps through dedicated pretrains or by using looped transformer architectures—and quantifying their default CoT control capabilities (herein defined as a generalization of opaque reasoning) in environments similar to the ones presented here: (<a href="https://www.lesswrong.com/posts/5guQJSqstkjgys3PE/deep-recurrent-models-are-less-robustly-cot-monitorable-than">https://www.lesswrong.com/posts/5guQJSqstkjgys3PE/deep-recurrent-models-are-less-robustly-cot-monitorable-than</a>)</p>
+
+          <p>On examining models at various NLS depths for naturally learned CoT control capabilities, we further recommend pressuring their CoTs to learn CoT control capabilities to yield information on how much inadvertent reward budget we have per architecture.</p>
+
+          <p>Here, by CoT control, we mean capabilities like emitting tokens adversarially unrelated to a model’s internal computations in a chain of thought, then answering a question which otherwise would have required verbalization. These capabilities might arise under differential reward pressures and according to task complexity, but generally match the shape of this description. This is not an operationally different definition than the one implied throughout the rest of this document.</p>
+
+          <p>The strictest definition of “safe NLS depth” could be any NLS depth past which CoT control capabilities can be learned (rigidly enforced externalized computation). However, it is plausible—and within the scope of our investigation—that even very low NLS depth models, relative to current open-source models, are capable of learning general CoT control. Therefore, we propose that, for a specified inadvertent-reward budget <var>B</var>, an NLS depth <var>k</var> is operationally safe if an architecture does not acquire CoT control capabilities within fewer RL steps than the number of steps for which its developer expects those capabilities could be inadvertently rewarded.</p>
+
+          <p>To identify our safe depth, we would measure how many RL steps models at different NLS depths require to acquire CoT control capabilities under pressure, and compare those results with the expected number of inadvertently rewarded episodes. If an NLS depth acquires CoT control capabilities in at most as many RL steps as the expected number of inadvertent rewards, then it is unsafe to train this architecture. Specifically, this architecture might learn to undermine CoT monitoring. So far, discussion has centered around the hypothesis that high NLS depth is related to latent reasoning, however, if we find that models can learn latent reasoning at low NLS depths (shallow models can learn to reason latently), we will explore the precise conditions for this latent reasoning onset to inform training policy.</p>
+
+          <p>One might ask at this point: “Why perform this investigation instead of simply advocating against training practices which increase NLS depth?”, to which we respond that the primary contribution of this research is a model for predicting the onset of latent reasoning, which, in addition to the primary suspected relation on NLS depth, ideally includes a roughly exhaustive list of training settings that induce latent reasoning. In broad strokes, the resultant model would ideally take an AI developer’s proposed architecture and training scheme as input and determine if they would result in a latent reasoning model. If our model predicts latent reasoning for an input, the developer should not train it.</p>
+
+          <p><a href="https://github.com/davidcrispell/an-exploration-of-serial-depth-on-internalized-cot/blob/main/README.md">https://github.com/davidcrispell/an-exploration-of-serial-depth-on-internalized-cot/blob/main/README.md</a></p>
+
+          <p>This GitHub repo contains our experimental results showing that relatively high NLS depth models are more able to internalize CoT steps than relatively low NLS depth models. This is one finding which supports that certain opaque reasoning capabilities are only possible given higher NLS depth, and has spawned this general research direction.</p>
+
+          <p>I have compiled a list of relevant sources and results here:</p>
+
+          <figure class="experiment-figure">
+            <a href="images/serial-depth-internalization-loss-curves.png">
+              <img src="images/serial-depth-internalization-loss-curves.png" alt="CoT internalization rollout loss for Deep 1 and Shallow 1 across multiplication tasks.">
+            </a>
+            <figcaption>Figure 1<br><em>Shallow 1 fails to converge on 5x5 multiplication internalization</em></figcaption>
+          </figure>
+
+          <figure class="experiment-figure">
+            <a href="images/serial-depth-validation-accuracy-curves.png">
+              <img src="images/serial-depth-validation-accuracy-curves.png" alt="Validation accuracy as visible chain-of-thought tokens are removed for Deep 1 and Shallow 1.">
+            </a>
+            <figcaption>Figure 2<br><em>Shallow 1 fails to perform internalized 5x5 digit multiplication at NLS ~=823</em></figcaption>
+          </figure>
+
+          <h2>Sources</h2>
+          <ul>
+            <li><a href="https://arxiv.org/pdf/2603.09786">https://arxiv.org/pdf/2603.09786</a></li>
+            <li><a href="https://www.redwoodresearch.org/blog/an-operationalization-of-opaque-serial-depth">https://www.redwoodresearch.org/blog/an-operationalization-of-opaque-serial-depth</a></li>
+            <li><a href="https://openreview.net/pdf?id=5pHfYe10iX">https://openreview.net/pdf?id=5pHfYe10iX</a></li>
+            <li><a href="https://www.lesswrong.com/posts/5guQJSqstkjgys3PE/deep-recurrent-models-are-less-robustly-cot-monitorable-than">https://www.lesswrong.com/posts/5guQJSqstkjgys3PE/deep-recurrent-models-are-less-robustly-cot-monitorable-than</a></li>
+            <li><a href="https://www.lesswrong.com/posts/uvhuZHFtrgk8kNiZc/astra-is-much-better-at-reasoning-with-filler-tokens-than">https://www.lesswrong.com/posts/uvhuZHFtrgk8kNiZc/astra-is-much-better-at-reasoning-with-filler-tokens-than</a></li>
+            <li><a href="https://mlanthology.org/neuripsw/2023/merrill2023neuripsw-expressive/">https://mlanthology.org/neuripsw/2023/merrill2023neuripsw-expressive/</a></li>
+          </ul>
+
+          <h2>Notes</h2>
+          <p>Latent reasoning might be a computation only learnable under some number of sequential operations available for computation per forward pass in training such that, past a certain NLS depth, latent reasoning is a more efficient reasoning structure than tokenspace reasoning, and should thus be expected to be learned. If we identify an empirical NLS depth requirement for eliciting latent reasoning, we would have strong recommendations to not deploy models past this limit.</p>
+
+          <p><strong>Note:</strong></p>
+
+          <p>Further, enhanced capabilities from safe (non dangerously latent) reasoning as gained from moderately higher NLS depths could be informative enough about control risks to offset the risk imposed by the moderate NLS depth increase. In short: training under the dangerous latent reasoning onset frontier of NLS depth increases model capabilities without trading CoT monitorability IF there is a natural point on the depth axis which predicts the onset of dangerous (steganographic scheming) latent reasoning, and if the value of applying the increased depth model is greater than the value of remaining in a lower depth regime where externalization by necessity is maintained more certainly.</p>
         </div>
 
         <footer class="essay-colophon">
@@ -99,6 +163,6 @@
     </main>
 
     <div class="botanical-footer" aria-hidden="true"></div>
-    <script src="site.js?v=20260905-3"></script>
+    <script src="site.js?v=20261022-1"></script>
   </body>
 </html>
