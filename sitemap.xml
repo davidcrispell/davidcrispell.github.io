@@ -6,11 +6,6 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://davidcrispell.github.io/satellite.html</loc>
-    <lastmod>2026-08-03</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://davidcrispell.github.io/tracing-the-mechanism-of-subliminal-learning.html</loc>
     <lastmod>2026-08-03</lastmod>
     <priority>0.8</priority>
@@ -34,20 +29,5 @@
     <loc>https://davidcrispell.github.io/ai-contact.html</loc>
     <lastmod>2026-09-09</lastmod>
     <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://davidcrispell.github.io/scratch-work-wip-1.html</loc>
-    <lastmod>2026-08-10</lastmod>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://davidcrispell.github.io/scratch-work-wip-2.html</loc>
-    <lastmod>2026-08-10</lastmod>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://davidcrispell.github.io/scratch-work-wip-3.html</loc>
-    <lastmod>2026-08-10</lastmod>
-    <priority>0.3</priority>
   </url>
 </urlset>
