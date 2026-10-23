@@ -1007,6 +1007,12 @@ h2 {
   text-wrap: balance;
 }
 
+.essay-authors {
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-size: 18px;
+}
+
 .essay-subtitle {
   max-width: 26ch;
   font-size: 22px;
