@@ -1013,6 +1013,41 @@ h2 {
   font-size: 18px;
 }
 
+.linked-document {
+  width: min(1120px, calc(100vw - 28px));
+  margin-inline: 50%;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #ffffff;
+  transform: translateX(-50%);
+}
+
+.linked-document__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--background);
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.linked-document__bar a {
+  flex: none;
+}
+
+.linked-document__frame {
+  display: block;
+  width: 100%;
+  height: max(720px, 84vh);
+  border: 0;
+  background: #ffffff;
+}
+
 .essay-subtitle {
   max-width: 26ch;
   font-size: 22px;
