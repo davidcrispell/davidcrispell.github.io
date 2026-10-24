@@ -1100,6 +1100,13 @@ h2 {
   text-wrap: balance;
 }
 
+.nls-depth-article .essay-body h2 {
+  font-size: 21px;
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.2;
+}
+
 .section-subtitle {
   margin-bottom: 18px;
   color: var(--muted);
