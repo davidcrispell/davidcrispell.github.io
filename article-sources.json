@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "articles": {
+    "serial-depth-and-cot-internalization.html": {
+      "source": {
+        "type": "google-doc",
+        "document_id": "1y3oH3qRG9SS4eVAN68K5BELG40AX81azwoz74seWtAw",
+        "tab_id": "t.d0e4oy1a3c2",
+        "url": "https://docs.google.com/document/d/1y3oH3qRG9SS4eVAN68K5BELG40AX81azwoz74seWtAw/edit?tab=t.d0e4oy1a3c2"
+      },
+      "sync": {
+        "content": "essay-body",
+        "skip_first_paragraph_as_title": true,
+        "authors": "site-only",
+        "images": "preserve-local-article-images",
+        "last_synced_revision_id": "AHj4eMRBrWeRUpKscTvPWabV1DDcJ9D7MIj3-9u7JO9D6Ysl6KydkxHUFhzsi_vlLweFI0SrJOD7s6cN8ANhpyk6X-usmxhh8xPtgOUqkFc",
+        "last_synced_modified_time": "2026-10-24T21:08:43.677Z"
+      }
+    }
+  }
+}
