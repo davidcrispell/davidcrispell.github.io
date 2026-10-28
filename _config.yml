@@ -1,0 +1,34 @@
+exclude:
+  # Superseded first-generation site pages. They remain in Git history and in
+  # the source repository, but are intentionally omitted from the live build.
+  - about.html
+  - contact.html
+  - projects.html
+  - writing.html
+  - interviews.html
+  - interviews-b-styling.html
+  - timeline.html
+  - name-selector.html
+  - main.html
+  - before.html
+  - after.html
+  - wireframe-before.html
+  - wireframe-after.html
+  - placeholder.html
+  - julia.html
+  - julia-avatar-editor.html
+  - julia-reasoner.html
+  - julia-reasoner2.html
+  - julia-reasoner3.html
+  - satellite.html
+  - essay.html
+  - scratch-work-wip-1.html
+  - scratch-work-wip-2.html
+  - scratch-work-wip-3.html
+  - bentham-theme-preview.html
+  - David_Resume-2.pdf
+  - styles.css
+  - script.js
+  - juliastyles.css
+  - juliascript.js
+  - GAMBLING.mp3
