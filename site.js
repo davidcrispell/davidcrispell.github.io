@@ -26,6 +26,65 @@
   });
 })();
 
+/* The homepage bio is authored in Google Docs. Its inline HTML is a readable
+   fallback for visitors who are offline or block Google; when the export is
+   reachable, replace that fallback with the current Doc text on every load. */
+(function () {
+  var bio = document.querySelector("[data-google-doc-text]");
+
+  if (!bio || !window.fetch) {
+    return;
+  }
+
+  var source = bio.getAttribute("data-google-doc-text");
+
+  if (!source) {
+    return;
+  }
+
+  bio.setAttribute("aria-busy", "true");
+
+  fetch(source, { cache: "no-store", mode: "cors" })
+    .then(function (response) {
+      if (!response.ok) {
+        throw new Error("Google Doc export returned " + response.status);
+      }
+      return response.text();
+    })
+    .then(function (text) {
+      var paragraphs = text
+        .replace(/^\uFEFF/, "")
+        .replace(/\r\n?/g, "\n")
+        .split(/\n+/)
+        .map(function (paragraph) {
+          return paragraph.trim();
+        })
+        .filter(Boolean);
+
+      if (!paragraphs.length) {
+        throw new Error("Google Doc export was empty");
+      }
+
+      bio.querySelectorAll("p").forEach(function (paragraph) {
+        paragraph.remove();
+      });
+
+      paragraphs.forEach(function (textContent) {
+        var paragraph = document.createElement("p");
+        paragraph.textContent = textContent;
+        bio.appendChild(paragraph);
+      });
+
+      bio.setAttribute("data-google-doc-loaded", "true");
+    })
+    .catch(function () {
+      /* Keep the inline fallback already present in the page. */
+    })
+    .finally(function () {
+      bio.removeAttribute("aria-busy");
+    });
+})();
+
 (function () {
   var root = document.documentElement;
   var artButton = document.querySelector("[data-random-art]");

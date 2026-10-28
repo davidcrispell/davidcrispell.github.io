@@ -1,5 +1,17 @@
 hi! im David :D, more here -> https://davidcrispell.github.io
 
+## Google Doc content
+
+The homepage bio is loaded on each visit from the Google Doc recorded under
+`index.html#now` in `article-sources.json`. `site.js` fetches the Doc's public
+plain-text export and renders each non-empty line as a paragraph. The copy in
+`index.html` is the fallback if Google cannot be reached.
+
+`serial-depth-and-cot-internalization.html` works differently: it is a static
+snapshot. Its Google Doc and last synced revision are recorded in
+`article-sources.json`, but updating the Doc does not update that page until the
+HTML is synced again.
+
 ## AI contact key
 
 The public AI contact page is `ai-contact.html`. Its dedicated age recipient is
