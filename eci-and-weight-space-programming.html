@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&amp;display=swap">
-    <link rel="stylesheet" href="site.css?v=20261014-1">
+    <link rel="stylesheet" href="site.css?v=20261111-1">
     <script>
       (function () {
         var savedMode = null;
@@ -49,7 +49,7 @@
       })();
     </script>
   </head>
-  <body id="top" class="essay-template">
+  <body id="top" class="essay-template eci-regression-page">
     <header class="site-header">
       <a class="site-title" href="./" aria-label="David Crispell home">David Crispell</a>
       <button
@@ -87,7 +87,7 @@
           <p class="essay-date">Exploratory results · November 2026</p>
         </header>
 
-        <div class="essay-body" data-footnotes-body>
+        <div class="essay-body" data-footnotes-body data-no-dropcap>
           <p>I compared the Epoch Capabilities Index (ECI) with two measures of weight-space programming: the Writing Weights Index (WWI), where a language model directly writes a small network's parameters, and the Writing Policy Index (WPI), where it writes a policy network in Python. Both indices aggregate three MinAtar games and normalize performance against random play and a PPO agent trained for 500 million steps.</p>
 
           <p>Because the indices are bounded from 0 to 100, I fit a linear regression in log-odds space—<em>logit(index/100)</em> against ECI—and transformed the curve back to the index scale. Only models with a matched ECI and benchmark result enter each fit.</p>

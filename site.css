@@ -1070,6 +1070,10 @@ h2 {
   transform: translateX(-50%);
 }
 
+.eci-regression-page .experiment-figure {
+  width: min(820px, calc(100vw - 28px));
+}
+
 .experiment-figure a {
   display: block;
 }
