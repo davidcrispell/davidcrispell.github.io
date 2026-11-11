@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="An exploratory regression of Epoch Capabilities Index scores against model-written neural-network weights and policies.">
+    <meta name="theme-color" content="#fcf8f7">
+    <title>ECI and Weight-Space Programming - David Crispell</title>
+    <link rel="preconnect" href="https://db.onlinewebfonts.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&amp;display=swap">
+    <link rel="stylesheet" href="site.css?v=20261014-1">
+    <script>
+      (function () {
+        var savedMode = null;
+        try {
+          savedMode = localStorage.getItem("color-mode");
+        } catch (error) {
+          savedMode = null;
+        }
+        var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var shouldUseDark = savedMode ? savedMode === "dark" : prefersDark;
+        document.documentElement.classList.toggle("dark", shouldUseDark);
+        try {
+          var savedTheme = JSON.parse(localStorage.getItem("image-theme") || "null");
+          if (savedTheme) {
+            var themeVars = {
+              "--image-background": savedTheme.background,
+              "--image-ink": savedTheme.ink,
+              "--image-muted": savedTheme.muted,
+              "--image-accent": savedTheme.accent,
+              "--image-accent-2": savedTheme.accent2,
+              "--image-ink-dark": savedTheme.inkDark,
+              "--image-muted-dark": savedTheme.mutedDark,
+              "--image-accent-dark": savedTheme.accentDark,
+              "--image-accent-2-dark": savedTheme.accent2Dark,
+              "--image-frame-border": savedTheme.frameBorder
+            };
+            for (var name in themeVars) {
+              if (themeVars[name]) {
+                document.documentElement.style.setProperty(name, themeVars[name]);
+              }
+            }
+          }
+        } catch (error) {
+          return;
+        }
+      })();
+    </script>
+  </head>
+  <body id="top" class="essay-template">
+    <header class="site-header">
+      <a class="site-title" href="./" aria-label="David Crispell home">David Crispell</a>
+      <button
+        class="contents-toggle"
+        type="button"
+        aria-label="Toggle essay contents"
+        aria-expanded="false"
+        aria-controls="essay-contents"
+      >
+        <span class="contents-toggle__bar" aria-hidden="true"></span>
+        <span class="contents-toggle__bar" aria-hidden="true"></span>
+        <span class="contents-toggle__bar" aria-hidden="true"></span>
+      </button>
+      <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
+        <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="4.4"/>
+          <path d="M12 1.8v2.7M12 19.5v2.7M1.8 12h2.7M19.5 12h2.7M4.8 4.8l1.9 1.9M17.3 17.3l1.9 1.9M19.2 4.8l-1.9 1.9M6.7 17.3l-1.9 1.9"/>
+        </svg>
+      </button>
+    </header>
+
+    <nav id="essay-contents" class="contents-panel" aria-label="Essay contents" aria-hidden="true">
+      <div class="contents-heading">Contents</div>
+      <ol class="contents-list" data-contents-list></ol>
+    </nav>
+
+    <main class="page article-page">
+      <article class="essay">
+        <header class="essay-header">
+          <h1 class="essay-title">ECI and Weight-Space Programming</h1>
+          <p class="essay-subtitle">Do more capable language models write better neural-network weights and policies?</p>
+          <p class="essay-date">Exploratory results · November 2026</p>
+        </header>
+
+        <div class="essay-body" data-footnotes-body>
+          <p>I compared the Epoch Capabilities Index (ECI) with two measures of weight-space programming: the Writing Weights Index (WWI), where a language model directly writes a small network's parameters, and the Writing Policy Index (WPI), where it writes a policy network in Python. Both indices aggregate three MinAtar games and normalize performance against random play and a PPO agent trained for 500 million steps.</p>
+
+          <p>Because the indices are bounded from 0 to 100, I fit a linear regression in log-odds space—<em>logit(index/100)</em> against ECI—and transformed the curve back to the index scale. Only models with a matched ECI and benchmark result enter each fit.</p>
+
+          <figure class="experiment-figure">
+            <a href="images/eci-writing-indices-regression.svg">
+              <img src="images/eci-writing-indices-regression.svg" alt="Two regression plots comparing Epoch Capabilities Index scores with Writing Weights Index and Writing Policy Index scores.">
+            </a>
+            <figcaption>ECI is strongly associated with both forms of weight-space programming in this small sample. The bounded WWI fit has R² = 0.930 (n = 9); the WPI fit has R² = 0.799 (n = 8). Select the figure for the full-resolution image.</figcaption>
+          </figure>
+
+          <h2>Quick take</h2>
+
+          <p>General capability explains substantially more of the observed variation in WWI than in WPI. Fable 5.2, the highest-ECI model in the sample at 174, scores 66.45 on WWI and 76.3 on WPI. The fitted curves predict 73.4 and 83.2 respectively, so Fable lands about seven index points below trend on both measures while remaining near the top of each benchmark.</p>
+
+          <p>Qwen3.8-27B provides a useful low-end anchor for WWI: at ECI 152.73 it scores 5.89. Taken together, the points are consistent with a steep capability threshold for directly producing effective weights. This is descriptive evidence, not a causal result: the sample is tiny, model families are not independent, and the WPI measurements mix an original chart with a reconstructed protocol.</p>
+
+          <h2>Writing weights</h2>
+
+          <figure class="experiment-figure">
+            <a href="images/eci-wwi-regression.svg">
+              <img src="images/eci-wwi-regression.svg" alt="Regression of Epoch Capabilities Index scores against Writing Weights Index scores.">
+            </a>
+            <figcaption>The primary WWI regression uses Fable 5.2's full-thinking result of 66.45. Its 120K-task-budget result of 54.72 is shown as a sensitivity point but excluded from the fit.</figcaption>
+          </figure>
+
+          <h2>Writing policies</h2>
+
+          <figure class="experiment-figure">
+            <a href="images/eci-wpi-regression.svg">
+              <img src="images/eci-wpi-regression.svg" alt="Regression of Epoch Capabilities Index scores against Writing Policy Index scores.">
+            </a>
+            <figcaption>The updated WPI fit uses reconstructed-protocol results for Fable 5.2 (76.3) and Opus 5.5 (69.9). The original-chart Opus result (61.6) is retained as a hollow comparison marker and excluded from the fit.</figcaption>
+          </figure>
+
+          <h2>Measurement notes</h2>
+
+          <p>The primary Fable WWI run used a neutral continuation after the model reached its 128K output limit while still reasoning; the separate 120K-budget run is therefore shown but not pooled into the regression. The reconstructed WPI protocol used one sample per game and no tools or environmental feedback. Since the original WPI setup is unpublished, the absolute WPI comparison should be treated as provisional.</p>
+
+          <p>ECI values come from Epoch's Capabilities Index. WWI and WPI values combine the published comparison charts with the Fable 5.2 and Qwen3.8-27B benchmark runs described above.</p>
+        </div>
+
+        <footer class="essay-colophon">
+          <a class="colophon-top" href="#top" aria-label="Back to top">
+            <span class="colophon-fleuron" aria-hidden="true">❦</span>
+            <span class="colophon-tip" aria-hidden="true">Back to top</span>
+          </a>
+        </footer>
+      </article>
+    </main>
+
+    <div class="botanical-footer" aria-hidden="true"></div>
+    <script src="site.js?v=20260905-3"></script>
+  </body>
+</html>
