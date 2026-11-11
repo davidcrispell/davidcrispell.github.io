@@ -1071,7 +1071,7 @@ h2 {
 }
 
 .eci-regression-page .experiment-figure {
-  width: min(820px, calc(100vw - 28px));
+  width: 100%;
 }
 
 .experiment-figure a {
