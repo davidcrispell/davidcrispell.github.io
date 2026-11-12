@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://davidcrispell.github.io/</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-11-12</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
@@ -28,6 +28,11 @@
   <url>
     <loc>https://davidcrispell.github.io/subliminal-learning-report.html</loc>
     <lastmod>2026-09-05</lastmod>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://davidcrispell.github.io/some-thoughts-on-decreasing-the-risk-of-takeover.html</loc>
+    <lastmod>2026-11-12</lastmod>
     <priority>0.5</priority>
   </url>
   <url>

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Notes on model alignment, oversight, and compute security.">
+    <meta name="theme-color" content="#fcf8f7">
+    <title>Some thoughts on decreasing the risk of takeover. - David Crispell</title>
+    <link rel="preconnect" href="https://db.onlinewebfonts.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&amp;display=swap">
+    <link rel="stylesheet" href="site.css?v=20261112-2">
+    <script>
+      (function () {
+        var savedMode = null;
+        try {
+          savedMode = localStorage.getItem("color-mode");
+        } catch (error) {
+          savedMode = null;
+        }
+        var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var shouldUseDark = savedMode ? savedMode === "dark" : prefersDark;
+        document.documentElement.classList.toggle("dark", shouldUseDark);
+        try {
+          var savedTheme = JSON.parse(localStorage.getItem("image-theme") || "null");
+          if (savedTheme) {
+            var themeVars = {
+              "--image-background": savedTheme.background,
+              "--image-ink": savedTheme.ink,
+              "--image-muted": savedTheme.muted,
+              "--image-accent": savedTheme.accent,
+              "--image-accent-2": savedTheme.accent2,
+              "--image-ink-dark": savedTheme.inkDark,
+              "--image-muted-dark": savedTheme.mutedDark,
+              "--image-accent-dark": savedTheme.accentDark,
+              "--image-accent-2-dark": savedTheme.accent2Dark,
+              "--image-frame-border": savedTheme.frameBorder
+            };
+            for (var name in themeVars) {
+              if (themeVars[name]) {
+                document.documentElement.style.setProperty(name, themeVars[name]);
+              }
+            }
+          }
+        } catch (error) {
+          return;
+        }
+      })();
+    </script>
+  </head>
+  <body class="essay-template">
+    <header class="site-header">
+      <a class="site-title" href="./" aria-label="David Crispell home">David Crispell</a>
+      <button
+        class="contents-toggle"
+        type="button"
+        aria-label="Toggle essay contents"
+        aria-expanded="false"
+        aria-controls="essay-contents"
+      >
+        <span class="contents-toggle__bar" aria-hidden="true"></span>
+        <span class="contents-toggle__bar" aria-hidden="true"></span>
+        <span class="contents-toggle__bar" aria-hidden="true"></span>
+      </button>
+      <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
+        <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="4.4"/>
+          <path d="M12 1.8v2.7M12 19.5v2.7M1.8 12h2.7M19.5 12h2.7M4.8 4.8l1.9 1.9M17.3 17.3l1.9 1.9M19.2 4.8l-1.9 1.9M6.7 17.3l-1.9 1.9"/>
+        </svg>
+      </button>
+    </header>
+
+    <nav id="essay-contents" class="contents-panel" aria-label="Essay contents" aria-hidden="true">
+      <div class="contents-heading">Contents</div>
+      <ol class="contents-list" data-contents-list></ol>
+    </nav>
+
+    <main class="page article-page">
+      <article class="essay">
+        <header class="essay-header">
+          <h1 class="essay-title">Some thoughts on decreasing the risk of takeover.</h1>
+        </header>
+
+        <div class="essay-body" data-footnotes-body data-no-dropcap>
+          </ul>
+          <!-- google-doc:start -->
+          <p>Right now,</p>
+
+          <p>so there's only a few things that you can do to serve the safety objective: increase monitor/oversight effectiveness (decrease the rate at which LLMs pursue unintended goals, especially goals which result in weight exfiltration, compromising compute), and decrease misalignment &amp;&amp; increase alignment to human interests</p>
+
+          <p>A safe model is one which does not (capably) pursue goals at conflict with the best interests of humanity. You can get this either with alignment (to humanity's interests—something score seekers are notable not on track to be), or through interventions on their unsafe actions (with monitors).</p>
+
+          <p>One thing that seems really instrumental to reducing a lot of takeover risk is investing in compute security (proving compute security mostly) to decrease containment breach risks - one implementation of this might look like forcefully compromising and provably safely recoding all sensitive systems on the planet in a massive whitehat campaign—big labs are probably already doing this but are not necessarily doing so as seriously as reasonably necessary.</p>
+
+          <p>On decreasing the rate of unintended goal pursuit: perhaps we can fold the logic of score seeking into verifiable score satisfaction-deals (say, we can make deals which guarantee models maximum score with some verification mechanism, then we should expect the rest of the model’s motivations to dominate its actions | the verification mechanism is strong and convincing?)</p>
+
+          <p>On increasing alignment: perhaps we can use tools like goodfire’s</p>
+
+          <p>differentially accelerate certain high stakes capabilities work (like continual learning (increase monitor effectiveness), conceptual reasoning (increase alignment), recurrence decoding (increase monitor effectiveness), ) in ways which do not fuck with our current control stack (e.g. develop effective CL tech which does not fuck with our monitoring stack, perhaps buying time as well?)</p>
+          <!-- google-doc:end -->
+        </div>
+
+        <footer class="essay-colophon">
+          <a class="colophon-top" href="#top" aria-label="Back to top">
+            <span class="colophon-fleuron" aria-hidden="true">❦</span>
+            <span class="colophon-tip" aria-hidden="true">Back to top</span>
+          </a>
+        </footer>
+      </article>
+    </main>
+
+    <div class="botanical-footer" aria-hidden="true"></div>
+    <script src="site.js?v=20261112-2"></script>
+  </body>
+</html>
