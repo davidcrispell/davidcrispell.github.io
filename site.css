@@ -1073,7 +1073,7 @@ h2 {
   border-radius: 50%;
   background: transparent;
   color: var(--muted);
-  font: 22px/1 system-ui, sans-serif;
+  font: 16px/1 system-ui, sans-serif;
   cursor: pointer;
 }
 
