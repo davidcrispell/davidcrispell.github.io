@@ -1,4 +1,9 @@
 exclude:
+  # The document sync function runs on Vercel, not on GitHub Pages.
+  - api
+  - lib
+  - tests
+
   # Superseded first-generation site pages. They remain in Git history and in
   # the source repository, but are intentionally omitted from the live build.
   - about.html

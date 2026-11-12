@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "refresh_url": "https://davidcrispell-website.vercel.app/api/refresh-document",
   "pages": {
     "index.html#now": {
       "source": {
@@ -7,10 +8,9 @@
         "document_id": "1_XoaRU3bxYK4EI_C-WpUkNfgSYuCl0V_RYpjT0DzjgE",
         "url": "https://docs.google.com/document/d/1_XoaRU3bxYK4EI_C-WpUkNfgSYuCl0V_RYpjT0DzjgE/edit?usp=sharing"
       },
-      "delivery": {
-        "mode": "client-side-fetch",
-        "format": "text",
-        "fallback": "inline-html"
+      "sync": {
+        "mode": "static-snapshot",
+        "content": "homepage-bio"
       }
     }
   },
@@ -28,8 +28,45 @@
         "skip_first_paragraph_as_title": true,
         "authors": "site-only",
         "images": "preserve-local-article-images",
-        "last_synced_revision_id": "AHj4eMR4vFe5M_iPbod1KwOv8cbAjDXd1Ib6VkmagaaaKHmabhAnRCPeiMrv7N2IL6hB_IybrytEgCUPJ3SL-yPryly5UcNpWCtqjzdLybo",
-        "last_synced_modified_time": "2026-10-31T23:07:42.898Z"
+        "heading_overrides": [
+          "Introduction",
+          "CoT monitoring is our most powerful tool",
+          "Losing CoT monitorability this way is evidence we are training schemers",
+          "Latent reasoning",
+          "Why worry about empirical limits instead of staying at known safe levels?",
+          "Experimental Direction",
+          "Notes",
+          "Related work"
+        ],
+        "list_sections": ["Related work"],
+        "local_figures": {
+          "kix.mhlvjc5yfpnz": "nls-loss",
+          "kix.36gs6o8buvcg": "nls-accuracy"
+        },
+        "equation_overrides": {
+          "inadvertent-reward budget ": "B",
+          ", an NLS depth ": "k"
+        },
+        "baseline_snapshot": {
+          "revision_id": "AHj4eMR4vFe5M_iPbod1KwOv8cbAjDXd1Ib6VkmagaaaKHmabhAnRCPeiMrv7N2IL6hB_IybrytEgCUPJ3SL-yPryly5UcNpWCtqjzdLybo",
+          "source_modified_time": "2026-10-31T23:07:42.898Z"
+        }
+      }
+    },
+    "some-thoughts-on-decreasing-the-risk-of-takeover.html": {
+      "source": {
+        "type": "google-doc",
+        "document_id": "1lDVAD32T59VssuLt9LbdAPwzWrp-QBACCHr7b_A8bRM",
+        "tab_id": "t.0",
+        "url": "https://docs.google.com/document/d/1lDVAD32T59VssuLt9LbdAPwzWrp-QBACCHr7b_A8bRM/edit?tab=t.0"
+      },
+      "sync": {
+        "mode": "static-snapshot",
+        "content": "essay-body",
+        "baseline_snapshot": {
+          "revision_id": "AHj4eMT4FdUpr9p3MrU2Z6lhCcCmKMkcKwe6kNi1tUrBIqZs1n4ysGUopC5zavttR0Lov4Csu-KX7pxFNIZbrqtFULk1M4JweH6AJc7H6C8",
+          "source_modified_time": "2026-11-12T21:38:54.257Z"
+        }
       }
     }
   }

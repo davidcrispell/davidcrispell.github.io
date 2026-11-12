@@ -26,63 +26,196 @@
   });
 })();
 
-/* The homepage bio is authored in Google Docs. Its inline HTML is a readable
-   fallback for visitors who are offline or block Google; when the export is
-   reachable, replace that fallback with the current Doc text on every load. */
+/* Passwords go directly to the refresh service for a single request. */
 (function () {
-  var bio = document.querySelector("[data-google-doc-text]");
+  var readerHeader = document.querySelector(".essay-header");
+  var bio = document.getElementById("now");
+  var script = document.currentScript;
+  var endpoint = "https://davidcrispell-website.vercel.app/api/refresh-document";
 
-  if (!bio || !window.fetch) {
+  if ((!readerHeader && !bio) || !script || !window.fetch || !window.HTMLDialogElement) {
     return;
   }
 
-  var source = bio.getAttribute("data-google-doc-text");
+  var base = new URL(".", script.src);
+  var path = window.location.pathname;
 
-  if (!source) {
+  if (!path.startsWith(base.pathname)) {
     return;
   }
 
-  bio.setAttribute("aria-busy", "true");
+  var page = path.slice(base.pathname.length) || "index.html";
+  if (!page.includes(".")) {
+    page += ".html";
+  }
 
-  fetch(source, { cache: "no-store", mode: "cors" })
+  fetch(new URL("article-sources.json", base), { cache: "no-cache" })
     .then(function (response) {
-      if (!response.ok) {
-        throw new Error("Google Doc export returned " + response.status);
-      }
-      return response.text();
+      return response.ok ? response.json() : null;
     })
-    .then(function (text) {
-      var paragraphs = text
-        .replace(/^\uFEFF/, "")
-        .replace(/\r\n?/g, "\n")
-        .split(/\n+/)
-        .map(function (paragraph) {
-          return paragraph.trim();
-        })
-        .filter(Boolean);
-
-      if (!paragraphs.length) {
-        throw new Error("Google Doc export was empty");
+    .then(function (sources) {
+      if (!sources || sources.refresh_url !== endpoint) {
+        return;
       }
 
-      bio.querySelectorAll("p").forEach(function (paragraph) {
-        paragraph.remove();
-      });
+      function isGoogleDoc(entry) {
+        return entry && entry.source && entry.source.type === "google-doc";
+      }
 
-      paragraphs.forEach(function (textContent) {
-        var paragraph = document.createElement("p");
-        paragraph.textContent = textContent;
-        bio.appendChild(paragraph);
-      });
+      var article = sources.articles && sources.articles[page];
+      if (readerHeader && isGoogleDoc(article)) {
+        addButton(readerHeader, page);
+      }
 
-      bio.setAttribute("data-google-doc-loaded", "true");
+      Object.entries(sources.pages || {}).forEach(function (entry) {
+        var key = entry[0];
+        if (key.startsWith(page + "#") && isGoogleDoc(entry[1])) {
+          var section = document.getElementById(key.slice(page.length + 1));
+          if (section) {
+            addButton(section, key);
+          }
+        }
+      });
     })
     .catch(function () {
-      /* Keep the inline fallback already present in the page. */
-    })
-    .finally(function () {
-      bio.removeAttribute("aria-busy");
+      /* The reader remains usable if the document registry cannot be loaded. */
     });
+
+  function addButton(container, pageKey) {
+    var button = document.createElement("button");
+    button.type = "button";
+    button.className = "doc-refresh-trigger";
+    button.textContent = "Refresh from Google Docs";
+    button.setAttribute("aria-haspopup", "dialog");
+    var availability = document.createElement("span");
+    availability.className = "doc-refresh-availability";
+    availability.setAttribute("role", "status");
+    button.addEventListener("click", async function () {
+      var controller = new AbortController();
+      var timeout = window.setTimeout(function () { controller.abort(); }, 8000);
+      availability.textContent = "Checking refresh availability…";
+      button.disabled = true;
+      var ready = false;
+
+      try {
+        var response = await fetch(endpoint, {
+          credentials: "omit",
+          redirect: "error",
+          cache: "no-store",
+          signal: controller.signal
+        });
+        ready = response.ok && (await response.json())?.status === "ready";
+      } catch (error) {
+        /* Keep the published copy readable when the refresh service is offline. */
+      } finally {
+        window.clearTimeout(timeout);
+        button.disabled = false;
+      }
+
+      availability.textContent = ready ? "" : "Google Docs refresh isn’t available yet.";
+      if (ready) {
+        openDialog(pageKey, button);
+      }
+    });
+    container.append(button, availability);
+  }
+
+  function openDialog(pageKey, trigger) {
+    var dialog = document.createElement("dialog");
+    dialog.className = "doc-refresh-dialog";
+    dialog.setAttribute("aria-labelledby", "doc-refresh-title");
+    dialog.innerHTML = [
+      '<form method="dialog" autocomplete="off">',
+      '  <h2 id="doc-refresh-title">Refresh from Google Docs</h2>',
+      '  <label for="doc-refresh-password">Admin password</label>',
+      '  <input type="password" id="doc-refresh-password" autocomplete="off" required autofocus>',
+      '  <p class="doc-refresh-status" role="status"></p>',
+      '  <div class="doc-refresh-actions">',
+      '    <button type="button">Close</button>',
+      '    <button type="submit">Refresh</button>',
+      '  </div>',
+      '</form>'
+    ].join("\n");
+
+    var form = dialog.querySelector("form");
+    var password = form.querySelector("input");
+    var status = form.querySelector("[role=status]");
+    var submit = form.querySelector("[type=submit]");
+    var close = form.querySelector("[type=button]");
+
+    function closeDialog() {
+      password.value = "";
+      dialog.close();
+      dialog.remove();
+      trigger.focus();
+    }
+
+    close.addEventListener("click", closeDialog);
+
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      if (submit.disabled) {
+        return;
+      }
+
+      var body = JSON.stringify({ page: pageKey, password: password.value });
+      password.value = "";
+      status.textContent = "Refreshing…";
+      submit.disabled = true;
+      close.disabled = true;
+
+      var controller = new AbortController();
+      var timeout = window.setTimeout(function () { controller.abort(); }, 30000);
+
+      try {
+        var request = fetch(endpoint, {
+          method: "POST",
+          credentials: "omit",
+          redirect: "error",
+          headers: { "Content-Type": "application/json" },
+          body: body,
+          signal: controller.signal
+        });
+        body = null;
+        var response = await request;
+        var result = (await response.json().catch(function () { return null; })) || {};
+
+        if (!response.ok) {
+          if (typeof result.error === "string") {
+            status.textContent = result.error;
+          } else if (response.status === 404 || response.status === 503) {
+            status.textContent = "The refresh service is unavailable. Try again later.";
+          } else {
+            status.textContent = "Refresh failed. Please try again.";
+          }
+          password.focus();
+        } else if (result.status === "updated") {
+          status.textContent = "Synced. The updated page may take a minute to go live.";
+        } else if (result.status === "unchanged") {
+          status.textContent = "This page is already up to date.";
+        } else {
+          status.textContent = "The refresh service returned an unexpected response.";
+        }
+      } catch (error) {
+        status.textContent = "Couldn’t confirm the refresh. Check the page in a minute or try again.";
+      } finally {
+        window.clearTimeout(timeout);
+        submit.disabled = false;
+        close.disabled = false;
+      }
+    });
+
+    dialog.addEventListener("cancel", function (event) {
+      event.preventDefault();
+      if (!submit.disabled) {
+        closeDialog();
+      }
+    });
+
+    document.body.appendChild(dialog);
+    dialog.showModal();
+  }
 })();
 
 (function () {

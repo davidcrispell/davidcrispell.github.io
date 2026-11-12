@@ -2,15 +2,26 @@ hi! im David :D, more here -> https://davidcrispell.github.io
 
 ## Google Doc content
 
-The homepage bio is loaded on each visit from the Google Doc recorded under
-`index.html#now` in `article-sources.json`. `site.js` fetches the Doc's public
-plain-text export and renders each non-empty line as a paragraph. The copy in
-`index.html` is the fallback if Google cannot be reached.
+`article-sources.json` lists the site pages and Google Doc tabs that can be
+refreshed. The public site serves static copies, so readers can open them
+without Google access. On a linked page, **Refresh from Google Docs** asks for
+the site admin password. The Vercel function reads the configured tab and
+commits the updated content to `main`; GitHub Pages then publishes the change.
+An identical snapshot does not create a commit.
 
-`serial-depth-and-cot-internalization.html` works differently: it is a static
-snapshot. Its Google Doc and last synced revision are recorded in
-`article-sources.json`, but updating the Doc does not update that page until the
-HTML is synced again.
+The refresh changes only the content between `google-doc:start` and
+`google-doc:end` comments. The site title, authors and navigation are edited in
+the HTML. The NLS article also maps its figures to the existing site images.
+
+To activate refresh, deploy this repository to the linked Vercel project
+(`davidcrispell-website`) and add these sensitive production environment
+variables in Vercel, then redeploy:
+
+| Variable | Value |
+| --- | --- |
+| `DOC_SYNC_ADMIN_PASSWORD` | The password used in the refresh dialog. |
+| `DOC_SYNC_GOOGLE_SERVICE_ACCOUNT` | JSON credentials for a Google Cloud service account. Enable the Google Docs API in its project and share each registered Doc with the service account email as Viewer. The private Doc does not need public link sharing. |
+| `DOC_SYNC_GITHUB_TOKEN` | A fine-grained GitHub token limited to `davidcrispell/davidcrispell.github.io` with Contents read/write permission. |
 
 ## AI contact key
 

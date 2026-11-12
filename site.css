@@ -1028,6 +1028,103 @@ h2 {
   font-size: 18px;
 }
 
+.doc-refresh-trigger,
+.doc-refresh-actions button {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.doc-refresh-trigger {
+  justify-self: start;
+  margin-top: 8px;
+}
+
+.doc-refresh-availability:not(:empty) {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.doc-refresh-trigger:enabled:hover,
+.doc-refresh-actions button:enabled:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.doc-refresh-trigger:focus-visible,
+.doc-refresh-dialog :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.doc-refresh-dialog {
+  width: min(390px, calc(100% - 32px));
+  max-height: calc(100% - 32px);
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--background);
+  color: var(--text);
+  box-shadow: 0 8px 28px var(--tooltip-shadow);
+}
+
+.doc-refresh-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.48);
+}
+
+.doc-refresh-dialog form {
+  display: grid;
+  gap: 10px;
+}
+
+.doc-refresh-dialog h2 {
+  margin-bottom: 6px;
+  font-size: 26px;
+  line-height: 1.15;
+}
+
+.doc-refresh-dialog input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 16px;
+}
+
+.doc-refresh-status {
+  min-height: 1.3em;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.doc-refresh-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.doc-refresh-actions [type="submit"] {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.doc-refresh-trigger:disabled,
+.doc-refresh-actions button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
 .essay-body {
   font-size: 18px;
   font-weight: 300;

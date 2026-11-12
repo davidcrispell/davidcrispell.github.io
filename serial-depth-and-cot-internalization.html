@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&amp;display=swap">
-    <link rel="stylesheet" href="site.css?v=20261031-2">
+    <link rel="stylesheet" href="site.css?v=20261112-2">
     <script>
       (function () {
         var savedMode = null;
@@ -87,6 +87,7 @@
         </header>
 
         <div class="essay-body" data-footnotes-body data-no-dropcap>
+          <!-- google-doc:start -->
           <h2>Introduction</h2>
           <p>We aim to precisify the relationship between NLS depth and opaque reasoning. In principle, we suspect that this relationship is of the form “high NLS depth at training time enables the development of latent reasoning”. Latent reasoning does not itself imply opaque reasoning: models might still externalize their cognition by propensity or alignment. Opaque reasoning, however, involves either an encoded reasoning regime or latent computation without transparent reports of the relevant cognition. We aim to identify an empirical upper bound on safe NLS depth, beyond which models are expected to exhibit opaque reasoning under some training conditions. We also aim to identify additional conditions for eliciting opaque reasoning, such as reward pressures on models capable of latent reasoning. This research serves to mitigate risks to Chain of Thought (CoT) monitorability and preserve the historical “externalization-by-necessity” reasoning regime.</p>
 
@@ -123,19 +124,23 @@
 
           <p>Our experimental results are available on GitHub <a href="https://github.com/davidcrispell/an-exploration-of-serial-depth-on-internalized-cot/blob/main/README.md" aria-label="here: View the experimental results on GitHub"><em>here</em></a>. They show that relatively high NLS depth models are more able to internalize CoT steps than relatively low NLS depth models. This is one finding which supports the idea that certain opaque reasoning capabilities are only possible given higher NLS depth and has spawned this general research direction.</p>
 
+          <!-- google-doc:figure:nls-loss:start -->
           <figure class="experiment-figure">
             <a href="images/serial-depth-internalization-loss-curves.png">
               <img src="images/serial-depth-internalization-loss-curves.png" alt="CoT internalization rollout loss for Deep 1 and Shallow 1 across multiplication tasks.">
             </a>
             <figcaption>Figure 1<br><em>Shallow 1 fails to converge on 5x5 multiplication internalization</em></figcaption>
           </figure>
+          <!-- google-doc:figure:nls-loss:end -->
 
+          <!-- google-doc:figure:nls-accuracy:start -->
           <figure class="experiment-figure">
             <a href="images/serial-depth-validation-accuracy-curves.png">
               <img src="images/serial-depth-validation-accuracy-curves.png" alt="Validation accuracy as visible chain-of-thought tokens are removed for Deep 1 and Shallow 1.">
             </a>
             <figcaption>Figure 2<br><em>Shallow 1 fails to perform internalized 5x5 digit multiplication at NLS ~=823</em></figcaption>
           </figure>
+          <!-- google-doc:figure:nls-accuracy:end -->
 
           <h2>Notes</h2>
           <p>One might ask at this point: “Why perform this investigation instead of simply advocating against training practices which increase NLS depth?” We respond that this investigation (in the best case, ofc) provides more information to form training recommendations. Consider that the primary contribution of this research is a model for predicting the onset of latent reasoning, which, in addition to the primary suspected relation to NLS depth, ideally includes an exhaustive list of training settings that induce latent reasoning. In broad strokes, the resultant model would ideally take an AI developer’s proposed architecture and training scheme as input and determine if they would result in a latent reasoning model. If our model predicts latent reasoning for an input, the developer should not train it because it is unsafe.</p>
@@ -157,6 +162,7 @@
             <li>Astra Is Much Better at Reasoning with Filler Tokens Than Previous Models (<a href="https://www.lesswrong.com/posts/uvhuZHFtrgk8kNiZc/astra-is-much-better-at-reasoning-with-filler-tokens-than" aria-label="here: Read Astra Is Much Better at Reasoning with Filler Tokens Than Previous Models"><em>here</em></a>) — Demonstrates that GPT-6 Astra’s performance on serial-reasoning tasks improves substantially when given meaningless filler tokens, suggesting it can perform significant cognition without expressing that reasoning in natural language.</li>
             <li>The Expressive Power of Transformers with Chain of Thought (<a href="https://mlanthology.org/neuripsw/2023/merrill2023neuripsw-expressive/" aria-label="here: Read The Expressive Power of Transformers with Chain of Thought"><em>here</em></a>) — Establishes that intermediate token generation fundamentally expands a Transformer’s computational power, with longer chains of thought enabling progressively richer classes of sequential computation.</li>
           </ul>
+          <!-- google-doc:end -->
         </div>
 
         <footer class="essay-colophon">
@@ -169,6 +175,6 @@
     </main>
 
     <div class="botanical-footer" aria-hidden="true"></div>
-    <script src="site.js?v=20261022-1"></script>
+    <script src="site.js?v=20261112-2"></script>
   </body>
 </html>
