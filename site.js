@@ -28,12 +28,12 @@
 
 /* Passwords go directly to the refresh service for a single request. */
 (function () {
-  var readerHeader = document.querySelector(".essay-header");
-  var bio = document.getElementById("now");
+  var readerControls = document.querySelector(".contents-heading[data-doc-refresh]");
+  var homeRail = document.querySelector(".waterman-rail");
   var script = document.currentScript;
   var endpoint = "https://davidcrispell-website.vercel.app/api/refresh-document";
 
-  if ((!readerHeader && !bio) || !script || !window.fetch || !window.HTMLDialogElement) {
+  if ((!readerControls && !homeRail) || !script || !window.fetch || !window.HTMLDialogElement) {
     return;
   }
 
@@ -63,61 +63,34 @@
       }
 
       var article = sources.articles && sources.articles[page];
-      if (readerHeader && isGoogleDoc(article)) {
-        addButton(readerHeader, page);
+      if (readerControls && isGoogleDoc(article)) {
+        addButton(readerControls, page, "Refresh this article from Google Docs");
       }
 
-      Object.entries(sources.pages || {}).forEach(function (entry) {
-        var key = entry[0];
-        if (key.startsWith(page + "#") && isGoogleDoc(entry[1])) {
-          var section = document.getElementById(key.slice(page.length + 1));
-          if (section) {
-            addButton(section, key);
-          }
-        }
-      });
+      var bioKey = "index.html#now";
+      if (homeRail && page === "index.html" && isGoogleDoc(sources.pages && sources.pages[bioKey])) {
+        addButton(homeRail, bioKey, "Refresh the homepage bio from Google Docs");
+      }
     })
     .catch(function () {
       /* The reader remains usable if the document registry cannot be loaded. */
     });
 
-  function addButton(container, pageKey) {
+  function addButton(container, pageKey, label) {
     var button = document.createElement("button");
     button.type = "button";
     button.className = "doc-refresh-trigger";
-    button.textContent = "Refresh from Google Docs";
+    button.title = label;
+    button.setAttribute("aria-label", label);
     button.setAttribute("aria-haspopup", "dialog");
-    var availability = document.createElement("span");
-    availability.className = "doc-refresh-availability";
-    availability.setAttribute("role", "status");
-    button.addEventListener("click", async function () {
-      var controller = new AbortController();
-      var timeout = window.setTimeout(function () { controller.abort(); }, 8000);
-      availability.textContent = "Checking refresh availability…";
-      button.disabled = true;
-      var ready = false;
-
-      try {
-        var response = await fetch(endpoint, {
-          credentials: "omit",
-          redirect: "error",
-          cache: "no-store",
-          signal: controller.signal
-        });
-        ready = response.ok && (await response.json())?.status === "ready";
-      } catch (error) {
-        /* Keep the published copy readable when the refresh service is offline. */
-      } finally {
-        window.clearTimeout(timeout);
-        button.disabled = false;
-      }
-
-      availability.textContent = ready ? "" : "Google Docs refresh isn’t available yet.";
-      if (ready) {
-        openDialog(pageKey, button);
-      }
+    var icon = document.createElement("span");
+    icon.textContent = "↻";
+    icon.setAttribute("aria-hidden", "true");
+    button.appendChild(icon);
+    button.addEventListener("click", function () {
+      openDialog(pageKey, button);
     });
-    container.append(button, availability);
+    container.appendChild(button);
   }
 
   function openDialog(pageKey, trigger) {
@@ -128,11 +101,11 @@
       '<form method="dialog" autocomplete="off">',
       '  <h2 id="doc-refresh-title">Refresh from Google Docs</h2>',
       '  <label for="doc-refresh-password">Admin password</label>',
-      '  <input type="password" id="doc-refresh-password" autocomplete="off" required autofocus>',
-      '  <p class="doc-refresh-status" role="status"></p>',
+      '  <input type="password" id="doc-refresh-password" autocomplete="off" required disabled>',
+      '  <p class="doc-refresh-status" role="status">Checking refresh availability…</p>',
       '  <div class="doc-refresh-actions">',
       '    <button type="button">Close</button>',
-      '    <button type="submit">Refresh</button>',
+      '    <button type="submit" disabled>Refresh</button>',
       '  </div>',
       '</form>'
     ].join("\n");
@@ -142,8 +115,40 @@
     var status = form.querySelector("[role=status]");
     var submit = form.querySelector("[type=submit]");
     var close = form.querySelector("[type=button]");
+    var readiness = new AbortController();
+
+    async function checkAvailability() {
+      var timeout = window.setTimeout(function () { readiness.abort(); }, 8000);
+      var ready = false;
+
+      try {
+        var response = await fetch(endpoint, {
+          credentials: "omit",
+          redirect: "error",
+          cache: "no-store",
+          signal: readiness.signal
+        });
+        ready = response.ok && (await response.json())?.status === "ready";
+      } catch (error) {
+        /* Keep the dialog usable if the service cannot be reached. */
+      } finally {
+        window.clearTimeout(timeout);
+      }
+
+      if (!dialog.open) {
+        return;
+      }
+
+      status.textContent = ready ? "" : "Google Docs refresh isn’t available yet.";
+      if (ready) {
+        password.disabled = false;
+        submit.disabled = false;
+        password.focus();
+      }
+    }
 
     function closeDialog() {
+      readiness.abort();
       password.value = "";
       dialog.close();
       dialog.remove();
@@ -208,13 +213,14 @@
 
     dialog.addEventListener("cancel", function (event) {
       event.preventDefault();
-      if (!submit.disabled) {
+      if (!close.disabled) {
         closeDialog();
       }
     });
 
     document.body.appendChild(dialog);
     dialog.showModal();
+    checkAvailability();
   }
 })();
 
@@ -751,6 +757,7 @@
   var panel = document.querySelector(".contents-panel");
   var toggle = document.querySelector(".contents-toggle");
   var list = document.querySelector("[data-contents-list]");
+  var refreshHeading = panel && panel.querySelector(".contents-heading[data-doc-refresh]");
   var headings = document.querySelectorAll(".essay-body h2");
   var desktopQuery = window.matchMedia("(min-width: 1100px)");
   var hoverQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
@@ -761,8 +768,18 @@
   var fadeDuration = 220;
   var hoverCloseDelay = 260;
 
-  if (!panel || !toggle || !list || !headings.length) {
+  if (!panel || !toggle || !list || (!headings.length && !refreshHeading)) {
     return;
+  }
+
+  if (refreshHeading) {
+    toggle.classList.add("contents-toggle--keyboard");
+    if (!headings.length) {
+      refreshHeading.textContent = "Document";
+      panel.setAttribute("aria-label", "Document tools");
+      toggle.setAttribute("aria-label", "Toggle document tools");
+      list.hidden = true;
+    }
   }
 
   function slugify(text) {
@@ -787,12 +804,19 @@
     sectionLinks.push(link);
   });
 
-  var marker = document.createElement("span");
-  marker.className = "contents-marker";
-  marker.setAttribute("aria-hidden", "true");
-  list.appendChild(marker);
+  var marker = null;
+  if (headings.length) {
+    marker = document.createElement("span");
+    marker.className = "contents-marker";
+    marker.setAttribute("aria-hidden", "true");
+    list.appendChild(marker);
+  }
 
   function setOpen(isOpen) {
+    if (!isOpen && refreshHeading && document.querySelector(".doc-refresh-dialog[open]")) {
+      return;
+    }
+
     if (closeTimer) {
       window.clearTimeout(closeTimer);
       closeTimer = null;
@@ -801,6 +825,9 @@
     panel.classList.remove("is-closing");
     toggle.setAttribute("aria-expanded", String(isOpen));
     panel.setAttribute("aria-hidden", String(!isOpen));
+    if (refreshHeading) {
+      panel.inert = !isOpen;
+    }
     document.body.classList.toggle("contents-open", isOpen);
 
     if (isOpen) {
@@ -964,7 +991,9 @@
     setOpen(false);
   }
 
-  updateActiveSection();
-  window.addEventListener("scroll", updateActiveSection, { passive: true });
-  window.addEventListener("resize", updateActiveSection);
+  if (marker) {
+    updateActiveSection();
+    window.addEventListener("scroll", updateActiveSection, { passive: true });
+    window.addEventListener("resize", updateActiveSection);
+  }
 })();

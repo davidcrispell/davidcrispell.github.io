@@ -231,8 +231,14 @@ a:hover {
   text-underline-offset: 0.12em;
 }
 
-.waterman-rail .theme-toggle {
+.waterman-rail .theme-toggle,
+.waterman-rail .doc-refresh-trigger {
   margin-top: 38px;
+  vertical-align: middle;
+}
+
+.waterman-rail .doc-refresh-trigger {
+  margin-inline-start: 6px;
 }
 
 .waterman-main {
@@ -535,7 +541,8 @@ a:hover {
     font-size: 24px;
   }
 
-  .waterman-rail .theme-toggle {
+  .waterman-rail .theme-toggle,
+  .waterman-rail .doc-refresh-trigger {
     margin-top: 24px;
   }
 
@@ -565,9 +572,14 @@ a:hover {
     flex: 0 1 auto;
   }
 
-  .waterman-rail .theme-toggle {
+  .waterman-rail .theme-toggle,
+  .waterman-rail .doc-refresh-trigger {
     flex: 0 0 auto;
     margin-top: 26px;
+  }
+
+  .waterman-rail .doc-refresh-trigger {
+    margin-inline-start: 0;
   }
 }
 
@@ -680,6 +692,13 @@ a:hover {
   line-height: 1;
 }
 
+.contents-heading[data-doc-refresh] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
 .contents-list {
   position: relative;
   display: grid;
@@ -690,6 +709,10 @@ a:hover {
   list-style: none;
   font-size: 14px;
   line-height: 1.22;
+}
+
+.contents-list[hidden] {
+  display: none;
 }
 
 .contents-marker {
@@ -1028,7 +1051,6 @@ h2 {
   font-size: 18px;
 }
 
-.doc-refresh-trigger,
 .doc-refresh-actions button {
   padding: 6px 10px;
   border: 1px solid var(--border);
@@ -1041,18 +1063,24 @@ h2 {
 }
 
 .doc-refresh-trigger {
-  justify-self: start;
-  margin-top: 8px;
-}
-
-.doc-refresh-availability:not(:empty) {
-  display: block;
-  margin-top: 5px;
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
   color: var(--muted);
-  font-size: 15px;
+  font: 22px/1 system-ui, sans-serif;
+  cursor: pointer;
 }
 
-.doc-refresh-trigger:enabled:hover,
+.doc-refresh-trigger:hover {
+  color: var(--accent);
+}
+
 .doc-refresh-actions button:enabled:hover {
   border-color: var(--accent);
   color: var(--text);
@@ -1119,7 +1147,6 @@ h2 {
   color: var(--text);
 }
 
-.doc-refresh-trigger:disabled,
 .doc-refresh-actions button:disabled {
   opacity: 0.6;
   cursor: wait;
@@ -1850,6 +1877,17 @@ h2 {
 @media (hover: hover) and (pointer: fine) and (min-width: 1100px) {
   .essay-template .contents-toggle {
     display: none;
+  }
+
+  .essay-template .contents-toggle--keyboard {
+    display: block;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .essay-template .contents-toggle--keyboard:focus-visible {
+    opacity: 1;
+    pointer-events: auto;
   }
 }
 

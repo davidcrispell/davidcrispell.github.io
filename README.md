@@ -4,8 +4,8 @@ hi! im David :D, more here -> https://davidcrispell.github.io
 
 `article-sources.json` lists the site pages and Google Doc tabs that can be
 refreshed. The public site serves static copies, so readers can open them
-without Google access. On a linked page, **Refresh from Google Docs** asks for
-the site admin password. The Vercel function reads the configured tab and
+without Google access. The retry icon in the sidebar opens the admin password
+prompt for that page. The Vercel function reads the configured tab and
 commits the updated content to `main`; GitHub Pages then publishes the change.
 An identical snapshot does not create a commit.
 
