@@ -52,22 +52,6 @@
           "source_modified_time": "2026-10-31T23:07:42.898Z"
         }
       }
-    },
-    "some-thoughts-on-decreasing-the-risk-of-takeover.html": {
-      "source": {
-        "type": "google-doc",
-        "document_id": "1lDVAD32T59VssuLt9LbdAPwzWrp-QBACCHr7b_A8bRM",
-        "tab_id": "t.0",
-        "url": "https://docs.google.com/document/d/1lDVAD32T59VssuLt9LbdAPwzWrp-QBACCHr7b_A8bRM/edit?tab=t.0"
-      },
-      "sync": {
-        "mode": "static-snapshot",
-        "content": "essay-body",
-        "baseline_snapshot": {
-          "revision_id": "AHj4eMQu3lcbsoOQ6jcWaI3Ooi4lHhdjVMbvqy1EgnqEzp29Pif85pD6YuNYpTrZN6-5r8fSXHlNvwYCenzZE7pbsCr4bvWIBm5Gcy7HtWI",
-          "source_modified_time": "2026-11-12T21:39:26.466Z"
-        }
-      }
     }
   }
 }
