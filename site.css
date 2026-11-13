@@ -231,14 +231,8 @@ a:hover {
   text-underline-offset: 0.12em;
 }
 
-.waterman-rail .theme-toggle,
-.waterman-rail .doc-refresh-trigger {
+.waterman-rail .theme-toggle {
   margin-top: 38px;
-  vertical-align: middle;
-}
-
-.waterman-rail .doc-refresh-trigger {
-  margin-inline-start: 6px;
 }
 
 .waterman-main {
@@ -541,8 +535,7 @@ a:hover {
     font-size: 24px;
   }
 
-  .waterman-rail .theme-toggle,
-  .waterman-rail .doc-refresh-trigger {
+  .waterman-rail .theme-toggle {
     margin-top: 24px;
   }
 
@@ -572,14 +565,9 @@ a:hover {
     flex: 0 1 auto;
   }
 
-  .waterman-rail .theme-toggle,
-  .waterman-rail .doc-refresh-trigger {
+  .waterman-rail .theme-toggle {
     flex: 0 0 auto;
     margin-top: 26px;
-  }
-
-  .waterman-rail .doc-refresh-trigger {
-    margin-inline-start: 0;
   }
 }
 

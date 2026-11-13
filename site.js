@@ -29,11 +29,10 @@
 /* Passwords go directly to the refresh service for a single request. */
 (function () {
   var readerControls = document.querySelector(".contents-heading[data-doc-refresh]");
-  var homeRail = document.querySelector(".waterman-rail");
   var script = document.currentScript;
   var endpoint = "https://davidcrispell-website.vercel.app/api/refresh-document";
 
-  if ((!readerControls && !homeRail) || !script || !window.fetch || !window.HTMLDialogElement) {
+  if (!readerControls || !script || !window.fetch || !window.HTMLDialogElement) {
     return;
   }
 
@@ -58,18 +57,9 @@
         return;
       }
 
-      function isGoogleDoc(entry) {
-        return entry && entry.source && entry.source.type === "google-doc";
-      }
-
       var article = sources.articles && sources.articles[page];
-      if (readerControls && isGoogleDoc(article)) {
+      if (article?.source?.type === "google-doc") {
         addButton(readerControls, page, "Refresh this article from Google Docs");
-      }
-
-      var bioKey = "index.html#now";
-      if (homeRail && page === "index.html" && isGoogleDoc(sources.pages && sources.pages[bioKey])) {
-        addButton(homeRail, bioKey, "Refresh the homepage bio from Google Docs");
       }
     })
     .catch(function () {
