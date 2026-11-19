@@ -379,11 +379,18 @@
     setPalette(nextIndex);
   }
 
-  var selected = root.dataset.palette || "redwood";
-  var initialIndex = palettes.findIndex(function (palette) {
-    return palette.id === selected;
-  });
-  setPalette(initialIndex, true);
+  function restorePicker() {
+    var selected = root.dataset.palette || "redwood";
+    var index = palettes.findIndex(function (palette) {
+      return palette.id === selected;
+    });
+    if (index >= 0 && index !== activeIndex) {
+      setPalette(index, true);
+    }
+  }
+
+  restorePicker();
+  window.addEventListener("theme-restored", restorePicker);
 
   if (artButton) {
     artButton.addEventListener("click", function () {

@@ -21,20 +21,52 @@
       .latent-reader :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
       .reader-shell {
         display: grid;
-        grid-template-columns: 225px minmax(0, 820px);
-        gap: 54px;
-        max-width: 1220px;
+        grid-template-columns: minmax(208px, 1fr) minmax(0, var(--content-width)) minmax(208px, 1fr);
+        column-gap: clamp(20px, 2.5vw, 40px);
+        max-width: 1480px;
         margin: 0 auto;
-        padding: 38px 32px 72px;
+        padding: 38px clamp(16px, 1.5vw, 24px) 72px;
       }
-      .reader-sidebar {
+      .reader-rail {
+        grid-area: 1 / 1;
         position: sticky;
         top: 32px;
         align-self: start;
+        justify-self: end;
+        width: min(225px, 100%);
+      }
+      .reader-sidebar {
         max-height: calc(100dvh - 64px);
         overflow-y: auto;
         padding: 4px;
         margin: -4px;
+        transition: opacity 220ms ease, visibility 0s;
+      }
+      .reader-rail.is-quiet .reader-sidebar {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition-delay: 0s, 220ms;
+      }
+      .reader-restore {
+        position: absolute;
+        inset: 0 auto auto 0;
+        min-height: 44px;
+        padding: 0 6px;
+        border: 0;
+        background: transparent;
+        color: var(--accent);
+        font: 600 14px/1.4 var(--nav-font);
+        cursor: pointer;
+      }
+      @media (min-width: 961px) and (hover: hover) and (pointer: fine) {
+        .reader-restore:not(:focus-visible) { opacity: 0; }
+      }
+      @media (any-pointer: coarse) {
+        .reader-restore:not(:focus-visible) { opacity: 1; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .reader-sidebar { transition: none; }
       }
       .reader-home { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 36px; }
       .latent-reader .waterman-title { flex: 0 1 auto; font-family: "Aveline Eleganza", "Lora", "Times New Roman", Times, serif; }
@@ -58,7 +90,7 @@
       .reader-contents a { display: block; padding: 6px 0; font-size: 14px; line-height: 1.45; color: var(--muted); text-decoration: none; }
       .reader-contents a:hover { color: var(--accent); text-decoration: underline; }
       .reader-contents a[aria-current="location"] { color: var(--accent); font-weight: 700; }
-      .latent-reader .article-page { width: 100%; min-width: 0; margin: 0; padding: 0; }
+      .latent-reader .article-page { grid-area: 1 / 2; width: 100%; min-width: 0; margin: 0; padding: 0; }
       .latent-reader .essay-header { margin-bottom: 36px; }
       .latent-reader .essay-title { max-width: 32ch; margin: 0 0 16px; font: 700 clamp(30px, 4vw, 43px)/1.16 Georgia, serif; text-wrap: balance; }
       .latent-reader .essay-authors { margin: 0; font-size: 14px; line-height: 1.5; }
@@ -73,44 +105,71 @@
       .latent-reader .essay-colophon { text-align: left; padding-top: 22px; }
       .latent-reader .colophon-top { padding: 0; color: var(--accent); font-size: 14px; line-height: 1.5; text-decoration: underline; }
       .latent-reader .doc-refresh-dialog { font-family: var(--nav-font); line-height: 1.5; }
-      @media (max-width: 850px) {
-        .reader-shell { display: block; padding: 24px 22px 52px; }
-        .reader-sidebar { position: static; max-height: none; overflow: visible; margin-bottom: 32px; }
-        .reader-home { margin-bottom: 22px; }
-        .reader-contents { padding: 12px 0; border-block: 1px solid var(--border); }
+      @media (max-width: 960px) {
+        .reader-shell { display: block; max-width: calc(var(--content-width) + 44px); padding: 24px clamp(16px, 5vw, 22px) 52px; }
+        .reader-rail { position: relative; top: auto; width: 100%; margin-bottom: 32px; }
+        .reader-sidebar {
+          position: relative;
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) auto;
+          align-items: center;
+          max-height: none;
+          overflow: visible;
+        }
+        .reader-home { display: contents; }
+        .reader-home .waterman-title { grid-area: 1 / 1 / span 2; justify-self: start; }
+        .reader-home .theme-toggle { grid-area: 1 / 2; justify-self: end; }
+        .reader-contents { grid-area: 2 / 2; }
+        .reader-contents summary { min-height: 40px; }
+        .reader-contents ol:not(:empty) {
+          position: absolute;
+          z-index: 2;
+          inset: 100% 0 auto auto;
+          width: min(100%, 320px);
+          max-height: 55dvh;
+          overflow-y: auto;
+          margin: 4px 0 0;
+          padding: 10px 16px;
+          border: 1px solid var(--border);
+          background: var(--background);
+        }
+        .reader-restore { top: 50%; transform: translateY(-50%); }
         .latent-reader .essay-title { font-size: clamp(30px, 5vw, 43px); }
         .latent-reader .essay-body h2 { font-size: 26px; }
       }
       @media print {
         :root.latent-reader, :root.latent-reader.dark { --background: white; --text: black; --muted: #333; --accent: #333; }
         .reader-shell { display: block; max-width: none; padding: 0; }
-        .reader-sidebar, .latent-reader .essay-colophon { display: none; }
+        .reader-rail, .latent-reader .essay-colophon { display: none; }
       }
     </style>
-    <script src="site-theme.js?v=20261118-redwood"></script>
+    <script src="site-theme.js?v=20261118-redwood-2"></script>
   </head>
   <body class="essay-template nls-depth-article">
     <div class="reader-shell" id="top">
-      <aside class="reader-sidebar">
-        <header class="reader-home">
-          <a class="waterman-title" href="./" aria-label="David Crispell home"><span>David</span><span>Crispell</span></a>
-      <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
-        <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
-        <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <circle cx="12" cy="12" r="4.4"/>
-          <path d="M12 1.8v2.7M12 19.5v2.7M1.8 12h2.7M19.5 12h2.7M4.8 4.8l1.9 1.9M17.3 17.3l1.9 1.9M19.2 4.8l-1.9 1.9M6.7 17.3l-1.9 1.9"/>
-        </svg>
-      </button>
-        </header>
-        <nav class="reader-contents" aria-label="Essay contents">
-          <details open>
-            <summary class="contents-heading" data-doc-refresh>On this page</summary>
-            <ol data-reader-contents></ol>
-          </details>
-        </nav>
-      </aside>
+      <div class="reader-rail">
+        <button class="reader-restore" type="button" aria-controls="reader-sidebar" hidden>Show contents</button>
+        <aside class="reader-sidebar" id="reader-sidebar">
+          <header class="reader-home">
+            <a class="waterman-title" href="./" aria-label="David Crispell home"><span>David</span><span>Crispell</span></a>
+            <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
+              <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+              <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="12" r="4.4"/>
+                <path d="M12 1.8v2.7M12 19.5v2.7M1.8 12h2.7M19.5 12h2.7M4.8 4.8l1.9 1.9M17.3 17.3l1.9 1.9M19.2 4.8l-1.9 1.9M6.7 17.3l-1.9 1.9"/>
+              </svg>
+            </button>
+          </header>
+          <nav class="reader-contents" aria-label="Essay contents">
+            <details open>
+              <summary class="contents-heading" data-doc-refresh>On this page</summary>
+              <ol data-reader-contents></ol>
+            </details>
+          </nav>
+        </aside>
+      </div>
 
     <main class="page article-page">
       <article class="essay">
@@ -212,7 +271,14 @@
         var list = document.querySelector('[data-reader-contents]');
         var disclosure = document.querySelector('.reader-contents details');
         var headings = Array.from(document.querySelectorAll('.essay-body h2'));
-        var compact = window.matchMedia('(max-width: 850px)');
+        var compact = window.matchMedia('(max-width: 960px)');
+        var article = document.querySelector('.article-page');
+        var rail = document.querySelector('.reader-rail');
+        var sidebar = document.getElementById('reader-sidebar');
+        var restore = rail.querySelector('.reader-restore');
+        var summary = disclosure.querySelector('summary');
+        var fadeTimer;
+        var pointerInRail = false;
         var links = headings.map(function (heading, index) {
           if (!heading.id) {
             heading.id = heading.textContent.toLowerCase().trim()
@@ -226,7 +292,70 @@
           list.appendChild(item);
           return link;
         });
-        function updateLayout() { disclosure.open = !compact.matches; }
+        function setRailVisible(visible) {
+          var restoreHadFocus = document.activeElement === restore;
+          rail.classList.toggle('is-quiet', !visible);
+          sidebar.inert = !visible;
+          restore.hidden = visible;
+          restore.setAttribute('aria-expanded', String(visible));
+          if (visible && restoreHadFocus) summary.focus({ preventScroll: true });
+        }
+
+        function railInUse() {
+          return pointerInRail || sidebar.contains(document.activeElement) ||
+            (compact.matches && disclosure.open) || document.querySelector('.doc-refresh-dialog[open]');
+        }
+
+        function scheduleFade() {
+          window.clearTimeout(fadeTimer);
+          if (!railInUse()) {
+            fadeTimer = window.setTimeout(function () {
+              if (!railInUse()) setRailVisible(false);
+            }, 3000);
+          }
+        }
+
+        function updateLayout() {
+          pointerInRail = false;
+          disclosure.open = !compact.matches;
+          setRailVisible(true);
+          scheduleFade();
+        }
+
+        document.addEventListener('pointermove', function (event) {
+          if (event.pointerType === 'touch') return;
+          var inside = compact.matches ? rail.contains(event.target) :
+            event.clientX < article.getBoundingClientRect().left;
+          if (inside === pointerInRail) return;
+          pointerInRail = inside;
+          if (inside) setRailVisible(true);
+          scheduleFade();
+        }, { passive: true });
+        document.documentElement.addEventListener('pointerleave', function () {
+          pointerInRail = false;
+          scheduleFade();
+        });
+        restore.addEventListener('click', function () {
+          setRailVisible(true);
+          disclosure.open = true;
+          summary.focus({ preventScroll: true });
+          scheduleFade();
+        });
+        sidebar.addEventListener('focusin', function () { window.clearTimeout(fadeTimer); });
+        sidebar.addEventListener('focusout', function () { window.setTimeout(scheduleFade, 0); });
+        disclosure.addEventListener('toggle', scheduleFade);
+        list.addEventListener('click', function (event) {
+          if (compact.matches && event.target.closest('a')) disclosure.open = false;
+        });
+        document.addEventListener('pointerdown', function (event) {
+          if (compact.matches && !rail.contains(event.target)) disclosure.open = false;
+        }, { passive: true });
+        disclosure.addEventListener('keydown', function (event) {
+          if (compact.matches && disclosure.open && event.key === 'Escape') {
+            disclosure.open = false;
+            summary.focus();
+          }
+        });
         function updateCurrentSection() {
           var current = 0;
           headings.forEach(function (heading, index) {
@@ -240,10 +369,13 @@
         updateLayout();
         updateCurrentSection();
         compact.addEventListener('change', updateLayout);
+        window.addEventListener('pageshow', function (event) {
+          if (event.persisted) updateLayout();
+        });
         window.addEventListener('scroll', updateCurrentSection, { passive: true });
         window.addEventListener('resize', updateCurrentSection);
       })();
     </script>
-    <script src="site.js?v=20261118-redwood"></script>
+    <script src="site.js?v=20261118-redwood-2"></script>
   </body>
 </html>
