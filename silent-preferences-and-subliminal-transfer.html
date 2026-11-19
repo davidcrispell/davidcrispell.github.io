@@ -11,9 +11,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&display=swap">
-    <link rel="stylesheet" href="site.css?v=20261118-wordmark">
-    <link rel="stylesheet" href="essay-reader.css?v=20261118-wordmark-2">
-    <script src="site-theme.js?v=20261118-wordmark-2"></script>
+    <link rel="stylesheet" href="site.css?v=20261118-section-menu">
+    <link rel="stylesheet" href="essay-reader.css?v=20261118-section-menu">
+    <script src="site-theme.js?v=20261118-section-menu"></script>
   </head>
   <body class="essay-template">
     <div class="reader-shell" id="top">
@@ -33,9 +33,9 @@
             </button>
           </header>
           <nav id="essay-contents" class="reader-contents" aria-label="Essay contents">
-            <details open>
-              <summary class="contents-heading">On this page</summary>
-              <ol data-reader-contents></ol>
+            <details class="section-menu">
+              <summary aria-label="Page contents"><span class="menu-lines" aria-hidden="true"></span></summary>
+              <ol class="section-menu-list" data-reader-contents></ol>
             </details>
           </nav>
         </aside>
@@ -88,7 +88,7 @@
 
     </div>
     <div class="botanical-footer" aria-hidden="true"></div>
-    <script src="essay-reader.js?v=20261118-wordmark"></script>
+    <script src="essay-reader.js?v=20261118-section-menu"></script>
     <script src="site.js?v=20261118-wordmark"></script>
   </body>
 </html>

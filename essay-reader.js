@@ -1,13 +1,11 @@
 (function () {
   var list = document.querySelector('[data-reader-contents]');
-  var disclosure = document.querySelector('.reader-contents details');
   var headings = Array.from(document.querySelectorAll('.essay-body h2, .footnotes h2'));
   var compact = window.matchMedia('(max-width: 960px)');
   var article = document.querySelector('.article-page');
   var rail = document.querySelector('.reader-rail');
   var sidebar = document.getElementById('reader-sidebar');
   var restore = rail.querySelector('.reader-restore');
-  var summary = disclosure.querySelector('summary');
   var fadeTimer;
   var pointerInRail = false;
   var links = headings.map(function (heading, index) {
@@ -35,17 +33,19 @@
     sidebar.inert = !visible;
     restore.hidden = visible;
     restore.setAttribute('aria-expanded', String(visible));
-    if (visible && restoreHadFocus) summary.focus({ preventScroll: true });
+    if (visible && restoreHadFocus) {
+      var target = (!compact.matches && activeLink) || sidebar.querySelector('.waterman-title');
+      target.focus({ preventScroll: true });
+    }
   }
 
   function railInUse() {
-    return pointerInRail || sidebar.contains(document.activeElement) ||
-      (compact.matches && disclosure.open);
+    return pointerInRail || sidebar.contains(document.activeElement);
   }
 
   function scheduleFade() {
     window.clearTimeout(fadeTimer);
-    if (!railInUse()) {
+    if (!compact.matches && !railInUse()) {
       fadeTimer = window.setTimeout(function () {
         if (!railInUse()) setRailVisible(false);
       }, 3000);
@@ -54,15 +54,13 @@
 
   function updateLayout() {
     pointerInRail = false;
-    disclosure.open = !compact.matches;
     setRailVisible(true);
     scheduleFade();
   }
 
   document.addEventListener('pointermove', function (event) {
-    if (event.pointerType === 'touch') return;
-    var inside = compact.matches ? rail.contains(event.target) :
-      event.clientX < article.getBoundingClientRect().left;
+    if (compact.matches || event.pointerType === 'touch') return;
+    var inside = event.clientX < article.getBoundingClientRect().left;
     if (inside === pointerInRail) return;
     pointerInRail = inside;
     if (inside) setRailVisible(true);
@@ -74,25 +72,10 @@
   });
   restore.addEventListener('click', function () {
     setRailVisible(true);
-    disclosure.open = true;
-    summary.focus({ preventScroll: true });
     scheduleFade();
   });
   sidebar.addEventListener('focusin', function () { window.clearTimeout(fadeTimer); });
   sidebar.addEventListener('focusout', function () { window.setTimeout(scheduleFade, 0); });
-  disclosure.addEventListener('toggle', scheduleFade);
-  list.addEventListener('click', function (event) {
-    if (compact.matches && event.target.closest('a')) disclosure.open = false;
-  });
-  document.addEventListener('pointerdown', function (event) {
-    if (compact.matches && !rail.contains(event.target)) disclosure.open = false;
-  }, { passive: true });
-  disclosure.addEventListener('keydown', function (event) {
-    if (compact.matches && disclosure.open && event.key === 'Escape') {
-      disclosure.open = false;
-      summary.focus();
-    }
-  });
   var activeLink;
   function updateCurrentSection() {
     var current = 0;

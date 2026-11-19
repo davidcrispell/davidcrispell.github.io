@@ -15,27 +15,39 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&display=swap">
-    <link rel="stylesheet" href="site.css?v=20261118-wordmark">
-    <script src="site-theme.js?v=20261118-footer-nls"></script>
+    <link rel="stylesheet" href="site.css?v=20261118-section-menu">
+    <script src="site-theme.js?v=20261118-section-menu"></script>
   </head>
   <body class="waterman-home">
     <main class="waterman-page">
-      <aside class="waterman-rail" aria-label="Homepage navigation">
-        <a class="waterman-title" href="./" aria-label="David Crispell home">
-          <span>David</span>
-          <span>Crispell</span>
-        </a>
-      </aside>
+      <header class="home-header">
+        <div class="waterman-rail">
+          <a class="waterman-title" href="./" aria-label="David Crispell home">
+            <span>David</span>
+            <span>Crispell</span>
+          </a>
+        </div>
 
-      <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
-        <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
-        <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <circle cx="12" cy="12" r="4.4"/>
-          <path d="M12 1.8v2.7M12 19.5v2.7M1.8 12h2.7M19.5 12h2.7M4.8 4.8l1.9 1.9M17.3 17.3l1.9 1.9M19.2 4.8l-1.9 1.9M6.7 17.3l-1.9 1.9"/>
-        </svg>
-      </button>
+        <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
+          <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+          <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="4.4"/>
+            <path d="M12 1.8v2.7M12 19.5v2.7M1.8 12h2.7M19.5 12h2.7M4.8 4.8l1.9 1.9M17.3 17.3l1.9 1.9M19.2 4.8l-1.9 1.9M6.7 17.3l-1.9 1.9"/>
+          </svg>
+        </button>
+        <nav class="mobile-contents" aria-label="Homepage sections">
+          <details class="section-menu">
+            <summary aria-label="Page contents"><span class="menu-lines" aria-hidden="true"></span></summary>
+            <ol class="section-menu-list">
+              <li><a href="#now">About</a></li>
+              <li><a href="#projects">Projects</a></li>
+              <li><a href="#links">Links</a></li>
+            </ol>
+          </details>
+        </nav>
+      </header>
 
       <section class="waterman-main">
         <!-- PLATES MUTED 2026-07-27 — restore by uncommenting this block.
@@ -104,7 +116,7 @@
         </div>
       </section>
 
-      <footer class="page-footnote" aria-label="Links">
+      <footer class="page-footnote" id="links" aria-label="Links">
         <p>
           <span><span class="page-footnote__ref">*</span><a href="mailto:davidglenrc@gmail.com">davidglenrc@gmail.com</a></span>
           <span><span class="page-footnote__ref">†</span><a href="https://github.com/davidcrispell">github.com/davidcrispell</a></span>

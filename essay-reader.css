@@ -64,67 +64,6 @@
   margin-bottom: 36px;
 }
 
-.reader-contents summary {
-  list-style: none;
-  cursor: pointer;
-}
-
-.reader-contents summary::-webkit-details-marker {
-  display: none;
-}
-
-.reader-contents .contents-heading {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  font: 600 14px/1.4 var(--nav-font);
-  letter-spacing: normal;
-  text-transform: none;
-  color: var(--text);
-}
-
-.reader-contents summary::before {
-  content: '›';
-  font-size: 20px;
-  line-height: 1;
-}
-
-.reader-contents details[open] summary::before {
-  transform: rotate(90deg);
-}
-
-.reader-contents ol {
-  display: grid;
-  gap: 3px;
-  margin: 14px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.reader-contents ol:empty {
-  display: none;
-}
-
-.reader-contents a {
-  display: block;
-  padding: 6px 0;
-  font-size: 14px;
-  line-height: 1.45;
-  color: var(--muted);
-  text-decoration: none;
-}
-
-.reader-contents a:hover {
-  color: var(--accent);
-  text-decoration: underline;
-}
-
-.reader-contents a[aria-current="location"] {
-  color: var(--accent);
-  font-weight: 700;
-}
-
 .essay-reader .article-page {
   grid-area: 1 / 2;
   width: 100%;
@@ -231,52 +170,17 @@
 
 @media (max-width: 960px) {
   .reader-sidebar {
-    position: relative;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
     max-height: none;
     overflow: visible;
-  }
-  .reader-home {
-    display: contents;
-  }
-  .reader-home .waterman-title {
-    grid-area: 1 / 1 / span 2;
-    align-self: start;
-    justify-self: start;
-  }
-  .reader-home .theme-toggle {
-    grid-area: 1 / 2;
-    justify-self: end;
-  }
-  .reader-contents {
-    grid-area: 2 / 2;
-  }
-  .reader-contents summary {
-    min-height: 40px;
-  }
-  .reader-contents ol:not(:empty) {
-    position: absolute;
-    z-index: 2;
-    inset: 100% 0 auto auto;
-    width: min(100%, 320px);
-    max-height: 55dvh;
-    overflow-y: auto;
-    margin: 4px 0 0;
-    padding: 10px 16px;
-    border: 1px solid var(--border);
-    background: var(--background);
-  }
-  .reader-restore {
-    top: 50%;
-    transform: translateY(-50%);
+    margin: 0;
+    padding: 0;
   }
   .essay-reader .essay-title {
     font-size: clamp(30px, 5vw, 43px);
   }
   .essay-reader .essay-body h2, .essay-reader .footnotes h2 {
     font-size: 26px;
+    scroll-margin-top: 8px;
   }
 }
 

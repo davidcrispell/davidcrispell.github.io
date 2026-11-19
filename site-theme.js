@@ -58,7 +58,52 @@
   window.addEventListener("color-mode-change", syncBrowserColor);
   window.addEventListener("palette-change", syncBrowserColor);
 
+  function initSectionMenu() {
+    var menu = document.querySelector(".section-menu");
+    if (!menu) return;
+    var summary = menu.querySelector("summary");
+    var compact = window.matchMedia("(max-width: 960px)");
+
+    function updateLayout() {
+      var hadFocus = menu.contains(document.activeElement);
+      menu.open = !compact.matches;
+      if (hadFocus) {
+        var desktopLink = menu.closest(".reader-contents") &&
+          (menu.querySelector("a[aria-current]") || menu.querySelector("a"));
+        var target = compact.matches ? summary : desktopLink || document.querySelector(".theme-toggle");
+        target.focus({ preventScroll: true });
+      }
+    }
+    function closeOutside(event) {
+      if (compact.matches && menu.open && !menu.contains(event.target)) menu.open = false;
+    }
+    menu.addEventListener("click", function (event) {
+      var link = event.target.closest('a[href^="#"]');
+      if (!compact.matches || !link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      menu.open = false;
+      var target = document.getElementById(link.hash.slice(1));
+      if (target) {
+        if (!target.hasAttribute("tabindex")) target.tabIndex = -1;
+        target.focus({ preventScroll: true });
+      }
+    });
+    document.addEventListener("pointerdown", closeOutside, { passive: true });
+    document.addEventListener("focusin", closeOutside);
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && compact.matches && menu.open) {
+        menu.open = false;
+        summary.focus({ preventScroll: true });
+      }
+    });
+    updateLayout();
+    compact.addEventListener("change", updateLayout);
+    window.addEventListener("pageshow", function (event) {
+      if (event.persisted) updateLayout();
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
+    initSectionMenu();
     // Pages can cache HTML for ten minutes. Use the same release for both
     // sides of a home/article round trip, including an already-cached home.
     if (revision) {
