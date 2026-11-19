@@ -5,50 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Incoherent scratchwork III by David Crispell.">
     <meta name="robots" content="noindex, nofollow">
-    <meta name="theme-color" content="#fcf8f7">
+    <meta name="theme-color" content="#faf9f6">
     <title>incoherent scratchwork III - David Crispell</title>
     <link rel="preconnect" href="https://db.onlinewebfonts.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&display=swap">
-    <link rel="stylesheet" href="site.css?v=20260905-3">
-    <script>
-      (function () {
-        var savedMode = null;
-        try {
-          savedMode = localStorage.getItem("color-mode");
-        } catch (error) {
-          savedMode = null;
-        }
-        var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        var shouldUseDark = savedMode ? savedMode === "dark" : prefersDark;
-        document.documentElement.classList.toggle("dark", shouldUseDark);
-        try {
-          var savedTheme = JSON.parse(localStorage.getItem("image-theme") || "null");
-          if (savedTheme) {
-            var themeVars = {
-              "--image-background": savedTheme.background,
-              "--image-ink": savedTheme.ink,
-              "--image-muted": savedTheme.muted,
-              "--image-accent": savedTheme.accent,
-              "--image-accent-2": savedTheme.accent2,
-              "--image-ink-dark": savedTheme.inkDark,
-              "--image-muted-dark": savedTheme.mutedDark,
-              "--image-accent-dark": savedTheme.accentDark,
-              "--image-accent-2-dark": savedTheme.accent2Dark,
-              "--image-frame-border": savedTheme.frameBorder,
-            };
-            for (var name in themeVars) {
-              if (themeVars[name]) {
-                document.documentElement.style.setProperty(name, themeVars[name]);
-              }
-            }
-          }
-        } catch (error) {
-          return;
-        }
-      })();
-    </script>
+    <link rel="stylesheet" href="site.css?v=20261118-redwood">
+    <script src="site-theme.js?v=20261118-redwood"></script>
   </head>
   <body class="essay-template">
     <header class="site-header">
@@ -118,6 +82,6 @@
     </main>
 
     <div class="botanical-footer" aria-hidden="true"></div>
-    <script src="site.js?v=20260905-3"></script>
+    <script src="site.js?v=20261118-redwood"></script>
   </body>
 </html>

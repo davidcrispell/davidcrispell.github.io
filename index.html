@@ -7,51 +7,15 @@
       name="description"
       content="Personal website for David Crispell: writing, projects, and links."
     >
-    <meta name="theme-color" content="#fcf8f7">
+    <meta name="theme-color" content="#faf9f6">
     <meta name="google-site-verification" content="fkmTwU9KVj9XIucrb6DlIOyguPRB1rkcp5wSv16heZM">
     <title>David Crispell</title>
     <link rel="preconnect" href="https://db.onlinewebfonts.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&display=swap">
-    <link rel="stylesheet" href="site.css?v=20261112-5">
-    <script>
-      (function () {
-        var savedMode = null;
-        try {
-          savedMode = localStorage.getItem("color-mode");
-        } catch (error) {
-          savedMode = null;
-        }
-        var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        var shouldUseDark = savedMode ? savedMode === "dark" : prefersDark;
-        document.documentElement.classList.toggle("dark", shouldUseDark);
-        try {
-          var savedTheme = JSON.parse(localStorage.getItem("image-theme") || "null");
-          if (savedTheme) {
-            var themeVars = {
-              "--image-background": savedTheme.background,
-              "--image-ink": savedTheme.ink,
-              "--image-muted": savedTheme.muted,
-              "--image-accent": savedTheme.accent,
-              "--image-accent-2": savedTheme.accent2,
-              "--image-ink-dark": savedTheme.inkDark,
-              "--image-muted-dark": savedTheme.mutedDark,
-              "--image-accent-dark": savedTheme.accentDark,
-              "--image-accent-2-dark": savedTheme.accent2Dark,
-              "--image-frame-border": savedTheme.frameBorder,
-            };
-            for (var name in themeVars) {
-              if (themeVars[name]) {
-                document.documentElement.style.setProperty(name, themeVars[name]);
-              }
-            }
-          }
-        } catch (error) {
-          return;
-        }
-      })();
-    </script>
+    <link rel="stylesheet" href="site.css?v=20261118-redwood">
+    <script src="site-theme.js?v=20261118-redwood"></script>
   </head>
   <body class="waterman-home">
     <main class="waterman-page">
@@ -126,11 +90,11 @@
             <span class="colophon-fleuron" aria-hidden="true">❦</span>
             <p>Set in Emilio. Palettes after Dan Hillier &amp; Jane Crowther.</p>
 
-            <div class="theme-cycle" role="group" aria-label="Colour palette">
+            <div class="theme-cycle" id="palette" role="group" aria-label="Colour palette">
               <button class="plate-nav" type="button" data-art-step="-1" aria-label="Previous palette">
                 <span aria-hidden="true">&lsaquo;</span>
               </button>
-              <span class="theme-cycle__label" data-random-art-caption><span class="plate-no">Plate IV</span> Ada Lovelace</span>
+              <span class="theme-cycle__label" aria-live="polite" data-random-art-caption>Redwood</span>
               <button class="plate-nav" type="button" data-art-step="1" aria-label="Next palette">
                 <span aria-hidden="true">&rsaquo;</span>
               </button>
@@ -155,6 +119,6 @@
 
     <div class="botanical-footer" aria-hidden="true"></div>
 
-    <script src="site.js?v=20261112-5"></script>
+    <script src="site.js?v=20261118-redwood"></script>
   </body>
 </html>

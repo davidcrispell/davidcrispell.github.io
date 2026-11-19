@@ -1,31 +1,3 @@
-(function () {
-  var root = document.documentElement;
-  var toggle = document.querySelector(".theme-toggle");
-
-  function setMode(isDark, persist) {
-    root.classList.toggle("dark", isDark);
-    toggle.setAttribute("aria-pressed", String(isDark));
-    window.dispatchEvent(new Event("color-mode-change"));
-    if (persist) {
-      try {
-        localStorage.setItem("color-mode", isDark ? "dark" : "light");
-      } catch (error) {
-        return;
-      }
-    }
-  }
-
-  if (!toggle) {
-    return;
-  }
-
-  setMode(root.classList.contains("dark"), false);
-
-  toggle.addEventListener("click", function () {
-    setMode(!root.classList.contains("dark"), true);
-  });
-})();
-
 /* Passwords go directly to the refresh service for a single request. */
 (function () {
   var readerControls = document.querySelector(".contents-heading[data-doc-refresh]");
@@ -221,65 +193,38 @@
   var artCaption = document.querySelector("[data-random-art-caption]");
   var artFrame = document.querySelector("[data-art-frame]");
   var artStepButtons = document.querySelectorAll("[data-art-step]");
-  var themeMeta = document.querySelector('meta[name="theme-color"]');
-  var darkBackground = "#25221f";
   var fadeDuration = 190;
   var activeIndex = -1;
-  var images = [
+  var palettes = [
     {
+      id: "ground",
       src: "assets/ground-dan-hillier.jpeg",
       alt: "Ground by Dan Hillier",
       width: 895,
       height: 1200,
       plate: "Plate I",
       caption: "Ground — Dan Hillier",
-      theme: {
-        background: "#f4eddb",
-        ink: "#000000",
-        muted: "#000000",
-        accent: "#000000",
-        accent2: "#000000",
-        inkDark: "#ffffff",
-        mutedDark: "#ffffff",
-        accentDark: "#ffffff",
-        accent2Dark: "#ffffff",
-      },
     },
     {
+      id: "cherry-tree",
       src: "assets/cherrytree.jpg",
       alt: "Cherry tree artwork",
       width: 551,
       height: 773,
       plate: "Plate II",
       caption: "Cherry Tree — Jane Crowther",
-      theme: {
-        background: "#ece6dc",
-        ink: "#38322e",
-        muted: "#75695f",
-        accent: "#c40014",
-        accent2: "#5c6b3a",
-        accentDark: "#ffffff",
-        accent2Dark: "#ffffff",
-      },
     },
     {
+      id: "butterflies",
       src: "assets/butterflies.png",
       alt: "Butterflies and flowers artwork",
       width: 551,
       height: 773,
       plate: "Plate III",
       caption: "Butterflies — Jane Crowther",
-      theme: {
-        background: "#f6efdf",
-        ink: "#423b30",
-        muted: "#7c7260",
-        accent: "#c40014",
-        accent2: "#81825a",
-        accentDark: "#ffffff",
-        accent2Dark: "#ffffff",
-      },
     },
     {
+      id: "ada-lovelace",
       src: "assets/ada-lovelace.jpg",
       alt: "Ada Lovelace portrait",
       width: 853,
@@ -287,18 +232,8 @@
       plate: "Plate IV",
       caption: "Ada Lovelace",
       frame: "assets/floral-frame-ada.png",
-      theme: {
-        background: "#fcf8f7",
-        ink: "#1f2838",
-        muted: "#465a75",
-        accent: "#1f208c",
-        accent2: "#465a75",
-        inkDark: "#f1f4fd",
-        mutedDark: "#c9d4ea",
-        accentDark: "#ffffff",
-        accent2Dark: "#ffffff",
-      },
     },
+    { id: "redwood", caption: "Redwood" },
   ];
 
   /* The plates are muted (see index.html), so the image/button may be absent
@@ -308,50 +243,12 @@
     return;
   }
 
-  function updateThemeMeta() {
-    if (!themeMeta || activeIndex < 0) {
-      return;
-    }
-
-    themeMeta.setAttribute(
-      "content",
-      root.classList.contains("dark") ? darkBackground : images[activeIndex].theme.background
-    );
-  }
-
-  function setThemeVar(name, value) {
-    if (value) {
-      root.style.setProperty(name, value);
-    } else {
-      root.style.removeProperty(name);
-    }
-  }
-
-  function applyTheme(theme) {
-    setThemeVar("--image-background", theme.background);
-    setThemeVar("--image-ink", theme.ink);
-    setThemeVar("--image-muted", theme.muted);
-    setThemeVar("--image-accent", theme.accent);
-    setThemeVar("--image-accent-2", theme.accent2);
-    setThemeVar("--image-ink-dark", theme.inkDark);
-    setThemeVar("--image-muted-dark", theme.mutedDark);
-    setThemeVar("--image-accent-dark", theme.accentDark);
-    setThemeVar("--image-accent-2-dark", theme.accent2Dark);
-    setThemeVar("--image-frame-border", theme.frameBorder);
-    try {
-      localStorage.setItem("image-theme", JSON.stringify(theme));
-      localStorage.removeItem("image-background");
-    } catch (error) {
-      return;
-    }
-  }
-
   function showImage(index) {
-    if (!artImage) {
+    if (!artImage || !palettes[index].src) {
       return;
     }
-    artImage.src = images[index].src;
-    artImage.alt = images[index].alt;
+    artImage.src = palettes[index].src;
+    artImage.alt = palettes[index].alt;
   }
 
   function setArtFrameHeight(index) {
@@ -359,7 +256,7 @@
       return;
     }
 
-    var image = images[index];
+    var image = palettes[index];
     var style = window.getComputedStyle(artButton);
     var paddingX = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
     var paddingY = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
@@ -385,7 +282,7 @@
     artFrame.style.bottom = style.paddingBottom;
     artFrame.style.left = style.paddingLeft;
 
-    var frameSrc = images[index].frame;
+    var frameSrc = palettes[index].frame;
     if (!frameSrc) {
       artFrame.classList.remove("is-visible");
       return;
@@ -408,29 +305,45 @@
     });
   }
 
-  function setImage(index, immediate) {
+  function setPalette(index, immediate) {
+    var palette = palettes[index];
     activeIndex = index;
-    applyTheme(images[index].theme);
+    root.dataset.palette = palette.id;
+    window.dispatchEvent(new Event("palette-change"));
+    if (!immediate) {
+      try {
+        localStorage.setItem("color-palette", palette.id);
+      } catch (error) {
+        // The palette still applies for this visit.
+      }
+    }
+    if (artCaption) {
+      artCaption.textContent = palette.caption;
+      if (palette.plate) {
+        var number = document.createElement("span");
+        number.className = "plate-no";
+        number.textContent = palette.plate;
+        artCaption.prepend(number, " ");
+      }
+    }
+    if (artButton) {
+      artButton.hidden = !palette.src;
+    }
+    if (!palette.src || !artImage) {
+      return;
+    }
     setArtFrameHeight(index);
     renderArtFrame(index);
-    if (artCaption) {
-      artCaption.innerHTML =
-        '<span class="plate-no">' + images[index].plate + "</span> " + images[index].caption;
-    }
-    updateThemeMeta();
-    try {
-      localStorage.setItem("image-theme-index", String(index));
-    } catch (error) {
-      /* non-fatal: palette still applies for this page view */
-    }
-
-    if (immediate || !artImage) {
+    if (immediate) {
       showImage(index);
       return;
     }
 
     artImage.classList.add("is-fading");
     window.setTimeout(function () {
+      if (index !== activeIndex) {
+        return;
+      }
       showImage(index);
       var settle = function () {
         artImage.classList.remove("is-fading");
@@ -444,59 +357,43 @@
   }
 
   function randomIndex() {
-    if (images.length < 2) {
+    if (palettes.length < 2) {
       return 0;
     }
 
     var nextIndex = activeIndex;
     while (nextIndex === activeIndex) {
-      nextIndex = Math.floor(Math.random() * images.length);
+      nextIndex = Math.floor(Math.random() * palettes.length);
     }
     return nextIndex;
   }
 
-  function stepImage(delta) {
+  function stepPalette(delta) {
     var nextIndex = activeIndex + delta;
     if (nextIndex < 0) {
-      nextIndex = images.length - 1;
+      nextIndex = palettes.length - 1;
     }
-    if (nextIndex >= images.length) {
+    if (nextIndex >= palettes.length) {
       nextIndex = 0;
     }
-    setImage(nextIndex);
+    setPalette(nextIndex);
   }
 
-  /* Default palette is Plate IV (Ada Lovelace), not a random plate, so
-     a first-time visitor always lands on the same look. A returning visitor
-     keeps whichever palette they last stepped to. Colour mode (light/dark) is
-     handled separately in the <head> and already defaults to the system
-     preference when nothing has been saved. */
-  function defaultIndex() {
-    var saved = null;
-    try {
-      saved = localStorage.getItem("image-theme-index");
-    } catch (error) {
-      saved = null;
-    }
-
-    var index = saved === null ? 3 : Number(saved);
-    if (!isFinite(index) || index < 0 || index >= images.length) {
-      index = 3;
-    }
-    return index;
-  }
-
-  setImage(defaultIndex(), true);
+  var selected = root.dataset.palette || "redwood";
+  var initialIndex = palettes.findIndex(function (palette) {
+    return palette.id === selected;
+  });
+  setPalette(initialIndex, true);
 
   if (artButton) {
     artButton.addEventListener("click", function () {
-      setImage(randomIndex());
+      setPalette(randomIndex());
     });
   }
 
   artStepButtons.forEach(function (button) {
     button.addEventListener("click", function () {
-      stepImage(Number(button.getAttribute("data-art-step")) || 1);
+      stepPalette(Number(button.getAttribute("data-art-step")) || 1);
     });
   });
 
@@ -514,7 +411,6 @@
     }
   });
 
-  window.addEventListener("color-mode-change", updateThemeMeta);
 })();
 
 (function () {

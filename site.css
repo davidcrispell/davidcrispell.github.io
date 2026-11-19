@@ -24,14 +24,15 @@
 
 :root {
   color-scheme: light;
-  --background: var(--image-background, #fcf8f7);
-  --text: var(--image-ink, #1f2838);
-  --muted: var(--image-muted, #465a75);
-  --accent: var(--image-accent, #1f208c);
-  --accent-2: var(--image-accent-2, #465a75);
-  --link: var(--text);
+  /* Redwood is the light palette on a first visit. */
+  --background: #faf9f6;
+  --text: #242620;
+  --muted: #565c54;
+  --accent: #216252;
+  --accent-2: var(--accent);
+  --link: var(--accent);
   --selection: color-mix(in srgb, var(--accent) 24%, transparent);
-  --border: color-mix(in srgb, var(--text) 24%, transparent);
+  --border: #d5d8cf;
   --footnote-background: color-mix(in srgb, var(--accent) 12%, transparent);
   --footnote-background-hover: color-mix(in srgb, var(--accent) 22%, transparent);
   --tooltip-background: color-mix(in srgb, var(--background) 90%, #ffffff);
@@ -41,13 +42,49 @@
   --nav-font: "Aveline Eleganza", "Lora", "Times New Roman", Times, serif;
 }
 
+:root[data-palette="ground"] {
+  --background: #f4eddb;
+  --text: #000000;
+  --muted: var(--text);
+  --accent: var(--text);
+}
+
+:root[data-palette="cherry-tree"] {
+  --background: #ece6dc;
+  --text: #38322e;
+  --muted: #75695f;
+  --accent: #c40014;
+  --accent-2: #5c6b3a;
+}
+
+:root[data-palette="butterflies"] {
+  --background: #f6efdf;
+  --text: #423b30;
+  --muted: #7c7260;
+  --accent: #c40014;
+  --accent-2: #81825a;
+}
+
+:root[data-palette="ada-lovelace"] {
+  --background: #fcf8f7;
+  --text: #1f2838;
+  --muted: #465a75;
+  --accent: #1f208c;
+  --accent-2: var(--muted);
+}
+
+:root[data-palette]:not([data-palette="redwood"]), :root.dark {
+  --link: var(--text);
+  --border: color-mix(in srgb, var(--text) 24%, transparent);
+}
+
 :root.dark {
   color-scheme: dark;
   --background: #25221f;
-  --text: var(--image-ink-dark, #f1f4fd);
-  --muted: var(--image-muted-dark, #c9d4ea);
-  --accent: var(--image-accent-dark, #ffffff);
-  --accent-2: var(--image-accent-2-dark, #ffffff);
+  --text: #f1f4fd;
+  --muted: #c9d4ea;
+  --accent: #ffffff;
+  --accent-2: var(--accent);
   --tooltip-shadow: rgba(0, 0, 0, 0.35);
 }
 
@@ -260,6 +297,10 @@ a:hover {
 .waterman-art-button:focus-visible {
   outline: 2px solid var(--text);
   outline-offset: 8px;
+}
+
+.waterman-art-button[hidden] {
+  display: none;
 }
 
 .waterman-art img {

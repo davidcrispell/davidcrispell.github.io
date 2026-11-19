@@ -6,28 +6,13 @@
     <meta name="description" content="An investigation of NLS depth, latent reasoning, and chain-of-thought monitorability.">
     <meta name="theme-color" content="#faf9f6">
     <title>An Investigation of Latent Reasoning and Safe NLS Depth - David Crispell</title>
-    <link rel="stylesheet" href="site.css?v=20261112-4">
+    <link rel="stylesheet" href="site.css?v=20261118-redwood">
     <style>
       /* This reader layout belongs only to this article. Google Docs refreshes
          replace the marked article body below and preserve these styles. */
       :root.latent-reader {
-        --background: #faf9f6;
-        --text: #242620;
-        --muted: #565c54;
-        --accent: #216252;
-        --accent-2: #216252;
-        --link: var(--accent);
-        --border: #d5d8cf;
         --content-width: 820px;
         --nav-font: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
-      }
-      :root.latent-reader.dark {
-        --background: #20241f;
-        --text: #e7e9e1;
-        --muted: #b4bdaf;
-        --accent: #9ccab5;
-        --accent-2: #9ccab5;
-        --border: #485043;
       }
       .latent-reader body {
         font: 400 16px/1.65 -apple-system, BlinkMacSystemFont, Arial, sans-serif;
@@ -102,19 +87,7 @@
         .reader-sidebar, .latent-reader .essay-colophon { display: none; }
       }
     </style>
-    <script>
-      (function () {
-        var savedMode = null;
-        try {
-          savedMode = localStorage.getItem("color-mode");
-        } catch (error) {
-          savedMode = null;
-        }
-        var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        var shouldUseDark = savedMode ? savedMode === "dark" : prefersDark;
-        document.documentElement.classList.toggle("dark", shouldUseDark);
-      })();
-    </script>
+    <script src="site-theme.js?v=20261118-redwood"></script>
   </head>
   <body class="essay-template nls-depth-article">
     <div class="reader-shell" id="top">
@@ -240,10 +213,6 @@
         var disclosure = document.querySelector('.reader-contents details');
         var headings = Array.from(document.querySelectorAll('.essay-body h2'));
         var compact = window.matchMedia('(max-width: 850px)');
-        function updateThemeColor() {
-          document.querySelector('meta[name="theme-color"]').content =
-            document.documentElement.classList.contains('dark') ? '#20241f' : '#faf9f6';
-        }
         var links = headings.map(function (heading, index) {
           if (!heading.id) {
             heading.id = heading.textContent.toLowerCase().trim()
@@ -270,13 +239,11 @@
         }
         updateLayout();
         updateCurrentSection();
-        updateThemeColor();
         compact.addEventListener('change', updateLayout);
-        window.addEventListener('color-mode-change', updateThemeColor);
         window.addEventListener('scroll', updateCurrentSection, { passive: true });
         window.addEventListener('resize', updateCurrentSection);
       })();
     </script>
-    <script src="site.js?v=20261112-5"></script>
+    <script src="site.js?v=20261118-redwood"></script>
   </body>
 </html>
