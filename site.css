@@ -229,7 +229,9 @@ a:hover {
 }
 
 .waterman-page,
-.reader-shell {
+.reader-shell,
+.home-header,
+.reader-rail-frame {
   --content-width: 820px;
   display: grid;
   grid-template-columns: minmax(208px, 1fr) minmax(0, var(--content-width)) minmax(208px, 1fr);
@@ -243,8 +245,7 @@ a:hover {
 .waterman-rail,
 .reader-rail {
   grid-area: 1 / 1;
-  position: sticky;
-  top: 32px;
+  position: relative;
   align-self: start;
   justify-self: end;
   width: min(225px, 100%);
@@ -297,13 +298,24 @@ a:hover {
   text-underline-offset: 0.12em;
 }
 
-.home-header {
-  display: contents;
+.home-header,
+.reader-rail-frame {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 6;
+  padding-bottom: 0;
+  /* Only the rail and controls should intercept clicks over the page. */
+  pointer-events: none;
+}
+
+.home-header > *,
+.reader-rail {
+  pointer-events: auto;
 }
 
 .home-header > .theme-toggle {
   --corner-inset: clamp(12px, 1.5vw, 24px);
-  position: absolute;
+  position: fixed;
   top: max(var(--corner-inset), env(safe-area-inset-top));
   right: max(var(--corner-inset), env(safe-area-inset-right));
   width: 44px;
@@ -666,32 +678,42 @@ a:hover {
     --header-gutter: clamp(16px, 5vw, 22px);
     --gutter-left: max(var(--header-gutter), env(safe-area-inset-left, 0px));
     --gutter-right: max(var(--header-gutter), env(safe-area-inset-right, 0px));
+    --header-top: calc(12px + max(4px, env(safe-area-inset-top, 0px)));
+    --header-height: calc(var(--header-top) + 44px + 4px);
   }
 
   .waterman-page,
   .reader-shell {
     display: block;
     max-width: calc(var(--content-width) + 44px);
-    padding: 12px var(--gutter-right) 52px var(--gutter-left);
+    padding: calc(var(--header-height) + 32px) var(--gutter-right) 52px var(--gutter-left);
   }
 
   :root:has(.home-header, .reader-rail, .ai-contact-page) {
-    scroll-padding-top: calc(64px + env(safe-area-inset-top));
+    scroll-padding-top: calc(var(--header-height) + 8px);
+  }
+
+  .reader-rail-frame {
+    display: contents;
+  }
+
+  .ai-contact-page {
+    padding-top: calc(var(--header-height) + 28px);
   }
 
   .home-header,
   .reader-rail,
   .ai-contact-page .site-header {
-    position: sticky;
+    position: fixed;
     z-index: 6;
-    top: 0;
-    width: auto;
-    justify-self: stretch;
-    margin-inline: calc(-1 * var(--gutter-left)) calc(-1 * var(--gutter-right));
-    margin-bottom: 32px;
-    padding-block: max(4px, env(safe-area-inset-top)) 4px;
+    inset: 0 0 auto;
+    width: 100%;
+    max-width: calc(var(--content-width) + 44px);
+    margin: 0 auto;
+    padding-block: var(--header-top) 4px;
     padding-inline: var(--gutter-left) var(--gutter-right);
     background-color: var(--background);
+    pointer-events: auto;
     transition: background-color var(--theme-fade);
   }
 
@@ -706,12 +728,6 @@ a:hover {
 
   .reader-sidebar {
     grid-template-columns: minmax(0, 1fr) 44px 44px;
-  }
-
-  .ai-contact-page .site-header {
-    width: 100%;
-    max-width: calc(var(--content-width) + 44px);
-    margin: 12px auto 28px;
   }
 
   .ai-contact-shell {
@@ -1022,9 +1038,24 @@ a:hover {
   font-family: Georgia, "Times New Roman", serif;
 }
 
-@media (min-width: 961px) {
+@media screen and (min-width: 961px) {
+  :root:has(.ai-contact-page) {
+    --contact-header-height: 84px;
+    scroll-padding-top: var(--contact-header-height);
+  }
+
+  .ai-contact-page {
+    padding-top: var(--contact-header-height);
+  }
+
   .ai-contact-page .site-header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 6;
+    height: var(--contact-header-height);
     padding-bottom: 28px;
+    background-color: var(--background);
+    transition: background-color var(--theme-fade);
   }
 }
 
@@ -2102,5 +2133,25 @@ h2 {
 
   h2 {
     font-size: 32px;
+  }
+}
+
+@media print {
+  .home-header,
+  .reader-rail-frame {
+    display: contents;
+  }
+
+  .ai-contact-page .site-header {
+    position: static;
+  }
+
+  .waterman-home .waterman-page,
+  .ai-contact-page {
+    padding-top: 0;
+  }
+
+  .home-header > .theme-toggle {
+    display: none;
   }
 }
