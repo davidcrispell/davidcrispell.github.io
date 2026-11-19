@@ -40,7 +40,7 @@
 
   function railInUse() {
     return pointerInRail || sidebar.contains(document.activeElement) ||
-      (compact.matches && disclosure.open) || document.querySelector('.doc-refresh-dialog[open]');
+      (compact.matches && disclosure.open);
   }
 
   function scheduleFade() {

@@ -4,9 +4,8 @@ hi! im David :D, more here -> https://davidcrispell.github.io
 
 `article-sources.json` lists the site pages and Google Doc tabs that can be
 refreshed. The public site serves static copies, so readers can open them
-without Google access. The retry icon in the sidebar opens the admin password
-prompt for that page. The Vercel function reads the configured tab and
-commits the updated content to `main`; GitHub Pages then publishes the change.
+without Google access. The admin refresh endpoint reads the configured tab
+and commits the updated content to `main`. GitHub Pages then publishes the change.
 An identical snapshot does not create a commit.
 
 The refresh changes only the content between `google-doc:start` and
@@ -19,7 +18,7 @@ variables in Vercel, then redeploy:
 
 | Variable | Value |
 | --- | --- |
-| `DOC_SYNC_ADMIN_PASSWORD` | The password used in the refresh dialog. |
+| `DOC_SYNC_ADMIN_PASSWORD` | The password for the admin refresh endpoint. |
 | `DOC_SYNC_GOOGLE_SERVICE_ACCOUNT` | JSON credentials for a Google Cloud service account. Enable the Google Docs API in its project and share each registered Doc with the service account email as Viewer. The private Doc does not need public link sharing. |
 | `DOC_SYNC_GITHUB_TOKEN` | A fine-grained GitHub token limited to `davidcrispell/davidcrispell.github.io` with Contents read/write permission. |
 

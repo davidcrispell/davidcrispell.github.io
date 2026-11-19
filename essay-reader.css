@@ -94,10 +94,6 @@
   transform: rotate(90deg);
 }
 
-.reader-contents .doc-refresh-trigger {
-  margin-left: auto;
-}
-
 .reader-contents ol {
   display: grid;
   gap: 3px;
@@ -229,11 +225,6 @@
   text-align: left;
 }
 
-.essay-reader .doc-refresh-dialog {
-  font-family: var(--nav-font);
-  line-height: 1.5;
-}
-
 @media (max-width: 960px) {
   .reader-sidebar {
     position: relative;
@@ -281,6 +272,13 @@
   }
   .essay-reader .essay-body h2, .essay-reader .footnotes h2 {
     font-size: 26px;
+  }
+}
+
+@media screen and (max-width: 720px) {
+  .essay-reader .article-page {
+    width: auto;
+    margin-inline: -4px;
   }
 }
 

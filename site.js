@@ -1,191 +1,3 @@
-/* Passwords go directly to the refresh service for a single request. */
-(function () {
-  var readerControls = document.querySelector(".contents-heading[data-doc-refresh]");
-  var script = document.currentScript;
-  var endpoint = "https://davidcrispell-website.vercel.app/api/refresh-document";
-
-  if (!readerControls || !script || !window.fetch || !window.HTMLDialogElement) {
-    return;
-  }
-
-  var base = new URL(".", script.src);
-  var path = window.location.pathname;
-
-  if (!path.startsWith(base.pathname)) {
-    return;
-  }
-
-  var page = path.slice(base.pathname.length) || "index.html";
-  if (!page.includes(".")) {
-    page += ".html";
-  }
-
-  fetch(new URL("article-sources.json", base), { cache: "no-cache" })
-    .then(function (response) {
-      return response.ok ? response.json() : null;
-    })
-    .then(function (sources) {
-      if (!sources || sources.refresh_url !== endpoint) {
-        return;
-      }
-
-      var article = sources.articles && sources.articles[page];
-      if (article?.source?.type === "google-doc") {
-        addButton(readerControls, page, "Refresh this article from Google Docs");
-      }
-    })
-    .catch(function () {
-      /* The reader remains usable if the document registry cannot be loaded. */
-    });
-
-  function addButton(container, pageKey, label) {
-    var button = document.createElement("button");
-    button.type = "button";
-    button.className = "doc-refresh-trigger";
-    button.title = label;
-    button.setAttribute("aria-label", label);
-    button.setAttribute("aria-haspopup", "dialog");
-    var icon = document.createElement("span");
-    icon.textContent = "↻";
-    icon.setAttribute("aria-hidden", "true");
-    button.appendChild(icon);
-    button.addEventListener("click", function () {
-      openDialog(pageKey, button);
-    });
-    container.appendChild(button);
-  }
-
-  function openDialog(pageKey, trigger) {
-    var dialog = document.createElement("dialog");
-    dialog.className = "doc-refresh-dialog";
-    dialog.setAttribute("aria-labelledby", "doc-refresh-title");
-    dialog.innerHTML = [
-      '<form method="dialog" autocomplete="off">',
-      '  <h2 id="doc-refresh-title">Refresh from Google Docs</h2>',
-      '  <label for="doc-refresh-password">Admin password</label>',
-      '  <input type="password" id="doc-refresh-password" autocomplete="off" required disabled>',
-      '  <p class="doc-refresh-status" role="status">Checking refresh availability…</p>',
-      '  <div class="doc-refresh-actions">',
-      '    <button type="button">Close</button>',
-      '    <button type="submit" disabled>Refresh</button>',
-      '  </div>',
-      '</form>'
-    ].join("\n");
-
-    var form = dialog.querySelector("form");
-    var password = form.querySelector("input");
-    var status = form.querySelector("[role=status]");
-    var submit = form.querySelector("[type=submit]");
-    var close = form.querySelector("[type=button]");
-    var readiness = new AbortController();
-
-    async function checkAvailability() {
-      var timeout = window.setTimeout(function () { readiness.abort(); }, 8000);
-      var ready = false;
-
-      try {
-        var response = await fetch(endpoint, {
-          credentials: "omit",
-          redirect: "error",
-          cache: "no-store",
-          signal: readiness.signal
-        });
-        ready = response.ok && (await response.json())?.status === "ready";
-      } catch (error) {
-        /* Keep the dialog usable if the service cannot be reached. */
-      } finally {
-        window.clearTimeout(timeout);
-      }
-
-      if (!dialog.open) {
-        return;
-      }
-
-      status.textContent = ready ? "" : "Google Docs refresh isn’t available yet.";
-      if (ready) {
-        password.disabled = false;
-        submit.disabled = false;
-        password.focus();
-      }
-    }
-
-    function closeDialog() {
-      readiness.abort();
-      password.value = "";
-      dialog.close();
-      dialog.remove();
-      trigger.focus();
-    }
-
-    close.addEventListener("click", closeDialog);
-
-    form.addEventListener("submit", async function (event) {
-      event.preventDefault();
-
-      if (submit.disabled) {
-        return;
-      }
-
-      var body = JSON.stringify({ page: pageKey, password: password.value });
-      password.value = "";
-      status.textContent = "Refreshing…";
-      submit.disabled = true;
-      close.disabled = true;
-
-      var controller = new AbortController();
-      var timeout = window.setTimeout(function () { controller.abort(); }, 30000);
-
-      try {
-        var request = fetch(endpoint, {
-          method: "POST",
-          credentials: "omit",
-          redirect: "error",
-          headers: { "Content-Type": "application/json" },
-          body: body,
-          signal: controller.signal
-        });
-        body = null;
-        var response = await request;
-        var result = (await response.json().catch(function () { return null; })) || {};
-
-        if (!response.ok) {
-          if (typeof result.error === "string") {
-            status.textContent = result.error;
-          } else if (response.status === 404 || response.status === 503) {
-            status.textContent = "The refresh service is unavailable. Try again later.";
-          } else {
-            status.textContent = "Refresh failed. Please try again.";
-          }
-          password.focus();
-        } else if (result.status === "updated") {
-          status.textContent = "Synced. The updated page may take a minute to go live.";
-        } else if (result.status === "unchanged") {
-          status.textContent = "This page is already up to date.";
-        } else {
-          status.textContent = "The refresh service returned an unexpected response.";
-        }
-      } catch (error) {
-        status.textContent = "Couldn’t confirm the refresh. Check the page in a minute or try again.";
-      } finally {
-        window.clearTimeout(timeout);
-        submit.disabled = false;
-        close.disabled = false;
-      }
-    });
-
-    dialog.addEventListener("cancel", function (event) {
-      event.preventDefault();
-      if (!close.disabled) {
-        closeDialog();
-      }
-    });
-
-    document.body.appendChild(dialog);
-    dialog.showModal();
-    checkAvailability();
-  }
-})();
-
 (function () {
   var root = document.documentElement;
   var artButton = document.querySelector("[data-random-art]");
@@ -650,7 +462,6 @@
   var panel = document.querySelector(".contents-panel");
   var toggle = document.querySelector(".contents-toggle");
   var list = document.querySelector("[data-contents-list]");
-  var refreshHeading = panel && panel.querySelector(".contents-heading[data-doc-refresh]");
   var headings = document.querySelectorAll(".essay-body h2");
   var desktopQuery = window.matchMedia("(min-width: 1100px)");
   var hoverQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
@@ -661,18 +472,8 @@
   var fadeDuration = 220;
   var hoverCloseDelay = 260;
 
-  if (!panel || !toggle || !list || (!headings.length && !refreshHeading)) {
+  if (!panel || !toggle || !list || !headings.length) {
     return;
-  }
-
-  if (refreshHeading) {
-    toggle.classList.add("contents-toggle--keyboard");
-    if (!headings.length) {
-      refreshHeading.textContent = "Document";
-      panel.setAttribute("aria-label", "Document tools");
-      toggle.setAttribute("aria-label", "Toggle document tools");
-      list.hidden = true;
-    }
   }
 
   function slugify(text) {
@@ -697,19 +498,12 @@
     sectionLinks.push(link);
   });
 
-  var marker = null;
-  if (headings.length) {
-    marker = document.createElement("span");
-    marker.className = "contents-marker";
-    marker.setAttribute("aria-hidden", "true");
-    list.appendChild(marker);
-  }
+  var marker = document.createElement("span");
+  marker.className = "contents-marker";
+  marker.setAttribute("aria-hidden", "true");
+  list.appendChild(marker);
 
   function setOpen(isOpen) {
-    if (!isOpen && refreshHeading && document.querySelector(".doc-refresh-dialog[open]")) {
-      return;
-    }
-
     if (closeTimer) {
       window.clearTimeout(closeTimer);
       closeTimer = null;
@@ -718,9 +512,6 @@
     panel.classList.remove("is-closing");
     toggle.setAttribute("aria-expanded", String(isOpen));
     panel.setAttribute("aria-hidden", String(!isOpen));
-    if (refreshHeading) {
-      panel.inert = !isOpen;
-    }
     document.body.classList.toggle("contents-open", isOpen);
 
     if (isOpen) {
@@ -884,9 +675,7 @@
     setOpen(false);
   }
 
-  if (marker) {
-    updateActiveSection();
-    window.addEventListener("scroll", updateActiveSection, { passive: true });
-    window.addEventListener("resize", updateActiveSection);
-  }
+  updateActiveSection();
+  window.addEventListener("scroll", updateActiveSection, { passive: true });
+  window.addEventListener("resize", updateActiveSection);
 })();
