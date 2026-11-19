@@ -100,44 +100,80 @@
     if (!header) return;
     var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     var travelRatio = 0.65;
+    var supportsTimeline = CSS.supports("animation-timeline: scroll(root)") &&
+      CSS.supports("animation-range: 0px 100px");
+    var useTimeline;
+    var bottom = 0;
+    var travel = 0;
+    var start = 0;
     var lastY = 0;
-    var hiddenFraction = 0;
+    var lastOffset;
 
-    function updatePosition() {
-      var fraction = reducedMotion.matches ? Math.round(hiddenFraction) : hiddenFraction;
-      header.style.setProperty("--nav-offset", (-100 * fraction) + "%");
+    function progress(y) {
+      return Math.min(1, Math.max(0, (y - start) / travel));
+    }
+
+    function setStart(y) {
+      start = y;
+      if (useTimeline) header.style.animationRange = start + "px " + (start + travel) + "px";
     }
 
     function onScroll() {
-      // Ignore elastic overscroll and changes to the scroll limit from Safari's toolbar.
-      var bottom = Math.max(0, root.scrollHeight - root.clientHeight);
       var y = Math.min(bottom, Math.max(0, window.scrollY));
-      var delta = y - Math.min(lastY, bottom);
-      lastY = y;
-      var next = 0;
-      if (y > 0 && !header.matches(":has(:focus-visible, .section-menu[open])")) {
-        next = Math.min(1, Math.max(0, hiddenFraction + delta * travelRatio / header.offsetHeight));
+      // Inside the range the browser scrubs the transform. Once the bar reaches
+      // an end, move the range to the turning point on the first reverse scroll.
+      if (header.matches(":has(:focus-visible, .section-menu[open])")) {
+        if (start !== y) setStart(y);
+      } else if (y < lastY && lastY > start + travel) {
+        setStart(lastY - travel);
+      } else if (y > lastY && lastY < start) {
+        setStart(lastY);
       }
-      if (next === hiddenFraction) return;
-      hiddenFraction = next;
-      updatePosition();
+      lastY = y;
+      if (useTimeline) return;
+      var offset = progress(y);
+      if (reducedMotion.matches) offset = Math.round(offset);
+      if (offset !== lastOffset) header.style.setProperty("--nav-offset", (-100 * offset) + "%");
+      lastOffset = offset;
     }
 
+    function measure() {
+      bottom = Math.max(0, root.scrollHeight - root.clientHeight);
+      lastY = Math.min(lastY, bottom);
+      var distance = header.offsetHeight / travelRatio;
+      if (!distance) return;
+      if (distance !== travel) {
+        var newStart = travel ? Math.max(0, lastY - progress(lastY) * distance) : 0;
+        travel = distance;
+        setStart(newStart);
+      }
+      onScroll();
+    }
+
+    var sizes = new ResizeObserver(measure);
     function syncLayout() {
-      lastY = 0;
-      hiddenFraction = 0;
+      sizes.disconnect();
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", onScroll);
+      useTimeline = compact.matches && supportsTimeline && !reducedMotion.matches;
+      header.classList.toggle("scroll-driven-nav", useTimeline);
+      header.style.removeProperty("animation-range");
       header.style.removeProperty("--nav-offset");
+      travel = 0;
+      lastY = 0;
+      lastOffset = undefined;
       if (compact.matches) {
-        onScroll();
+        measure();
+        sizes.observe(root);
+        sizes.observe(header);
+        window.addEventListener("resize", measure);
         window.addEventListener("scroll", onScroll, { passive: true });
-      } else {
-        window.removeEventListener("scroll", onScroll);
       }
     }
 
     syncLayout();
     compact.addEventListener("change", syncLayout);
-    reducedMotion.addEventListener("change", updatePosition);
+    reducedMotion.addEventListener("change", syncLayout);
     window.addEventListener("pageshow", syncLayout);
   }
 
