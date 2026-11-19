@@ -284,7 +284,17 @@ a:hover {
   text-underline-offset: 0.12em;
 }
 
-.waterman-rail .theme-toggle,
+.waterman-page > .theme-toggle {
+  --corner-inset: clamp(12px, 1.5vw, 24px);
+  position: absolute;
+  top: max(var(--corner-inset), env(safe-area-inset-top));
+  right: max(var(--corner-inset), env(safe-area-inset-right));
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 12px;
+}
+
 .latent-reader .theme-toggle {
   width: 32px;
   height: 32px;
