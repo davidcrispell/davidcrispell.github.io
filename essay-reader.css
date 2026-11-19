@@ -102,6 +102,10 @@
   list-style: none;
 }
 
+.reader-contents ol:empty {
+  display: none;
+}
+
 .reader-contents a {
   display: block;
   padding: 6px 0;
@@ -239,6 +243,7 @@
   }
   .reader-home .waterman-title {
     grid-area: 1 / 1 / span 2;
+    align-self: start;
     justify-self: start;
   }
   .reader-home .theme-toggle {
