@@ -41,7 +41,7 @@
   --accent: #216252;
   --accent-2: var(--accent);
   --link: var(--accent);
-  --selection: color-mix(in srgb, var(--accent) 24%, transparent);
+  --selection: var(--accent);
   --border: #d5d8cf;
   --footnote-background: color-mix(in srgb, var(--accent) 12%, transparent);
   --footnote-background-hover: color-mix(in srgb, var(--accent) 22%, transparent);
@@ -97,6 +97,7 @@
   --muted: #c9d4ea;
   --accent: #ffffff;
   --accent-2: var(--accent);
+  --selection: #707070;
   --tooltip-shadow: rgba(0, 0, 0, 0.35);
 }
 
@@ -123,8 +124,8 @@ body {
 }
 
 ::selection {
-  background: var(--selection);
-  color: inherit;
+  background-color: var(--selection);
+  color: #fff;
 }
 
 a {
