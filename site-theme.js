@@ -98,28 +98,37 @@
   function initMobileHeader() {
     var header = document.querySelector(".home-header, .reader-rail, .ai-contact-page .site-header");
     if (!header) return;
-    var turnY = 0;
-    var threshold = 8;
+    var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    var travelRatio = 0.65;
+    var lastY = 0;
+    var hiddenFraction = 0;
+
+    function updatePosition() {
+      var fraction = reducedMotion.matches ? Math.round(hiddenFraction) : hiddenFraction;
+      header.style.setProperty("--nav-offset", (-100 * fraction) + "%");
+    }
 
     function onScroll() {
-      // Safari can report offsets outside the document during rubber-band scrolling.
+      // Ignore elastic overscroll and changes to the scroll limit from Safari's toolbar.
       var bottom = Math.max(0, root.scrollHeight - root.clientHeight);
       var y = Math.min(bottom, Math.max(0, window.scrollY));
-      turnY = Math.min(turnY, bottom);
-
-      // Measure from the last turning point so small finger movements don't flicker.
-      var hidden = header.classList.contains("is-scroll-hidden");
-      turnY = hidden ? Math.max(turnY, y) : Math.min(turnY, y);
-      if (y === 0 || Math.abs(y - turnY) >= threshold) {
-        header.classList.toggle("is-scroll-hidden", y > turnY);
-        turnY = y;
+      var delta = y - Math.min(lastY, bottom);
+      lastY = y;
+      var next = 0;
+      if (y > 0 && !header.matches(":has(:focus-visible, .section-menu[open])")) {
+        next = Math.min(1, Math.max(0, hiddenFraction + delta * travelRatio / header.offsetHeight));
       }
+      if (next === hiddenFraction) return;
+      hiddenFraction = next;
+      updatePosition();
     }
 
     function syncLayout() {
-      turnY = Math.max(0, window.scrollY);
-      header.classList.toggle("is-scroll-hidden", compact.matches && turnY > 0);
+      lastY = 0;
+      hiddenFraction = 0;
+      header.style.removeProperty("--nav-offset");
       if (compact.matches) {
+        onScroll();
         window.addEventListener("scroll", onScroll, { passive: true });
       } else {
         window.removeEventListener("scroll", onScroll);
@@ -128,6 +137,7 @@
 
     syncLayout();
     compact.addEventListener("change", syncLayout);
+    reducedMotion.addEventListener("change", updatePosition);
     window.addEventListener("pageshow", syncLayout);
   }
 
