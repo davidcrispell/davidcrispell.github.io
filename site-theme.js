@@ -19,13 +19,13 @@
   }
 
   function restorePreferences() {
-    var palette = "redwood";
-    var dark = matchMedia("(prefers-color-scheme: dark)").matches;
+    var palette = "blank-slate";
+    var dark = false;
     try {
       var mode = localStorage.getItem("color-mode");
       if (mode) dark = mode === "dark";
       var saved = localStorage.getItem("color-palette");
-      if (saved === "redwood" || artworkPalettes.includes(saved)) {
+      if (saved === "blank-slate" || saved === "redwood" || artworkPalettes.includes(saved)) {
         palette = saved;
       } else {
         // Index 3 was saved automatically. Only the other old indices

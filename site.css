@@ -34,24 +34,32 @@
 
 :root {
   color-scheme: light;
-  /* Redwood is the light palette on a first visit. */
-  --background: #faf9f6;
-  --text: #242620;
-  --muted: #565c54;
-  --accent: #216252;
+  /* Blank Slate is the palette on a first visit. */
+  --background: #ededed;
+  --text: #111111;
+  --muted: #555555;
+  --accent: #111111;
   --accent-2: var(--accent);
   --link: var(--accent);
   --selection: var(--accent);
-  --border: #d5d8cf;
+  --border: #cccccc;
   --footnote-background: color-mix(in srgb, var(--accent) 12%, transparent);
   --footnote-background-hover: color-mix(in srgb, var(--accent) 22%, transparent);
   --tooltip-background: color-mix(in srgb, var(--background) 90%, #ffffff);
-  --tooltip-shadow: rgba(61, 56, 51, 0.18);
+  --tooltip-shadow: rgba(0, 0, 0, 0.18);
   --page-width: 760px;
   --content-width: var(--page-width);
   --name-font: "Aveline Eleganza", "Lora", "Times New Roman", Times, serif;
   --nav-font: var(--name-font);
   --essay-font: "Emilio Test Light", "Emilio", Georgia, "Times New Roman", serif;
+}
+
+:root[data-palette="redwood"] {
+  --background: #faf9f6;
+  --text: #242620;
+  --muted: #565c54;
+  --accent: #216252;
+  --border: #d5d8cf;
 }
 
 :root[data-palette="ground"] {
@@ -85,7 +93,7 @@
   --accent-2: var(--muted);
 }
 
-:root[data-palette]:not([data-palette="redwood"]), :root.dark {
+:root[data-palette]:not([data-palette="redwood"]):not([data-palette="blank-slate"]), :root.dark {
   --link: var(--text);
   --border: color-mix(in srgb, var(--text) 24%, transparent);
 }
@@ -99,6 +107,14 @@
   --accent-2: var(--accent);
   --selection: #707070;
   --tooltip-shadow: rgba(0, 0, 0, 0.35);
+}
+
+:root[data-palette="blank-slate"].dark {
+  --background: #111111;
+  --text: #ededed;
+  --muted: #bdbdbd;
+  --accent: #ededed;
+  --border: #444444;
 }
 
 * {
@@ -643,6 +659,20 @@ a:hover {
 .waterman-intro {
   display: grid;
   gap: 14px;
+  margin-top: 16px;
+}
+
+@media (min-width: 961px) {
+  .waterman-intro {
+    /* Match the name's left inset, including the centered page and rail.
+       635px is half the 820px center track plus the 225px rail width. */
+    --name-inset: max(
+      calc(max(0px, (100vw - 1480px) / 2) + clamp(16px, 1.5vw, 24px)),
+      calc(50vw - 635px - clamp(20px, 2.5vw, 40px))
+    );
+    /* The page already supplies 38px of space above the bio. */
+    margin-top: max(16px, calc(var(--name-inset) - 38px));
+  }
 }
 
 @media (max-width: 960px) {

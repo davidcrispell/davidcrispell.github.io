@@ -46,6 +46,7 @@
       frame: "assets/floral-frame-ada.png",
     },
     { id: "redwood", caption: "Redwood" },
+    { id: "blank-slate", caption: "Blank Slate" },
   ];
 
   /* The plates are muted (see index.html), so the image/button may be absent
@@ -192,7 +193,7 @@
   }
 
   function restorePicker() {
-    var selected = root.dataset.palette || "redwood";
+    var selected = root.dataset.palette || "blank-slate";
     var index = palettes.findIndex(function (palette) {
       return palette.id === selected;
     });
