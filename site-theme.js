@@ -5,13 +5,6 @@
   var revision = new URL(document.currentScript.src).searchParams.get("v");
   var artworkPalettes = ["ground", "cherry-tree", "butterflies", "ada-lovelace"];
 
-  // Start decoding the embedded glyphs while the rest of the document is parsing.
-  if (document.fonts) {
-    document.fonts.load('400 1em "Aveline Wordmark"', "David Crispell").catch(function () {
-      // CSS also provides the full Aveline face as a fallback.
-    });
-  }
-
   function syncBrowserColor() {
     if (meta) {
       meta.content = getComputedStyle(root).getPropertyValue("--background").trim();
@@ -19,7 +12,7 @@
   }
 
   function restorePreferences() {
-    var palette = "blank-slate";
+    var palette = "redwood";
     var dark = false;
     try {
       var mode = localStorage.getItem("color-mode");

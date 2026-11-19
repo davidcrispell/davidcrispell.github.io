@@ -193,7 +193,7 @@
   }
 
   function restorePicker() {
-    var selected = root.dataset.palette || "blank-slate";
+    var selected = root.dataset.palette || "redwood";
     var index = palettes.findIndex(function (palette) {
       return palette.id === selected;
     });
