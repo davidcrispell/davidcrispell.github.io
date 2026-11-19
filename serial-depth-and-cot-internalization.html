@@ -1,16 +1,107 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="latent-reader">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="An investigation of NLS depth, latent reasoning, and chain-of-thought monitorability.">
-    <meta name="theme-color" content="#fcf8f7">
+    <meta name="theme-color" content="#faf9f6">
     <title>An Investigation of Latent Reasoning and Safe NLS Depth - David Crispell</title>
-    <link rel="preconnect" href="https://db.onlinewebfonts.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&amp;display=swap">
     <link rel="stylesheet" href="site.css?v=20261112-4">
+    <style>
+      /* This reader layout belongs only to this article. Google Docs refreshes
+         replace the marked article body below and preserve these styles. */
+      :root.latent-reader {
+        --background: #faf9f6;
+        --text: #242620;
+        --muted: #565c54;
+        --accent: #216252;
+        --accent-2: #216252;
+        --link: var(--accent);
+        --border: #d5d8cf;
+        --content-width: 820px;
+        --nav-font: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+      }
+      :root.latent-reader.dark {
+        --background: #20241f;
+        --text: #e7e9e1;
+        --muted: #b4bdaf;
+        --accent: #9ccab5;
+        --accent-2: #9ccab5;
+        --border: #485043;
+      }
+      .latent-reader body {
+        font: 400 16px/1.65 -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+      }
+      .latent-reader a { text-underline-offset: 3px; }
+      .latent-reader :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+      .reader-shell {
+        display: grid;
+        grid-template-columns: 225px minmax(0, 820px);
+        gap: 54px;
+        max-width: 1220px;
+        margin: 0 auto;
+        padding: 38px 32px 72px;
+      }
+      .reader-sidebar {
+        position: sticky;
+        top: 32px;
+        align-self: start;
+        max-height: calc(100dvh - 64px);
+        overflow-y: auto;
+        padding: 4px;
+        margin: -4px;
+      }
+      .reader-home { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 36px; }
+      .latent-reader .site-title { font: 600 17px/1.4 var(--nav-font); }
+      .latent-reader .theme-toggle { width: 32px; height: 32px; margin: 0; padding: 6px; }
+      .reader-contents summary { list-style: none; cursor: pointer; }
+      .reader-contents summary::-webkit-details-marker { display: none; }
+      .reader-contents .contents-heading {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+        font: 600 14px/1.4 var(--nav-font);
+        letter-spacing: normal;
+        text-transform: none;
+        color: var(--text);
+      }
+      .reader-contents summary::before { content: '›'; font-size: 20px; line-height: 1; }
+      .reader-contents details[open] summary::before { transform: rotate(90deg); }
+      .reader-contents .doc-refresh-trigger { margin-left: auto; }
+      .reader-contents ol { display: grid; gap: 3px; margin: 14px 0 0; padding: 0; list-style: none; }
+      .reader-contents a { display: block; padding: 6px 0; font-size: 14px; line-height: 1.45; color: var(--muted); text-decoration: none; }
+      .reader-contents a:hover { color: var(--accent); text-decoration: underline; }
+      .reader-contents a[aria-current="location"] { color: var(--accent); font-weight: 700; }
+      .latent-reader .article-page { width: 100%; min-width: 0; margin: 0; padding: 0; }
+      .latent-reader .essay-header { margin-bottom: 36px; }
+      .latent-reader .essay-title { max-width: 32ch; margin: 0 0 16px; font: 700 clamp(30px, 4vw, 43px)/1.16 Georgia, serif; text-wrap: balance; }
+      .latent-reader .essay-authors { margin: 0; font-size: 14px; line-height: 1.5; }
+      .latent-reader .essay-body { font-size: 16px; font-weight: 400; line-height: 1.65; overflow-wrap: break-word; }
+      .latent-reader .essay-body h2 { margin: 42px 0 14px; font: 700 29px/1.25 Georgia, serif; scroll-margin-top: 28px; }
+      .latent-reader .essay-body h2:first-child { margin-top: 0; }
+      .latent-reader .essay-body p + p { margin-top: 1.15em; }
+      .latent-reader .essay-body ul, .latent-reader .essay-body ol { margin: 16px 0; padding-left: 1.35em; }
+      .latent-reader .essay-body li + li { margin-top: 16px; }
+      .latent-reader .experiment-figure { width: 100%; margin: 32px 0; transform: none; }
+      .latent-reader .experiment-figure figcaption { max-width: none; font-size: 13px; text-align: left; }
+      .latent-reader .essay-colophon { text-align: left; padding-top: 22px; }
+      .latent-reader .colophon-top { padding: 0; color: var(--accent); font-size: 14px; line-height: 1.5; text-decoration: underline; }
+      .latent-reader .doc-refresh-dialog { font-family: var(--nav-font); line-height: 1.5; }
+      @media (max-width: 850px) {
+        .reader-shell { display: block; padding: 24px 22px 52px; }
+        .reader-sidebar { position: static; max-height: none; overflow: visible; margin-bottom: 32px; }
+        .reader-home { margin-bottom: 22px; }
+        .reader-contents { padding: 12px 0; border-block: 1px solid var(--border); }
+        .latent-reader .essay-title { font-size: clamp(30px, 5vw, 43px); }
+        .latent-reader .essay-body h2 { font-size: 26px; }
+      }
+      @media print {
+        :root.latent-reader, :root.latent-reader.dark { --background: white; --text: black; --muted: #333; --accent: #333; }
+        .reader-shell { display: block; max-width: none; padding: 0; }
+        .reader-sidebar, .latent-reader .essay-colophon { display: none; }
+      }
+    </style>
     <script>
       (function () {
         var savedMode = null;
@@ -22,47 +113,14 @@
         var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
         var shouldUseDark = savedMode ? savedMode === "dark" : prefersDark;
         document.documentElement.classList.toggle("dark", shouldUseDark);
-        try {
-          var savedTheme = JSON.parse(localStorage.getItem("image-theme") || "null");
-          if (savedTheme) {
-            var themeVars = {
-              "--image-background": savedTheme.background,
-              "--image-ink": savedTheme.ink,
-              "--image-muted": savedTheme.muted,
-              "--image-accent": savedTheme.accent,
-              "--image-accent-2": savedTheme.accent2,
-              "--image-ink-dark": savedTheme.inkDark,
-              "--image-muted-dark": savedTheme.mutedDark,
-              "--image-accent-dark": savedTheme.accentDark,
-              "--image-accent-2-dark": savedTheme.accent2Dark,
-              "--image-frame-border": savedTheme.frameBorder
-            };
-            for (var name in themeVars) {
-              if (themeVars[name]) {
-                document.documentElement.style.setProperty(name, themeVars[name]);
-              }
-            }
-          }
-        } catch (error) {
-          return;
-        }
       })();
     </script>
   </head>
   <body class="essay-template nls-depth-article">
-    <header class="site-header">
-      <a class="site-title" href="./" aria-label="David Crispell home">David Crispell</a>
-      <button
-        class="contents-toggle"
-        type="button"
-        aria-label="Toggle essay contents"
-        aria-expanded="false"
-        aria-controls="essay-contents"
-      >
-        <span class="contents-toggle__bar" aria-hidden="true"></span>
-        <span class="contents-toggle__bar" aria-hidden="true"></span>
-        <span class="contents-toggle__bar" aria-hidden="true"></span>
-      </button>
+    <div class="reader-shell" id="top">
+      <aside class="reader-sidebar">
+        <header class="reader-home">
+          <a class="site-title" href="./" aria-label="David Crispell home">David Crispell</a>
       <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
         <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
@@ -72,12 +130,14 @@
           <path d="M12 1.8v2.7M12 19.5v2.7M1.8 12h2.7M19.5 12h2.7M4.8 4.8l1.9 1.9M17.3 17.3l1.9 1.9M19.2 4.8l-1.9 1.9M6.7 17.3l-1.9 1.9"/>
         </svg>
       </button>
-    </header>
-
-    <nav id="essay-contents" class="contents-panel" aria-label="Essay contents" aria-hidden="true">
-      <div class="contents-heading" data-doc-refresh>Contents</div>
-      <ol class="contents-list" data-contents-list></ol>
-    </nav>
+        </header>
+        <nav class="reader-contents" aria-label="Essay contents">
+          <details open>
+            <summary class="contents-heading" data-doc-refresh>On this page</summary>
+            <ol data-reader-contents></ol>
+          </details>
+        </nav>
+      </aside>
 
     <main class="page article-page">
       <article class="essay">
@@ -167,14 +227,56 @@
 
         <footer class="essay-colophon">
           <a class="colophon-top" href="#top" aria-label="Back to top">
-            <span class="colophon-fleuron" aria-hidden="true">❦</span>
-            <span class="colophon-tip" aria-hidden="true">Back to top</span>
+            Back to top ↑
           </a>
         </footer>
       </article>
     </main>
 
-    <div class="botanical-footer" aria-hidden="true"></div>
+    </div>
+    <script>
+      (function () {
+        var list = document.querySelector('[data-reader-contents]');
+        var disclosure = document.querySelector('.reader-contents details');
+        var headings = Array.from(document.querySelectorAll('.essay-body h2'));
+        var compact = window.matchMedia('(max-width: 850px)');
+        function updateThemeColor() {
+          document.querySelector('meta[name="theme-color"]').content =
+            document.documentElement.classList.contains('dark') ? '#20241f' : '#faf9f6';
+        }
+        var links = headings.map(function (heading, index) {
+          if (!heading.id) {
+            heading.id = heading.textContent.toLowerCase().trim()
+              .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'section-' + (index + 1);
+          }
+          var item = document.createElement('li');
+          var link = document.createElement('a');
+          link.href = '#' + heading.id;
+          link.textContent = heading.textContent;
+          item.appendChild(link);
+          list.appendChild(item);
+          return link;
+        });
+        function updateLayout() { disclosure.open = !compact.matches; }
+        function updateCurrentSection() {
+          var current = 0;
+          headings.forEach(function (heading, index) {
+            if (heading.getBoundingClientRect().top <= 100) current = index;
+          });
+          links.forEach(function (link, index) {
+            if (index === current) link.setAttribute('aria-current', 'location');
+            else link.removeAttribute('aria-current');
+          });
+        }
+        updateLayout();
+        updateCurrentSection();
+        updateThemeColor();
+        compact.addEventListener('change', updateLayout);
+        window.addEventListener('color-mode-change', updateThemeColor);
+        window.addEventListener('scroll', updateCurrentSection, { passive: true });
+        window.addEventListener('resize', updateCurrentSection);
+      })();
+    </script>
     <script src="site.js?v=20261112-5"></script>
   </body>
 </html>
