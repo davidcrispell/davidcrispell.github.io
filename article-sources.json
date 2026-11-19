@@ -38,6 +38,7 @@
           "Notes",
           "Related work"
         ],
+        "omit_top_level_sections": ["Losing CoT monitorability this way is evidence we are training schemers"],
         "list_sections": ["Related work"],
         "local_figures": {
           "kix.mhlvjc5yfpnz": "nls-loss",
