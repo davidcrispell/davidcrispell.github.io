@@ -619,16 +619,6 @@ a:hover {
   }
 }
 
-@media screen and (any-pointer: coarse) {
-  html:has(.botanical-footer) {
-    overscroll-behavior-y: none;
-  }
-
-  body:has(> .botanical-footer) {
-    min-height: 100dvh;
-  }
-}
-
 @supports ((mask-image: url("")) or (-webkit-mask-image: url(""))) {
   .botanical-footer {
     height: 170px;
@@ -668,6 +658,10 @@ a:hover {
 }
 
 @media (max-width: 960px) {
+  .botanical-footer {
+    display: none;
+  }
+
   :root {
     --header-gutter: clamp(16px, 5vw, 22px);
     --gutter-left: max(var(--header-gutter), env(safe-area-inset-left, 0px));
