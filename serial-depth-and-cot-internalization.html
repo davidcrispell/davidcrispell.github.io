@@ -1,126 +1,14 @@
 <!doctype html>
-<html lang="en" class="latent-reader">
+<html lang="en" class="essay-reader">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="An investigation of NLS depth, latent reasoning, and chain-of-thought monitorability.">
     <meta name="theme-color" content="#faf9f6">
     <title>An Investigation of Latent Reasoning and Safe NLS Depth - David Crispell</title>
-    <link rel="stylesheet" href="site.css?v=20261118-colophon">
-    <style>
-      /* This reader layout belongs only to this article. Google Docs refreshes
-         replace the marked article body below and preserve these styles. */
-      :root.latent-reader {
-        --nav-font: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
-      }
-      .latent-reader body {
-        font: 400 16px/1.65 -apple-system, BlinkMacSystemFont, Arial, sans-serif;
-      }
-      .latent-reader a { text-underline-offset: 3px; }
-      .latent-reader :focus-visible:where(:not(.colophon-top)) { outline: 2px solid var(--accent); outline-offset: 4px; }
-      .reader-sidebar {
-        max-height: calc(100dvh - 64px);
-        overflow-y: auto;
-        padding: 4px;
-        margin: -4px;
-        transition: opacity 220ms ease, visibility 0s;
-      }
-      .reader-rail.is-quiet .reader-sidebar {
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-        transition-delay: 0s, 220ms;
-      }
-      .reader-restore {
-        position: absolute;
-        inset: 0 auto auto 0;
-        min-height: 44px;
-        padding: 0 6px;
-        border: 0;
-        background: transparent;
-        color: var(--accent);
-        font: 600 14px/1.4 var(--nav-font);
-        cursor: pointer;
-      }
-      @media (min-width: 961px) and (hover: hover) and (pointer: fine) {
-        .reader-restore:not(:focus-visible) { opacity: 0; }
-      }
-      @media (any-pointer: coarse) {
-        .reader-restore:not(:focus-visible) { opacity: 1; }
-      }
-      @media (prefers-reduced-motion: reduce) {
-        .reader-sidebar { transition: none; }
-      }
-      .reader-home { margin-bottom: 36px; }
-      .reader-contents summary { list-style: none; cursor: pointer; }
-      .reader-contents summary::-webkit-details-marker { display: none; }
-      .reader-contents .contents-heading {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin: 0;
-        font: 600 14px/1.4 var(--nav-font);
-        letter-spacing: normal;
-        text-transform: none;
-        color: var(--text);
-      }
-      .reader-contents summary::before { content: '›'; font-size: 20px; line-height: 1; }
-      .reader-contents details[open] summary::before { transform: rotate(90deg); }
-      .reader-contents .doc-refresh-trigger { margin-left: auto; }
-      .reader-contents ol { display: grid; gap: 3px; margin: 14px 0 0; padding: 0; list-style: none; }
-      .reader-contents a { display: block; padding: 6px 0; font-size: 14px; line-height: 1.45; color: var(--muted); text-decoration: none; }
-      .reader-contents a:hover { color: var(--accent); text-decoration: underline; }
-      .reader-contents a[aria-current="location"] { color: var(--accent); font-weight: 700; }
-      .latent-reader .article-page { grid-area: 1 / 2; width: 100%; min-width: 0; margin: 0; padding: 0; }
-      .latent-reader .essay-header { margin-bottom: 36px; }
-      .latent-reader .essay-title { max-width: 32ch; margin: 0 0 16px; font: 700 clamp(30px, 4vw, 43px)/1.16 Georgia, serif; text-wrap: balance; }
-      .latent-reader .essay-authors { margin: 0; font-size: 14px; line-height: 1.5; }
-      .latent-reader .essay-body { font-size: 16px; font-weight: 400; line-height: 1.65; overflow-wrap: break-word; }
-      .latent-reader .essay-body h2 { margin: 42px 0 14px; font: 700 29px/1.25 Georgia, serif; scroll-margin-top: 28px; }
-      .latent-reader .essay-body h2:first-child { margin-top: 0; }
-      .latent-reader .essay-body p + p { margin-top: 1.15em; }
-      .latent-reader .essay-body ul, .latent-reader .essay-body ol { margin: 16px 0; padding-left: 1.35em; }
-      .latent-reader .essay-body li + li { margin-top: 16px; }
-      .latent-reader .experiment-figure { width: 100%; margin: 32px 0; transform: none; }
-      .latent-reader .experiment-figure figcaption { max-width: none; font-size: 13px; text-align: left; }
-      .latent-reader .doc-refresh-dialog { font-family: var(--nav-font); line-height: 1.5; }
-      @media (max-width: 960px) {
-        .reader-sidebar {
-          position: relative;
-          display: grid;
-          grid-template-columns: minmax(0, 1fr) auto;
-          align-items: center;
-          max-height: none;
-          overflow: visible;
-        }
-        .reader-home { display: contents; }
-        .reader-home .waterman-title { grid-area: 1 / 1 / span 2; justify-self: start; }
-        .reader-home .theme-toggle { grid-area: 1 / 2; justify-self: end; }
-        .reader-contents { grid-area: 2 / 2; }
-        .reader-contents summary { min-height: 40px; }
-        .reader-contents ol:not(:empty) {
-          position: absolute;
-          z-index: 2;
-          inset: 100% 0 auto auto;
-          width: min(100%, 320px);
-          max-height: 55dvh;
-          overflow-y: auto;
-          margin: 4px 0 0;
-          padding: 10px 16px;
-          border: 1px solid var(--border);
-          background: var(--background);
-        }
-        .reader-restore { top: 50%; transform: translateY(-50%); }
-        .latent-reader .essay-title { font-size: clamp(30px, 5vw, 43px); }
-        .latent-reader .essay-body h2 { font-size: 26px; }
-      }
-      @media print {
-        :root.latent-reader, :root.latent-reader.dark { --background: white; --text: black; --muted: #333; --accent: #333; }
-        .reader-shell { display: block; max-width: none; padding: 0; }
-        .reader-rail { display: none; }
-      }
-    </style>
-    <script src="site-theme.js?v=20261118-home-toggle"></script>
+    <link rel="stylesheet" href="site.css?v=20261118-post-reader">
+    <link rel="stylesheet" href="essay-reader.css?v=20261118-post-reader">
+    <script src="site-theme.js?v=20261118-post-reader"></script>
   </head>
   <body class="essay-template nls-depth-article">
     <div class="reader-shell" id="top">
@@ -139,7 +27,7 @@
               </svg>
             </button>
           </header>
-          <nav class="reader-contents" aria-label="Essay contents">
+          <nav id="essay-contents" class="reader-contents" aria-label="Essay contents">
             <details open>
               <summary class="contents-heading" data-doc-refresh>On this page</summary>
               <ol data-reader-contents></ol>
@@ -245,116 +133,7 @@
 
     </div>
     <div class="botanical-footer" aria-hidden="true"></div>
-    <script>
-      (function () {
-        var list = document.querySelector('[data-reader-contents]');
-        var disclosure = document.querySelector('.reader-contents details');
-        var headings = Array.from(document.querySelectorAll('.essay-body h2'));
-        var compact = window.matchMedia('(max-width: 960px)');
-        var article = document.querySelector('.article-page');
-        var rail = document.querySelector('.reader-rail');
-        var sidebar = document.getElementById('reader-sidebar');
-        var restore = rail.querySelector('.reader-restore');
-        var summary = disclosure.querySelector('summary');
-        var fadeTimer;
-        var pointerInRail = false;
-        var links = headings.map(function (heading, index) {
-          if (!heading.id) {
-            heading.id = heading.textContent.toLowerCase().trim()
-              .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'section-' + (index + 1);
-          }
-          var item = document.createElement('li');
-          var link = document.createElement('a');
-          link.href = '#' + heading.id;
-          link.textContent = heading.textContent;
-          item.appendChild(link);
-          list.appendChild(item);
-          return link;
-        });
-        function setRailVisible(visible) {
-          var restoreHadFocus = document.activeElement === restore;
-          rail.classList.toggle('is-quiet', !visible);
-          sidebar.inert = !visible;
-          restore.hidden = visible;
-          restore.setAttribute('aria-expanded', String(visible));
-          if (visible && restoreHadFocus) summary.focus({ preventScroll: true });
-        }
-
-        function railInUse() {
-          return pointerInRail || sidebar.contains(document.activeElement) ||
-            (compact.matches && disclosure.open) || document.querySelector('.doc-refresh-dialog[open]');
-        }
-
-        function scheduleFade() {
-          window.clearTimeout(fadeTimer);
-          if (!railInUse()) {
-            fadeTimer = window.setTimeout(function () {
-              if (!railInUse()) setRailVisible(false);
-            }, 3000);
-          }
-        }
-
-        function updateLayout() {
-          pointerInRail = false;
-          disclosure.open = !compact.matches;
-          setRailVisible(true);
-          scheduleFade();
-        }
-
-        document.addEventListener('pointermove', function (event) {
-          if (event.pointerType === 'touch') return;
-          var inside = compact.matches ? rail.contains(event.target) :
-            event.clientX < article.getBoundingClientRect().left;
-          if (inside === pointerInRail) return;
-          pointerInRail = inside;
-          if (inside) setRailVisible(true);
-          scheduleFade();
-        }, { passive: true });
-        document.documentElement.addEventListener('pointerleave', function () {
-          pointerInRail = false;
-          scheduleFade();
-        });
-        restore.addEventListener('click', function () {
-          setRailVisible(true);
-          disclosure.open = true;
-          summary.focus({ preventScroll: true });
-          scheduleFade();
-        });
-        sidebar.addEventListener('focusin', function () { window.clearTimeout(fadeTimer); });
-        sidebar.addEventListener('focusout', function () { window.setTimeout(scheduleFade, 0); });
-        disclosure.addEventListener('toggle', scheduleFade);
-        list.addEventListener('click', function (event) {
-          if (compact.matches && event.target.closest('a')) disclosure.open = false;
-        });
-        document.addEventListener('pointerdown', function (event) {
-          if (compact.matches && !rail.contains(event.target)) disclosure.open = false;
-        }, { passive: true });
-        disclosure.addEventListener('keydown', function (event) {
-          if (compact.matches && disclosure.open && event.key === 'Escape') {
-            disclosure.open = false;
-            summary.focus();
-          }
-        });
-        function updateCurrentSection() {
-          var current = 0;
-          headings.forEach(function (heading, index) {
-            if (heading.getBoundingClientRect().top <= 100) current = index;
-          });
-          links.forEach(function (link, index) {
-            if (index === current) link.setAttribute('aria-current', 'location');
-            else link.removeAttribute('aria-current');
-          });
-        }
-        updateLayout();
-        updateCurrentSection();
-        compact.addEventListener('change', updateLayout);
-        window.addEventListener('pageshow', function (event) {
-          if (event.persisted) updateLayout();
-        });
-        window.addEventListener('scroll', updateCurrentSection, { passive: true });
-        window.addEventListener('resize', updateCurrentSection);
-      })();
-    </script>
+    <script src="essay-reader.js?v=20261118-post-reader"></script>
     <script src="site.js?v=20261118-redwood-2"></script>
   </body>
 </html>

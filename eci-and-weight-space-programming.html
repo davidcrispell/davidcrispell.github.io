@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="essay-reader">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,38 +10,35 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&amp;display=swap">
-    <link rel="stylesheet" href="site.css?v=20261118-colophon">
-    <script src="site-theme.js?v=20261118-home-toggle"></script>
+    <link rel="stylesheet" href="site.css?v=20261118-post-reader">
+    <link rel="stylesheet" href="essay-reader.css?v=20261118-post-reader">
+    <script src="site-theme.js?v=20261118-post-reader"></script>
   </head>
-  <body id="top" class="essay-template eci-regression-page">
-    <header class="site-header">
-      <a class="site-title" href="./" aria-label="David Crispell home">David Crispell</a>
-      <button
-        class="contents-toggle"
-        type="button"
-        aria-label="Toggle essay contents"
-        aria-expanded="false"
-        aria-controls="essay-contents"
-      >
-        <span class="contents-toggle__bar" aria-hidden="true"></span>
-        <span class="contents-toggle__bar" aria-hidden="true"></span>
-        <span class="contents-toggle__bar" aria-hidden="true"></span>
-      </button>
-      <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
-        <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
-        <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <circle cx="12" cy="12" r="4.4"/>
-          <path d="M12 1.8v2.7M12 19.5v2.7M1.8 12h2.7M19.5 12h2.7M4.8 4.8l1.9 1.9M17.3 17.3l1.9 1.9M19.2 4.8l-1.9 1.9M6.7 17.3l-1.9 1.9"/>
-        </svg>
-      </button>
-    </header>
-
-    <nav id="essay-contents" class="contents-panel" aria-label="Essay contents" aria-hidden="true">
-      <div class="contents-heading">Contents</div>
-      <ol class="contents-list" data-contents-list></ol>
-    </nav>
+  <body class="essay-template eci-regression-page">
+    <div class="reader-shell" id="top">
+      <div class="reader-rail">
+        <button class="reader-restore" type="button" aria-controls="reader-sidebar" hidden>Show contents</button>
+        <aside class="reader-sidebar" id="reader-sidebar">
+          <header class="reader-home">
+            <a class="waterman-title" href="./" aria-label="David Crispell home"><span>David</span><span>Crispell</span></a>
+            <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
+              <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+              <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="12" r="4.4"/>
+                <path d="M12 1.8v2.7M12 19.5v2.7M1.8 12h2.7M19.5 12h2.7M4.8 4.8l1.9 1.9M17.3 17.3l1.9 1.9M19.2 4.8l-1.9 1.9M6.7 17.3l-1.9 1.9"/>
+              </svg>
+            </button>
+          </header>
+          <nav id="essay-contents" class="reader-contents" aria-label="Essay contents">
+            <details open>
+              <summary class="contents-heading">On this page</summary>
+              <ol data-reader-contents></ol>
+            </details>
+          </nav>
+        </aside>
+      </div>
 
     <main class="page article-page">
       <article class="essay">
@@ -103,7 +100,9 @@
       </article>
     </main>
 
+    </div>
     <div class="botanical-footer" aria-hidden="true"></div>
+    <script src="essay-reader.js?v=20261118-post-reader"></script>
     <script src="site.js?v=20261118-redwood-2"></script>
   </body>
 </html>
