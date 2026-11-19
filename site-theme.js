@@ -3,6 +3,7 @@
   var root = document.documentElement;
   var meta = document.querySelector('meta[name="theme-color"]');
   var revision = new URL(document.currentScript.src).searchParams.get("v");
+  var compact = window.matchMedia("(max-width: 960px)");
   var artworkPalettes = ["ground", "cherry-tree", "butterflies", "ada-lovelace"];
 
   function syncBrowserColor() {
@@ -55,7 +56,6 @@
     var menu = document.querySelector(".section-menu");
     if (!menu) return;
     var summary = menu.querySelector("summary");
-    var compact = window.matchMedia("(max-width: 960px)");
 
     function updateLayout() {
       var hadFocus = menu.contains(document.activeElement);
@@ -95,8 +95,45 @@
     });
   }
 
+  function initMobileHeader() {
+    var header = document.querySelector(".home-header, .reader-rail, .ai-contact-page .site-header");
+    if (!header) return;
+    var turnY = 0;
+    var threshold = 8;
+
+    function onScroll() {
+      // Safari can report offsets outside the document during rubber-band scrolling.
+      var bottom = Math.max(0, root.scrollHeight - root.clientHeight);
+      var y = Math.min(bottom, Math.max(0, window.scrollY));
+      turnY = Math.min(turnY, bottom);
+
+      // Measure from the last turning point so small finger movements don't flicker.
+      var hidden = header.classList.contains("is-scroll-hidden");
+      turnY = hidden ? Math.max(turnY, y) : Math.min(turnY, y);
+      if (y === 0 || Math.abs(y - turnY) >= threshold) {
+        header.classList.toggle("is-scroll-hidden", y > turnY);
+        turnY = y;
+      }
+    }
+
+    function syncLayout() {
+      turnY = Math.max(0, window.scrollY);
+      header.classList.toggle("is-scroll-hidden", compact.matches && turnY > 0);
+      if (compact.matches) {
+        window.addEventListener("scroll", onScroll, { passive: true });
+      } else {
+        window.removeEventListener("scroll", onScroll);
+      }
+    }
+
+    syncLayout();
+    compact.addEventListener("change", syncLayout);
+    window.addEventListener("pageshow", syncLayout);
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     initSectionMenu();
+    initMobileHeader();
     // Pages can cache HTML for ten minutes. Use the same release for both
     // sides of a home/article round trip, including an already-cached home.
     if (revision) {

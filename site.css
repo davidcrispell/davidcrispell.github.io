@@ -714,7 +714,19 @@ a:hover {
     padding-inline: var(--gutter-left) var(--gutter-right);
     background-color: var(--background);
     pointer-events: auto;
-    transition: background-color var(--theme-fade);
+    transition: background-color var(--theme-fade), transform var(--header-slide, 160ms) ease-out;
+  }
+
+  @media screen {
+    .is-scroll-hidden:not(:has(:focus-visible, .section-menu[open])) {
+      transform: translateY(-100%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --header-slide: 0s;
+    }
   }
 
   .home-header,
