@@ -39,7 +39,9 @@
   --tooltip-shadow: rgba(61, 56, 51, 0.18);
   --page-width: 760px;
   --content-width: var(--page-width);
-  --nav-font: "Aveline Eleganza", "Lora", "Times New Roman", Times, serif;
+  --name-font: "Aveline Eleganza", "Lora", "Times New Roman", Times, serif;
+  --nav-font: var(--name-font);
+  --essay-font: "Emilio Test Light", "Emilio", Georgia, "Times New Roman", serif;
 }
 
 :root[data-palette="ground"] {
@@ -103,7 +105,7 @@ body {
   margin: 0;
   background-color: var(--background);
   color: var(--text);
-  font-family: "Emilio Test Light", "Emilio", Georgia, "Times New Roman", serif;
+  font-family: var(--essay-font);
   font-size: 17px;
   font-weight: 300;
   line-height: 1.28;
@@ -205,26 +207,40 @@ a:hover {
   border-radius: 50%;
 }
 
-.waterman-page {
+.waterman-page,
+.reader-shell {
+  --content-width: 820px;
   display: grid;
-  grid-template-columns: 250px minmax(0, 680px);
-  align-items: start;
-  column-gap: 96px;
-  width: min(1120px, calc(100% - 36px));
-  margin-inline: auto;
-  padding: 56px 0 84px;
+  grid-template-columns: minmax(208px, 1fr) minmax(0, var(--content-width)) minmax(208px, 1fr);
+  column-gap: clamp(20px, 2.5vw, 40px);
+  width: 100%;
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 38px clamp(16px, 1.5vw, 24px) 72px;
 }
 
-.waterman-rail {
+.waterman-rail,
+.reader-rail {
+  grid-area: 1 / 1;
   position: sticky;
-  top: 56px;
-  padding-top: 76px;
+  top: 32px;
+  align-self: start;
+  justify-self: end;
+  width: min(225px, 100%);
+}
+
+.waterman-rail,
+.reader-home {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .waterman-title {
   display: block;
   color: var(--accent);
-  font-family: var(--nav-font);
+  font-family: var(--name-font);
   font-size: 56px;
   font-synthesis: none;
   font-weight: 400;
@@ -268,11 +284,16 @@ a:hover {
   text-underline-offset: 0.12em;
 }
 
-.waterman-rail .theme-toggle {
-  margin-top: 38px;
+.waterman-rail .theme-toggle,
+.latent-reader .theme-toggle {
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  padding: 6px;
 }
 
 .waterman-main {
+  grid-area: 1 / 2;
   min-width: 0;
 }
 
@@ -527,10 +548,20 @@ a:hover {
   padding-bottom: 28px;
 }
 
+@media screen {
+  body:has(> .botanical-footer) {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100svh;
+  }
+}
+
 @supports ((mask-image: url("")) or (-webkit-mask-image: url(""))) {
   .botanical-footer {
     height: 170px;
-    margin-top: 0;
+    flex: none;
+    margin-top: auto;
     background-color: var(--accent-2);
     opacity: 0.55;
     transition: background-color 520ms ease;
@@ -550,19 +581,26 @@ a:hover {
   gap: 14px;
 }
 
-@media (max-width: 900px) {
-  .waterman-page {
+@media (max-width: 960px) {
+  .waterman-page,
+  .reader-shell {
     display: block;
-    width: min(100% - 28px, 680px);
-    padding-top: 28px;
+    max-width: calc(var(--content-width) + 44px);
+    padding: 24px clamp(16px, 5vw, 22px) 52px;
   }
 
-  .waterman-rail {
-    position: static;
-    padding-top: 0;
-    margin-bottom: 34px;
+  .waterman-rail,
+  .reader-rail {
+    position: relative;
+    top: auto;
+    width: 100%;
+    margin-bottom: 32px;
   }
 
+  .waterman-rail { align-items: flex-start; }
+}
+
+@media (max-width: 900px) {
   .waterman-title {
     font-size: 44px;
     line-height: 0.82;
@@ -576,10 +614,6 @@ a:hover {
     font-size: 24px;
   }
 
-  .waterman-rail .theme-toggle {
-    margin-top: 24px;
-  }
-
   .waterman-art {
     width: min(100%, 540px);
   }
@@ -591,24 +625,8 @@ a:hover {
 }
 
 @media (max-width: 720px) and (orientation: portrait) {
-  .waterman-rail {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    column-gap: 12px;
-  }
-
-  .waterman-title {
-    flex: 0 0 100%;
-  }
-
   .waterman-nav {
     flex: 0 1 auto;
-  }
-
-  .waterman-rail .theme-toggle {
-    flex: 0 0 auto;
-    margin-top: 26px;
   }
 }
 
@@ -1376,6 +1394,8 @@ h2 {
    footnotes. On pages with no footnotes this is the only divider, so the page
    still ends the same way. */
 .essay-colophon {
+  font-family: var(--essay-font);
+  font-weight: 300;
   margin-top: 40px;
   padding-top: 26px;
   border-top: 1px solid var(--border);

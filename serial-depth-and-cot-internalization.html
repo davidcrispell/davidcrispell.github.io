@@ -6,35 +6,18 @@
     <meta name="description" content="An investigation of NLS depth, latent reasoning, and chain-of-thought monitorability.">
     <meta name="theme-color" content="#faf9f6">
     <title>An Investigation of Latent Reasoning and Safe NLS Depth - David Crispell</title>
-    <link rel="stylesheet" href="site.css?v=20261118-redwood">
+    <link rel="stylesheet" href="site.css?v=20261118-colophon">
     <style>
       /* This reader layout belongs only to this article. Google Docs refreshes
          replace the marked article body below and preserve these styles. */
       :root.latent-reader {
-        --content-width: 820px;
         --nav-font: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
       }
       .latent-reader body {
         font: 400 16px/1.65 -apple-system, BlinkMacSystemFont, Arial, sans-serif;
       }
       .latent-reader a { text-underline-offset: 3px; }
-      .latent-reader :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
-      .reader-shell {
-        display: grid;
-        grid-template-columns: minmax(208px, 1fr) minmax(0, var(--content-width)) minmax(208px, 1fr);
-        column-gap: clamp(20px, 2.5vw, 40px);
-        max-width: 1480px;
-        margin: 0 auto;
-        padding: 38px clamp(16px, 1.5vw, 24px) 72px;
-      }
-      .reader-rail {
-        grid-area: 1 / 1;
-        position: sticky;
-        top: 32px;
-        align-self: start;
-        justify-self: end;
-        width: min(225px, 100%);
-      }
+      .latent-reader :focus-visible:where(:not(.colophon-top)) { outline: 2px solid var(--accent); outline-offset: 4px; }
       .reader-sidebar {
         max-height: calc(100dvh - 64px);
         overflow-y: auto;
@@ -68,9 +51,7 @@
       @media (prefers-reduced-motion: reduce) {
         .reader-sidebar { transition: none; }
       }
-      .reader-home { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 36px; }
-      .latent-reader .waterman-title { flex: 0 1 auto; font-family: "Aveline Eleganza", "Lora", "Times New Roman", Times, serif; }
-      .latent-reader .theme-toggle { width: 32px; height: 32px; margin: 0; padding: 6px; }
+      .reader-home { margin-bottom: 36px; }
       .reader-contents summary { list-style: none; cursor: pointer; }
       .reader-contents summary::-webkit-details-marker { display: none; }
       .reader-contents .contents-heading {
@@ -102,12 +83,8 @@
       .latent-reader .essay-body li + li { margin-top: 16px; }
       .latent-reader .experiment-figure { width: 100%; margin: 32px 0; transform: none; }
       .latent-reader .experiment-figure figcaption { max-width: none; font-size: 13px; text-align: left; }
-      .latent-reader .essay-colophon { text-align: left; padding-top: 22px; }
-      .latent-reader .colophon-top { padding: 0; color: var(--accent); font-size: 14px; line-height: 1.5; text-decoration: underline; }
       .latent-reader .doc-refresh-dialog { font-family: var(--nav-font); line-height: 1.5; }
       @media (max-width: 960px) {
-        .reader-shell { display: block; max-width: calc(var(--content-width) + 44px); padding: 24px clamp(16px, 5vw, 22px) 52px; }
-        .reader-rail { position: relative; top: auto; width: 100%; margin-bottom: 32px; }
         .reader-sidebar {
           position: relative;
           display: grid;
@@ -140,10 +117,10 @@
       @media print {
         :root.latent-reader, :root.latent-reader.dark { --background: white; --text: black; --muted: #333; --accent: #333; }
         .reader-shell { display: block; max-width: none; padding: 0; }
-        .reader-rail, .latent-reader .essay-colophon { display: none; }
+        .reader-rail { display: none; }
       }
     </style>
-    <script src="site-theme.js?v=20261118-redwood-2"></script>
+    <script src="site-theme.js?v=20261118-colophon"></script>
   </head>
   <body class="essay-template nls-depth-article">
     <div class="reader-shell" id="top">
@@ -257,15 +234,17 @@
           <!-- google-doc:end -->
         </div>
 
-        <footer class="essay-colophon">
+        <footer class="essay-colophon" id="colophon">
           <a class="colophon-top" href="#top" aria-label="Back to top">
-            Back to top ↑
+            <span class="colophon-fleuron" aria-hidden="true">❦</span>
+            <span class="colophon-tip" aria-hidden="true">Back to top</span>
           </a>
         </footer>
       </article>
     </main>
 
     </div>
+    <div class="botanical-footer" aria-hidden="true"></div>
     <script>
       (function () {
         var list = document.querySelector('[data-reader-contents]');
