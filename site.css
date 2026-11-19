@@ -24,6 +24,7 @@
 
 :root {
   color-scheme: light;
+  --theme-fade: 520ms ease;
   /* Redwood is the palette on a first visit. */
   --background: #faf9f6;
   --text: #242620;
@@ -114,7 +115,7 @@
 html {
   min-height: 100%;
   background-color: var(--background);
-  transition: background-color 520ms ease;
+  transition: background-color var(--theme-fade);
 }
 
 body {
@@ -126,7 +127,7 @@ body {
   font-size: 17px;
   font-weight: 300;
   line-height: 1.28;
-  transition: background-color 520ms ease, color 520ms ease;
+  transition: background-color var(--theme-fade), color var(--theme-fade);
 }
 
 ::selection {
@@ -184,7 +185,7 @@ a:hover {
   font-size: 28px;
   line-height: 0.95;
   text-decoration: none;
-  transition: color 520ms ease;
+  transition: color var(--theme-fade);
 }
 
 .site-title:hover {
@@ -271,7 +272,7 @@ a:hover {
   text-decoration: none;
   transform: scaleY(1.12);
   transform-origin: left top;
-  transition: color 520ms ease;
+  transition: color var(--theme-fade);
 }
 
 .waterman-title:hover {
@@ -692,7 +693,8 @@ a:hover {
     padding-block: max(4px, env(safe-area-inset-top)) 4px;
     padding-inline: max(var(--header-gutter), env(safe-area-inset-left))
                     max(var(--header-gutter), env(safe-area-inset-right));
-    background: var(--background);
+    background-color: var(--background);
+    transition: background-color var(--theme-fade);
   }
 
   .home-header,
@@ -736,6 +738,7 @@ a:hover {
     height: 44px;
     margin: 0;
     padding: 12px;
+    transition: color var(--theme-fade);
   }
 
   .mobile-contents {
@@ -750,6 +753,7 @@ a:hover {
     border-radius: 4px;
     list-style: none;
     color: var(--muted);
+    transition: color var(--theme-fade);
     cursor: pointer;
     -webkit-tap-highlight-color: var(--footnote-background);
   }
@@ -803,6 +807,7 @@ a:hover {
     border-radius: 4px;
     background: var(--background);
     box-shadow: 0 4px 14px var(--tooltip-shadow);
+    transition: background-color var(--theme-fade), border-color var(--theme-fade), box-shadow var(--theme-fade);
   }
 
   .section-menu-list a {
@@ -810,6 +815,7 @@ a:hover {
     align-items: center;
     min-height: 44px;
     padding: 7px 12px;
+    transition: color var(--theme-fade);
   }
 }
 
