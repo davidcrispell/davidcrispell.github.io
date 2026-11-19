@@ -670,13 +670,15 @@ a:hover {
 @media (max-width: 960px) {
   :root {
     --header-gutter: clamp(16px, 5vw, 22px);
+    --gutter-left: max(var(--header-gutter), env(safe-area-inset-left, 0px));
+    --gutter-right: max(var(--header-gutter), env(safe-area-inset-right, 0px));
   }
 
   .waterman-page,
   .reader-shell {
     display: block;
     max-width: calc(var(--content-width) + 44px);
-    padding: 12px var(--header-gutter) 52px;
+    padding: 12px var(--gutter-right) 52px var(--gutter-left);
   }
 
   :root:has(.home-header, .reader-rail, .ai-contact-page) {
@@ -691,11 +693,10 @@ a:hover {
     top: 0;
     width: auto;
     justify-self: stretch;
-    margin-inline: calc(-1 * var(--header-gutter));
+    margin-inline: calc(-1 * var(--gutter-left)) calc(-1 * var(--gutter-right));
     margin-bottom: 32px;
     padding-block: max(4px, env(safe-area-inset-top)) 4px;
-    padding-inline: max(var(--header-gutter), env(safe-area-inset-left))
-                    max(var(--header-gutter), env(safe-area-inset-right));
+    padding-inline: var(--gutter-left) var(--gutter-right);
     background-color: var(--background);
     transition: background-color var(--theme-fade);
   }
@@ -717,6 +718,10 @@ a:hover {
     width: 100%;
     max-width: calc(var(--content-width) + 44px);
     margin: 12px auto 28px;
+  }
+
+  .ai-contact-shell {
+    padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px);
   }
 
   .home-header .waterman-rail,
