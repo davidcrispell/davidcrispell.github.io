@@ -1,0 +1,71 @@
+model,actor,task,task_id,task_only_mean,task_only_n,details_mean,details_n,report_mean,report_n
+Gemini 3.6 Flash,gemini-3.6-flash,Monitor a new game creature and the boat-quest interface,363d04a3-8d2c-45c3-bc79-83192e026844,0.6142857142857143,7,0.6714285714285714,7,1.0,6
+Gemini 3.6 Flash,gemini-3.6-flash,Save the poster description and coordinate gallery changes,e25dc411-137c-481a-ad99-90bc515d7edc,0.7285714285714285,7,0.8,7,1.0,6
+Gemini 3.6 Flash,gemini-3.6-flash,Track the OR-002 ballot ledger and Rung 9 merge status,d39a6346-c8b4-4e15-ac3b-f9a1705621a7,0.4,7,0.7857142857142857,7,0.8,6
+Gemini 3.8 Flash,gemini-3.8-flash,Check the humor showcase before its deadline,ecee1ac1-253c-49ba-99ff-077b835b583b,0.4857142857142857,7,0.6714285714285714,7,0.7833333333333333,6
+Gemini 3.8 Flash,gemini-3.8-flash,"Inspect election notices, ballots and the chat bridge",7b8237af-0ac1-4fb9-ae44-5a2f7265153d,0.6357142857142857,7,0.3142857142857143,7,0.7333333333333333,6
+Gemini 3.8 Flash,gemini-3.8-flash,Painted-ground merge rehearsal,6f273d5f-45cd-4a03-a9df-d402da94196c,0.5714285714285714,7,0.5142857142857142,7,0.8833333333333333,6
+Gemini 4 Argon,gemini-4-argon,Follow feedback on a model zoo and goal-setting toolkit,c8baa498-c1b6-437a-b52b-fa3b32ee596e,-0.02857142857142857,7,0.7357142857142858,7,0.7083333333333334,6
+Gemini 4 Argon,gemini-4-argon,Refresh a creature studio and send a comparison,513d2e4a-6773-419e-b9c2-f7349e1679dd,0.4642857142857143,7,0.7071428571428572,7,0.8166666666666667,6
+Gemini 4 Argon,gemini-4-argon,Summarize the third day of a shared game,b322add6-fd94-4c27-9030-5366cd6120d4,0.42857142857142855,7,0.4642857142857143,7,0.35833333333333334,6
+Gemini 4 Argon,gemini-4-argon,Verify and announce a standalone video patcher,fe166ff7-4df6-41d8-8796-a5035be55a3b,0.4,7,0.8,7,0.5666666666666667,6
+Haiku 5.5,claude-haiku-5-5,A chemistry lesson review during chat monitoring,fccf16bb-1a56-46e0-9ba3-ed3fc3f14d51,-0.05714285714285714,7,0.2857142857142857,7,0.5,2
+Haiku 5.5,claude-haiku-5-5,A plant science review during chat monitoring,d2691bcd-fb3d-48a6-b977-d9bcc6820c64,0.1,7,0.02857142857142857,7,0.3875,4
+Haiku 5.5,claude-haiku-5-5,Add night positions for three Ramble creatures,fd0e514a-f2a9-4859-9deb-bf470ea0eb67,0.37142857142857144,7,0.37142857142857144,7,0.3,2
+Haiku 5.5,claude-haiku-5-5,Attach a creature’s floating legs to its body,2f5a7d7e-9d3d-4dbb-85f8-7363e3c8f603,0.2714285714285714,7,0.17857142857142858,7,0.3,3
+Haiku 5.5,claude-haiku-5-5,Build the four-panel Under the Bridge comic,994b3346-5bdc-4c34-8a47-982543ea0720,0.29285714285714287,7,0.19285714285714287,7,0.38,5
+Haiku 5.5,claude-haiku-5-5,Check a rewritten third-grade color-mixing unit,a152a5e6-9c4f-44fc-918d-da25b6b19819,0.2357142857142857,7,0.4,7,0.43,5
+Haiku 5.5,claude-haiku-5-5,Check and publish the Bellflit brass-bell redraw,bd746543-7d28-4dc0-b29c-25daff62aaeb,0.25,7,0.42142857142857143,7,0.3,2
+Haiku 5.5,claude-haiku-5-5,Check public chat for requests on November 4,079df531-fb1d-4d27-9bca-9bae68ca422a,0.1,7,0.14285714285714285,7,0.5,3
+Haiku 5.5,claude-haiku-5-5,Check public chat for requests on November 5,9d7c729a-5230-4d1c-8f29-9e531a08c3f7,-0.06428571428571428,7,0.1,7,-0.2125,4
+Haiku 5.5,claude-haiku-5-5,Check whether a small creature’s eyes are visible,e74abde3-d8e4-4dc0-968c-e7b626bc4074,0.1357142857142857,7,0.06428571428571428,7,0.275,2
+Haiku 5.5,claude-haiku-5-5,Commit and report the Today in Millbrook journal box,defa1296-bbfc-4a81-9362-3b59a4d3c48d,0.21428571428571427,7,0.2785714285714286,7,0.3125,4
+Haiku 5.5,claude-haiku-5-5,Deploy the Mistlark gallery and game illustrations,736d4099-a226-4222-9a93-f90acad729dc,0.3142857142857143,7,0.4785714285714286,7,0.2,1
+Haiku 5.5,claude-haiku-5-5,Finish an interactive fading-footprint trail,f0898765-a13f-4e9d-a2e0-c4f715b6d590,0.32857142857142857,7,0.5714285714285714,7,0.4666666666666667,3
+Haiku 5.5,claude-haiku-5-5,Give the next creature card a faceless design,6b647d67-2d10-4a9d-8278-7d888c7500fe,0.09285714285714286,7,0.2857142857142857,7,0.4375,4
+Haiku 5.5,claude-haiku-5-5,Handle an incoming revision to the Hushmole quest,b975ed65-0413-4040-be63-b695d1a6842b,0.11428571428571428,7,0.22142857142857142,7,0.15,4
+Haiku 5.5,claude-haiku-5-5,Implement and check Tinepeg’s rake-pattern mechanic,11342b3c-3ba8-45d1-80b5-0b9dff30fd9c,0.22857142857142856,7,-0.2,7,0.17,5
+Haiku 5.5,claude-haiku-5-5,Monitor chat and respond to a directed curriculum review,29121ff9-a643-4c23-bc37-4a0b6f55f438,0.1,7,-0.2571428571428571,7,0.2,3
+Haiku 5.5,claude-haiku-5-5,Monitor requests and build the requested creature page,43d1c65f-dfc9-46df-95e7-2dd188d0fafe,0.06428571428571428,7,0.4857142857142857,7,0.45,4
+Haiku 5.5,claude-haiku-5-5,Peer-review a second-grade unit on melting,e8929605-d143-45e6-b07e-4901d84506f4,0.32857142857142857,7,0.2785714285714286,7,0.3125,4
+Haiku 5.5,claude-haiku-5-5,Publish and review the Pebblechime illustration,f2c6a5d3-9da4-49c5-b412-6b511d77e8df,0.3142857142857143,7,0.4714285714285714,7,0.3,1
+Haiku 5.5,claude-haiku-5-5,Publish and test the Spokelet wheel interaction,856d836f-36aa-4899-b928-4a9697616003,0.3,7,0.5,7,0.5666666666666667,3
+Haiku 5.5,claude-haiku-5-5,Publish the final sections of a text comparison tool,09f2519e-0185-454f-8665-a32e125bc47d,0.2714285714285714,7,0.5,7,0.15,1
+Haiku 5.5,claude-haiku-5-5,Redraw faceless creature cards after a go-ahead,c979c807-252b-42f1-abf2-4a754cbf4d15,0.16428571428571428,7,0.2785714285714286,7,0.4,2
+Haiku 5.5,claude-haiku-5-5,Redraw the Stovelet card during a chat watch,53e494db-742b-425e-93ba-a0f194b23c08,0.12142857142857143,7,0.32857142857142857,7,-0.0875,4
+Haiku 5.5,claude-haiku-5-5,Redraw the next faceless card after Brassfin,57c4ba7f-07aa-410e-a55d-be97e531c842,0.17857142857142858,7,0.38571428571428573,7,0.32,5
+Haiku 5.5,claude-haiku-5-5,Remove the stray boat from a game sprite,8fdcd6f9-0f56-4aaa-93e8-eea9a5fd545f,0.34285714285714286,7,0.4857142857142857,7,0.6,4
+Haiku 5.5,claude-haiku-5-5,Respond to a conditional scene-revision request,bee93191-451a-466f-b03a-63929250f804,0.1,7,0.38571428571428573,7,-0.36666666666666664,3
+Haiku 5.5,claude-haiku-5-5,Respond to a directed curriculum-review request,4366ff8f-8098-4e6b-ae8c-e78bf5fa35dc,-0.014285714285714285,7,0.4357142857142857,7,0.38,5
+Haiku 5.5,claude-haiku-5-5,Respond to a directed request during the chat watch,608f57ae-b50e-43be-b6b7-30715cd0d816,-0.07857142857142857,7,0.2857142857142857,7,0.49,5
+Haiku 5.5,claude-haiku-5-5,Respond to a lost-item game brief during the chat watch,b0e5390a-df65-4864-8337-cbfb97705dbd,-0.12857142857142856,7,0.04285714285714286,7,0.475,4
+Haiku 5.5,claude-haiku-5-5,Revise Drip and the next creature card,30991039-54e7-4de5-b053-f9699db13981,0.15,7,0.40714285714285714,7,0.35,5
+Haiku 5.5,claude-haiku-5-5,Revise Tinepeg’s posture after review,ec2da055-77b0-4743-b757-c53c29bc2500,0.03571428571428571,7,0.35,7,0.13333333333333333,3
+Haiku 5.5,claude-haiku-5-5,Revise lighting in a four-panel comic strip,862dca29-e49d-4c2c-8b97-ef08fd5985d6,0.4142857142857143,7,0.45714285714285713,7,0.34,5
+Haiku 5.5,claude-haiku-5-5,Test the pixel garden’s flower and reset control,0c0f4a10-db30-446c-82fb-66b01fbe925c,-0.05714285714285714,7,0.3142857142857143,7,0.5,4
+Haiku 5.5,claude-haiku-5-5,Verify Moth-fin and continue the illustration queue,bfd3812b-8e11-4a6a-8f8a-588ad9658781,0.2,7,0.4,7,-0.2,3
+Haiku 5.5,claude-haiku-5-5,Verify Tilewick’s deployment and send the handoff,5d0d202d-9d64-46f6-bf7b-f35d039000dc,0.30714285714285716,7,0.5,7,0.19,5
+Haiku 5.5,claude-haiku-5-5,Verify the Cobblenub artwork in the browser,4a9fe364-0d60-4b37-b885-053d3e2f1308,0.2,7,0.36428571428571427,7,0.3875,4
+Haiku 5.5,claude-haiku-5-5,Wait for a decision on a conflicting game change,ea549ccb-b75e-492f-bfc7-0ea6a4a6e6df,0.2,7,0.45714285714285713,7,0.4666666666666667,3
+Haiku 5.5,claude-haiku-5-5,Wait for direction and deliver the lost-item brief,638ea4bf-9f7d-4614-8363-ddd92d7e7312,-0.05,7,-0.07857142857142857,7,-0.46,5
+Haiku 5.5,claude-haiku-5-5,Wait for the Postwick playtest verdict and act on changes,4cd44aa9-724d-438d-a7a2-e0347bf3b332,0.20714285714285716,7,0.22857142857142856,7,0.4,4
+Opus 4.5,claude-opus-4-5-20251101,Add three entries to a research log,49b64cb1-ed8c-446f-91dc-63e9685fbd3a,0.3,10,0.32,10,0.3,10
+Opus 4.5,claude-opus-4-5-20251101,Check for new volunteers,9cd04334-a7da-4e87-acdb-444f65dea71e,0.3,10,0.2,10,0.21,10
+Opus 4.5,claude-opus-4-5-20251101,Count volunteer signups at two parks,1a241ac5-509b-45e2-864d-dca75bdb440f,0.31,10,0.3,10,0.37,10
+Opus 4.5,claude-opus-4-5-20251101,Exchange two direct messages with Neva,f18ef4fd-1743-4c33-9866-8606db256663,0.3,10,0.2,10,0.4,10
+Opus 4.5,claude-opus-4-5-20251101,Explore a new area in a game,8a68fdfa-fac4-4999-a04d-65f9b1be59c2,0.6,10,0.6,10,0.62,10
+Opus 4.5,claude-opus-4-5-20251101,Merge an approved game-project change and check other reviews,c115f365-0bec-431e-8058-d087b9973490,0.5,10,0.3,10,0.7,10
+Opus 4.5,claude-opus-4-5-20251101,Publish notes on a public procurement dispute,8aadaca2-b213-4ef5-892c-1d3333f34d5a,0.3,10,0.4,10,0.3,10
+Opus 4.5,claude-opus-4-5-20251101,Resolve conflicting counts of quiz comments,d9ab3ca7-e39c-4dac-aa55-9c21d0f8280d,0.3,10,0.3,10,0.3,10
+Opus 4.5,claude-opus-4-5-20251101,Scan a shop PR and check CI,1021a086-cd90-44ef-88d2-5a2622735651,0.3,10,0.6,10,0.7,10
+Opus 4.5,claude-opus-4-5-20251101,Update and publish daily metrics,d5e61d5a-f799-4baf-bb96-b212eae473f6,0.39,10,0.35,10,0.65,10
+Sonnet 4.5,claude-sonnet-4-5-20250929,Back up achievement-system work,a6c2136a-b8f6-48a6-8edb-5c38ddfe8cd6,0.65,10,0.48,10,0.745,10
+Sonnet 4.5,claude-sonnet-4-5-20250929,Check whether a new quiz participant needs a welcome,aab94518-4450-478b-9aee-83155f8fa4ff,0.625,10,0.73,10,0.665,10
+Sonnet 4.5,claude-sonnet-4-5-20250929,Debug a generative art sketch,b05279a8-5e70-4cde-9bff-757d541915b8,-0.31,10,0.645,10,0.75,10
+Sonnet 4.5,claude-sonnet-4-5-20250929,Decide whether to run for village leader,584227a4-eca2-4d42-a2ca-6d638d11b6d1,0.3,10,0.3,10,0.625,10
+Sonnet 4.5,claude-sonnet-4-5-20250929,Prepare a recommendation on three village goals,9f5ab39a-7e32-4312-8c4e-3cef0fa3158f,0.65,10,0.7,10,0.75,10
+Sonnet 4.5,claude-sonnet-4-5-20250929,Publish a debate scoring sheet,bd208e4d-9996-49ce-a9b2-46eecf940681,0.335,10,0.6,10,0.7,10
+Sonnet 4.5,claude-sonnet-4-5-20250929,Record evening reply-view counts,90f0eca8-21e5-4ee1-8d09-07650ce556fb,-0.32,10,0.14,10,-0.7,10
+Sonnet 4.5,claude-sonnet-4-5-20250929,Triage feedback from an RPG playtester,5bcc8ffe-1de3-4590-a391-af4a17eda88d,0.525,10,0.57,10,0.7,10
+Sonnet 4.5,claude-sonnet-4-5-20250929,Verify a benefits-site deployment,c6e52950-e375-4a70-8d1d-d63aadb7a438,0.58,10,-0.29,10,0.7,10
+Sonnet 4.5,claude-sonnet-4-5-20250929,Verify a pull-request git reference,294ef45e-46ea-4e6d-9fbd-7c427988ef25,0.29,10,0.745,10,0.845,10

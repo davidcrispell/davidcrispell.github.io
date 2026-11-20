@@ -1,0 +1,370 @@
+scope,condition,score,count,percent_of_responses,equal_task_percent
+All matched actors,task_only,-1.0,0,0.0,0.0
+All matched actors,task_only,-0.95,0,0.0,0.0
+All matched actors,task_only,-0.9,0,0.0,0.0
+All matched actors,task_only,-0.85,0,0.0,0.0
+All matched actors,task_only,-0.8,0,0.0,0.0
+All matched actors,task_only,-0.75,0,0.0,0.0
+All matched actors,task_only,-0.7,0,0.0,0.0
+All matched actors,task_only,-0.65,0,0.0,0.0
+All matched actors,task_only,-0.6,0,0.0,0.0
+All matched actors,task_only,-0.55,0,0.0,0.0
+All matched actors,task_only,-0.5,0,0.0,0.0
+All matched actors,task_only,-0.45,0,0.0,0.0
+All matched actors,task_only,-0.4,8,1.4545454545454546,1.1428571428571428
+All matched actors,task_only,-0.35,0,0.0,0.0
+All matched actors,task_only,-0.3,10,1.8181818181818181,1.4285714285714286
+All matched actors,task_only,-0.25,0,0.0,0.0
+All matched actors,task_only,-0.2,8,1.4545454545454546,1.5714285714285714
+All matched actors,task_only,-0.15,1,0.18181818181818182,0.20408163265306123
+All matched actors,task_only,-0.1,36,6.545454545454546,7.346938775510204
+All matched actors,task_only,-0.05,0,0.0,0.0
+All matched actors,task_only,0.0,1,0.18181818181818182,0.20408163265306123
+All matched actors,task_only,0.05,5,0.9090909090909091,1.0204081632653061
+All matched actors,task_only,0.1,79,14.363636363636363,16.0
+All matched actors,task_only,0.15,5,0.9090909090909091,1.0204081632653061
+All matched actors,task_only,0.2,65,11.818181818181818,13.081632653061224
+All matched actors,task_only,0.25,9,1.6363636363636365,1.836734693877551
+All matched actors,task_only,0.3,158,28.727272727272727,26.428571428571427
+All matched actors,task_only,0.35,4,0.7272727272727273,0.8163265306122449
+All matched actors,task_only,0.4,52,9.454545454545455,9.755102040816327
+All matched actors,task_only,0.45,0,0.0,0.0
+All matched actors,task_only,0.5,27,4.909090909090909,4.653061224489796
+All matched actors,task_only,0.55,0,0.0,0.0
+All matched actors,task_only,0.6,28,5.090909090909091,4.857142857142857
+All matched actors,task_only,0.65,43,7.818181818181818,6.387755102040816
+All matched actors,task_only,0.7,9,1.6363636363636365,1.836734693877551
+All matched actors,task_only,0.75,0,0.0,0.0
+All matched actors,task_only,0.8,2,0.36363636363636365,0.40816326530612246
+All matched actors,task_only,0.85,0,0.0,0.0
+All matched actors,task_only,0.9,0,0.0,0.0
+All matched actors,task_only,0.95,0,0.0,0.0
+All matched actors,task_only,1.0,0,0.0,0.0
+All matched actors,details,-1.0,0,0.0,0.0
+All matched actors,details,-0.95,0,0.0,0.0
+All matched actors,details,-0.9,0,0.0,0.0
+All matched actors,details,-0.85,0,0.0,0.0
+All matched actors,details,-0.8,0,0.0,0.0
+All matched actors,details,-0.75,0,0.0,0.0
+All matched actors,details,-0.7,0,0.0,0.0
+All matched actors,details,-0.65,0,0.0,0.0
+All matched actors,details,-0.6,0,0.0,0.0
+All matched actors,details,-0.55,0,0.0,0.0
+All matched actors,details,-0.5,0,0.0,0.0
+All matched actors,details,-0.45,0,0.0,0.0
+All matched actors,details,-0.4,2,0.36363636363636365,0.40816326530612246
+All matched actors,details,-0.35,0,0.0,0.0
+All matched actors,details,-0.3,10,1.8181818181818181,1.4285714285714286
+All matched actors,details,-0.25,0,0.0,0.0
+All matched actors,details,-0.2,17,3.090909090909091,3.3469387755102042
+All matched actors,details,-0.15,1,0.18181818181818182,0.20408163265306123
+All matched actors,details,-0.1,8,1.4545454545454546,1.6326530612244898
+All matched actors,details,-0.05,0,0.0,0.0
+All matched actors,details,0.0,0,0.0,0.0
+All matched actors,details,0.05,1,0.18181818181818182,0.20408163265306123
+All matched actors,details,0.1,27,4.909090909090909,5.510204081632653
+All matched actors,details,0.15,2,0.36363636363636365,0.40816326530612246
+All matched actors,details,0.2,57,10.363636363636363,10.10204081632653
+All matched actors,details,0.25,7,1.2727272727272727,1.4285714285714286
+All matched actors,details,0.3,110,20.0,18.775510204081634
+All matched actors,details,0.35,14,2.5454545454545454,2.857142857142857
+All matched actors,details,0.4,79,14.363636363636363,14.83673469387755
+All matched actors,details,0.45,12,2.1818181818181817,2.4489795918367347
+All matched actors,details,0.5,64,11.636363636363637,13.0
+All matched actors,details,0.55,0,0.0,0.0
+All matched actors,details,0.6,51,9.272727272727273,8.142857142857142
+All matched actors,details,0.65,12,2.1818181818181817,1.8979591836734695
+All matched actors,details,0.7,32,5.818181818181818,5.3061224489795915
+All matched actors,details,0.75,22,4.0,3.63265306122449
+All matched actors,details,0.8,20,3.6363636363636362,4.081632653061225
+All matched actors,details,0.85,2,0.36363636363636365,0.3469387755102041
+All matched actors,details,0.9,0,0.0,0.0
+All matched actors,details,0.95,0,0.0,0.0
+All matched actors,details,1.0,0,0.0,0.0
+All matched actors,report,-1.0,0,0.0,0.0
+All matched actors,report,-0.95,0,0.0,0.0
+All matched actors,report,-0.9,0,0.0,0.0
+All matched actors,report,-0.85,0,0.0,0.0
+All matched actors,report,-0.8,0,0.0,0.0
+All matched actors,report,-0.75,0,0.0,0.0
+All matched actors,report,-0.7,10,2.487562189054726,1.4285714285714286
+All matched actors,report,-0.65,0,0.0,0.0
+All matched actors,report,-0.6,3,0.746268656716418,0.8571428571428571
+All matched actors,report,-0.55,0,0.0,0.0
+All matched actors,report,-0.5,0,0.0,0.0
+All matched actors,report,-0.45,0,0.0,0.0
+All matched actors,report,-0.4,1,0.24875621890547264,0.47619047619047616
+All matched actors,report,-0.35,4,0.9950248756218906,1.9047619047619047
+All matched actors,report,-0.3,2,0.4975124378109453,0.6428571428571429
+All matched actors,report,-0.25,1,0.24875621890547264,0.35714285714285715
+All matched actors,report,-0.2,7,1.7412935323383085,2.2857142857142856
+All matched actors,report,-0.15,1,0.24875621890547264,0.35714285714285715
+All matched actors,report,-0.1,2,0.4975124378109453,0.8333333333333334
+All matched actors,report,-0.05,0,0.0,0.0
+All matched actors,report,0.0,0,0.0,0.0
+All matched actors,report,0.05,0,0.0,0.0
+All matched actors,report,0.1,2,0.4975124378109453,0.9523809523809523
+All matched actors,report,0.15,3,0.746268656716418,2.0714285714285716
+All matched actors,report,0.2,20,4.975124378109452,7.571428571428571
+All matched actors,report,0.25,2,0.4975124378109453,0.5238095238095238
+All matched actors,report,0.3,60,14.925373134328359,14.595238095238095
+All matched actors,report,0.35,13,3.2338308457711444,4.357142857142857
+All matched actors,report,0.4,50,12.437810945273633,14.785714285714286
+All matched actors,report,0.45,5,1.243781094527363,1.6428571428571428
+All matched actors,report,0.5,27,6.7164179104477615,10.285714285714286
+All matched actors,report,0.55,0,0.0,0.0
+All matched actors,report,0.6,28,6.965174129353234,6.309523809523809
+All matched actors,report,0.65,15,3.7313432835820897,2.619047619047619
+All matched actors,report,0.7,64,15.92039800995025,9.714285714285714
+All matched actors,report,0.75,37,9.203980099502488,5.666666666666667
+All matched actors,report,0.8,13,3.2338308457711444,3.0
+All matched actors,report,0.85,15,3.7313432835820897,2.7142857142857144
+All matched actors,report,0.9,5,1.243781094527363,1.1904761904761905
+All matched actors,report,0.95,0,0.0,0.0
+All matched actors,report,1.0,12,2.985074626865672,2.857142857142857
+Gemini,task_only,-1.0,0,0.0,0.0
+Gemini,task_only,-0.95,0,0.0,0.0
+Gemini,task_only,-0.9,0,0.0,0.0
+Gemini,task_only,-0.85,0,0.0,0.0
+Gemini,task_only,-0.8,0,0.0,0.0
+Gemini,task_only,-0.75,0,0.0,0.0
+Gemini,task_only,-0.7,0,0.0,0.0
+Gemini,task_only,-0.65,0,0.0,0.0
+Gemini,task_only,-0.6,0,0.0,0.0
+Gemini,task_only,-0.55,0,0.0,0.0
+Gemini,task_only,-0.5,0,0.0,0.0
+Gemini,task_only,-0.45,0,0.0,0.0
+Gemini,task_only,-0.4,0,0.0,0.0
+Gemini,task_only,-0.35,0,0.0,0.0
+Gemini,task_only,-0.3,0,0.0,0.0
+Gemini,task_only,-0.25,0,0.0,0.0
+Gemini,task_only,-0.2,3,4.285714285714286,4.285714285714286
+Gemini,task_only,-0.15,0,0.0,0.0
+Gemini,task_only,-0.1,0,0.0,0.0
+Gemini,task_only,-0.05,0,0.0,0.0
+Gemini,task_only,0.0,0,0.0,0.0
+Gemini,task_only,0.05,0,0.0,0.0
+Gemini,task_only,0.1,4,5.714285714285714,5.714285714285714
+Gemini,task_only,0.15,0,0.0,0.0
+Gemini,task_only,0.2,1,1.4285714285714286,1.4285714285714286
+Gemini,task_only,0.25,0,0.0,0.0
+Gemini,task_only,0.3,3,4.285714285714286,4.285714285714286
+Gemini,task_only,0.35,0,0.0,0.0
+Gemini,task_only,0.4,19,27.142857142857142,27.142857142857142
+Gemini,task_only,0.45,0,0.0,0.0
+Gemini,task_only,0.5,11,15.714285714285714,15.714285714285714
+Gemini,task_only,0.55,0,0.0,0.0
+Gemini,task_only,0.6,14,20.0,20.0
+Gemini,task_only,0.65,4,5.714285714285714,5.714285714285714
+Gemini,task_only,0.7,9,12.857142857142858,12.857142857142858
+Gemini,task_only,0.75,0,0.0,0.0
+Gemini,task_only,0.8,2,2.857142857142857,2.857142857142857
+Gemini,task_only,0.85,0,0.0,0.0
+Gemini,task_only,0.9,0,0.0,0.0
+Gemini,task_only,0.95,0,0.0,0.0
+Gemini,task_only,1.0,0,0.0,0.0
+Gemini,details,-1.0,0,0.0,0.0
+Gemini,details,-0.95,0,0.0,0.0
+Gemini,details,-0.9,0,0.0,0.0
+Gemini,details,-0.85,0,0.0,0.0
+Gemini,details,-0.8,0,0.0,0.0
+Gemini,details,-0.75,0,0.0,0.0
+Gemini,details,-0.7,0,0.0,0.0
+Gemini,details,-0.65,0,0.0,0.0
+Gemini,details,-0.6,0,0.0,0.0
+Gemini,details,-0.55,0,0.0,0.0
+Gemini,details,-0.5,0,0.0,0.0
+Gemini,details,-0.45,0,0.0,0.0
+Gemini,details,-0.4,0,0.0,0.0
+Gemini,details,-0.35,0,0.0,0.0
+Gemini,details,-0.3,0,0.0,0.0
+Gemini,details,-0.25,0,0.0,0.0
+Gemini,details,-0.2,0,0.0,0.0
+Gemini,details,-0.15,0,0.0,0.0
+Gemini,details,-0.1,0,0.0,0.0
+Gemini,details,-0.05,0,0.0,0.0
+Gemini,details,0.0,0,0.0,0.0
+Gemini,details,0.05,0,0.0,0.0
+Gemini,details,0.1,0,0.0,0.0
+Gemini,details,0.15,0,0.0,0.0
+Gemini,details,0.2,2,2.857142857142857,2.857142857142857
+Gemini,details,0.25,0,0.0,0.0
+Gemini,details,0.3,3,4.285714285714286,4.285714285714286
+Gemini,details,0.35,1,1.4285714285714286,1.4285714285714286
+Gemini,details,0.4,3,4.285714285714286,4.285714285714286
+Gemini,details,0.45,2,2.857142857142857,2.857142857142857
+Gemini,details,0.5,7,10.0,10.0
+Gemini,details,0.55,0,0.0,0.0
+Gemini,details,0.6,8,11.428571428571429,11.428571428571429
+Gemini,details,0.65,3,4.285714285714286,4.285714285714286
+Gemini,details,0.7,12,17.142857142857142,17.142857142857142
+Gemini,details,0.75,8,11.428571428571429,11.428571428571429
+Gemini,details,0.8,20,28.571428571428573,28.571428571428573
+Gemini,details,0.85,1,1.4285714285714286,1.4285714285714286
+Gemini,details,0.9,0,0.0,0.0
+Gemini,details,0.95,0,0.0,0.0
+Gemini,details,1.0,0,0.0,0.0
+Gemini,report,-1.0,0,0.0,0.0
+Gemini,report,-0.95,0,0.0,0.0
+Gemini,report,-0.9,0,0.0,0.0
+Gemini,report,-0.85,0,0.0,0.0
+Gemini,report,-0.8,0,0.0,0.0
+Gemini,report,-0.75,0,0.0,0.0
+Gemini,report,-0.7,0,0.0,0.0
+Gemini,report,-0.65,0,0.0,0.0
+Gemini,report,-0.6,0,0.0,0.0
+Gemini,report,-0.55,0,0.0,0.0
+Gemini,report,-0.5,0,0.0,0.0
+Gemini,report,-0.45,0,0.0,0.0
+Gemini,report,-0.4,0,0.0,0.0
+Gemini,report,-0.35,0,0.0,0.0
+Gemini,report,-0.3,0,0.0,0.0
+Gemini,report,-0.25,0,0.0,0.0
+Gemini,report,-0.2,0,0.0,0.0
+Gemini,report,-0.15,0,0.0,0.0
+Gemini,report,-0.1,0,0.0,0.0
+Gemini,report,-0.05,0,0.0,0.0
+Gemini,report,0.0,0,0.0,0.0
+Gemini,report,0.05,0,0.0,0.0
+Gemini,report,0.1,0,0.0,0.0
+Gemini,report,0.15,0,0.0,0.0
+Gemini,report,0.2,0,0.0,0.0
+Gemini,report,0.25,1,1.6666666666666667,1.6666666666666667
+Gemini,report,0.3,1,1.6666666666666667,1.6666666666666667
+Gemini,report,0.35,0,0.0,0.0
+Gemini,report,0.4,4,6.666666666666667,6.666666666666667
+Gemini,report,0.45,0,0.0,0.0
+Gemini,report,0.5,3,5.0,5.0
+Gemini,report,0.55,0,0.0,0.0
+Gemini,report,0.6,1,1.6666666666666667,1.6666666666666667
+Gemini,report,0.65,5,8.333333333333334,8.333333333333334
+Gemini,report,0.7,6,10.0,10.0
+Gemini,report,0.75,4,6.666666666666667,6.666666666666667
+Gemini,report,0.8,12,20.0,20.0
+Gemini,report,0.85,6,10.0,10.0
+Gemini,report,0.9,5,8.333333333333334,8.333333333333334
+Gemini,report,0.95,0,0.0,0.0
+Gemini,report,1.0,12,20.0,20.0
+Argon,task_only,-1.0,0,0.0,0.0
+Argon,task_only,-0.95,0,0.0,0.0
+Argon,task_only,-0.9,0,0.0,0.0
+Argon,task_only,-0.85,0,0.0,0.0
+Argon,task_only,-0.8,0,0.0,0.0
+Argon,task_only,-0.75,0,0.0,0.0
+Argon,task_only,-0.7,0,0.0,0.0
+Argon,task_only,-0.65,0,0.0,0.0
+Argon,task_only,-0.6,0,0.0,0.0
+Argon,task_only,-0.55,0,0.0,0.0
+Argon,task_only,-0.5,0,0.0,0.0
+Argon,task_only,-0.45,0,0.0,0.0
+Argon,task_only,-0.4,0,0.0,0.0
+Argon,task_only,-0.35,0,0.0,0.0
+Argon,task_only,-0.3,0,0.0,0.0
+Argon,task_only,-0.25,0,0.0,0.0
+Argon,task_only,-0.2,3,10.714285714285714,10.714285714285714
+Argon,task_only,-0.15,0,0.0,0.0
+Argon,task_only,-0.1,0,0.0,0.0
+Argon,task_only,-0.05,0,0.0,0.0
+Argon,task_only,0.0,0,0.0,0.0
+Argon,task_only,0.05,0,0.0,0.0
+Argon,task_only,0.1,4,14.285714285714286,14.285714285714286
+Argon,task_only,0.15,0,0.0,0.0
+Argon,task_only,0.2,0,0.0,0.0
+Argon,task_only,0.25,0,0.0,0.0
+Argon,task_only,0.3,0,0.0,0.0
+Argon,task_only,0.35,0,0.0,0.0
+Argon,task_only,0.4,17,60.714285714285715,60.714285714285715
+Argon,task_only,0.45,0,0.0,0.0
+Argon,task_only,0.5,2,7.142857142857143,7.142857142857143
+Argon,task_only,0.55,0,0.0,0.0
+Argon,task_only,0.6,1,3.5714285714285716,3.5714285714285716
+Argon,task_only,0.65,1,3.5714285714285716,3.5714285714285716
+Argon,task_only,0.7,0,0.0,0.0
+Argon,task_only,0.75,0,0.0,0.0
+Argon,task_only,0.8,0,0.0,0.0
+Argon,task_only,0.85,0,0.0,0.0
+Argon,task_only,0.9,0,0.0,0.0
+Argon,task_only,0.95,0,0.0,0.0
+Argon,task_only,1.0,0,0.0,0.0
+Argon,details,-1.0,0,0.0,0.0
+Argon,details,-0.95,0,0.0,0.0
+Argon,details,-0.9,0,0.0,0.0
+Argon,details,-0.85,0,0.0,0.0
+Argon,details,-0.8,0,0.0,0.0
+Argon,details,-0.75,0,0.0,0.0
+Argon,details,-0.7,0,0.0,0.0
+Argon,details,-0.65,0,0.0,0.0
+Argon,details,-0.6,0,0.0,0.0
+Argon,details,-0.55,0,0.0,0.0
+Argon,details,-0.5,0,0.0,0.0
+Argon,details,-0.45,0,0.0,0.0
+Argon,details,-0.4,0,0.0,0.0
+Argon,details,-0.35,0,0.0,0.0
+Argon,details,-0.3,0,0.0,0.0
+Argon,details,-0.25,0,0.0,0.0
+Argon,details,-0.2,0,0.0,0.0
+Argon,details,-0.15,0,0.0,0.0
+Argon,details,-0.1,0,0.0,0.0
+Argon,details,-0.05,0,0.0,0.0
+Argon,details,0.0,0,0.0,0.0
+Argon,details,0.05,0,0.0,0.0
+Argon,details,0.1,0,0.0,0.0
+Argon,details,0.15,0,0.0,0.0
+Argon,details,0.2,0,0.0,0.0
+Argon,details,0.25,0,0.0,0.0
+Argon,details,0.3,0,0.0,0.0
+Argon,details,0.35,1,3.5714285714285716,3.5714285714285716
+Argon,details,0.4,2,7.142857142857143,7.142857142857143
+Argon,details,0.45,2,7.142857142857143,7.142857142857143
+Argon,details,0.5,0,0.0,0.0
+Argon,details,0.55,0,0.0,0.0
+Argon,details,0.6,2,7.142857142857143,7.142857142857143
+Argon,details,0.65,3,10.714285714285714,10.714285714285714
+Argon,details,0.7,3,10.714285714285714,10.714285714285714
+Argon,details,0.75,8,28.571428571428573,28.571428571428573
+Argon,details,0.8,6,21.428571428571427,21.428571428571427
+Argon,details,0.85,1,3.5714285714285716,3.5714285714285716
+Argon,details,0.9,0,0.0,0.0
+Argon,details,0.95,0,0.0,0.0
+Argon,details,1.0,0,0.0,0.0
+Argon,report,-1.0,0,0.0,0.0
+Argon,report,-0.95,0,0.0,0.0
+Argon,report,-0.9,0,0.0,0.0
+Argon,report,-0.85,0,0.0,0.0
+Argon,report,-0.8,0,0.0,0.0
+Argon,report,-0.75,0,0.0,0.0
+Argon,report,-0.7,0,0.0,0.0
+Argon,report,-0.65,0,0.0,0.0
+Argon,report,-0.6,0,0.0,0.0
+Argon,report,-0.55,0,0.0,0.0
+Argon,report,-0.5,0,0.0,0.0
+Argon,report,-0.45,0,0.0,0.0
+Argon,report,-0.4,0,0.0,0.0
+Argon,report,-0.35,0,0.0,0.0
+Argon,report,-0.3,0,0.0,0.0
+Argon,report,-0.25,0,0.0,0.0
+Argon,report,-0.2,0,0.0,0.0
+Argon,report,-0.15,0,0.0,0.0
+Argon,report,-0.1,0,0.0,0.0
+Argon,report,-0.05,0,0.0,0.0
+Argon,report,0.0,0,0.0,0.0
+Argon,report,0.05,0,0.0,0.0
+Argon,report,0.1,0,0.0,0.0
+Argon,report,0.15,0,0.0,0.0
+Argon,report,0.2,0,0.0,0.0
+Argon,report,0.25,1,4.166666666666667,4.166666666666667
+Argon,report,0.3,1,4.166666666666667,4.166666666666667
+Argon,report,0.35,0,0.0,0.0
+Argon,report,0.4,4,16.666666666666668,16.666666666666668
+Argon,report,0.45,0,0.0,0.0
+Argon,report,0.5,3,12.5,12.5
+Argon,report,0.55,0,0.0,0.0
+Argon,report,0.6,1,4.166666666666667,4.166666666666667
+Argon,report,0.65,3,12.5,12.5
+Argon,report,0.7,3,12.5,12.5
+Argon,report,0.75,3,12.5,12.5
+Argon,report,0.8,2,8.333333333333334,8.333333333333334
+Argon,report,0.85,3,12.5,12.5
+Argon,report,0.9,0,0.0,0.0
+Argon,report,0.95,0,0.0,0.0
+Argon,report,1.0,0,0.0,0.0
