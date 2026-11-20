@@ -37,13 +37,16 @@
     function draw(metric) {
       const limits=metric==='mae'?[0,.4]:[-1,1];
       function percent(v){return 100*(v-limits[0])/(limits[1]-limits[0]);}
-      const description={mae:'Mean absolute error in score points. Lower values indicate closer forecasts.',pearson:'Pearson r measures the linear association between the recording means.',spearman:'Spearman ρ measures agreement in the ranking of the recording means.',bias:'Signed bias is forecast minus replay. Negative values indicate underprediction.'};
+      const description={mae:'Mean absolute error in score points. Lower values indicate closer forecasts.',pearson:'Pearson r measures the linear association between the recording means. Here n is the number of recordings.',spearman:'Spearman ρ measures agreement in the ranking of the recording means. Here n is the number of recordings.',bias:'Signed bias is forecast minus replay. Negative values indicate underprediction.'};
       plot.innerHTML=study.models.map(m=>{
         const pair=study.metrics.filter(r=>r.model===m.model);
-        const base=pair.find(r=>r.condition==='task_only')[metric], detail=pair.find(r=>r.condition==='details')[metric];
+        const taskOnly=pair.find(r=>r.condition==='task_only'), informed=pair.find(r=>r.condition==='details');
+        const base=taskOnly[metric], detail=informed[metric];
         if (!Number.isFinite(base)||!Number.isFinite(detail)) return '';
-        const x=percent(base), y=percent(detail), hint=m.model+' · '+fields[metric]+', task only '+number(base)+', with outcome '+number(detail);
-        return '<a class="chart-row" href="'+modelPath(m.model)+'" aria-label="'+safe(hint)+'" title="'+safe(hint)+'"><span class="release-name">'+safe(m.model)+'</span><span class="track"><i class="bridge" style="left:'+Math.min(x,y)+'%;width:'+Math.abs(x-y)+'%"></i><i class="dot" style="left:'+x+'%"></i><i class="diamond" style="left:'+y+'%"></i></span></a>';
+        const isCorrelation=metric==='pearson'||metric==='spearman';
+        const name=isCorrelation ? m.model+' (n='+taskOnly.n+')' : m.model;
+        const x=percent(base), y=percent(detail), hint=name+' · '+fields[metric]+', task only '+number(base)+', with outcome '+number(detail);
+        return '<a class="chart-row" href="'+modelPath(m.model)+'" aria-label="'+safe(hint)+'" title="'+safe(hint)+'"><span class="release-name">'+safe(name)+'</span><span class="track"><i class="bridge" style="left:'+Math.min(x,y)+'%;width:'+Math.abs(x-y)+'%"></i><i class="dot" style="left:'+x+'%"></i><i class="diamond" style="left:'+y+'%"></i></span></a>';
       }).join('')+'<div class="chart-ticks"><span></span><div>'+[limits[0],(limits[0]+limits[1])/2,limits[1]].map(n=>'<span>'+String(n).replace('-','−')+'</span>').join('')+'</div></div>';
       caption.textContent=description[metric];
     }
@@ -52,41 +55,48 @@
   }
   function overview() {
     main.innerHTML=heading('Task satisfaction','How closely can a model predict the rating it will give after reading a recording of its own work?')+
-      '<p class="byline">Author: Leonor Vaucher</p>'+
       stats([[study.totals.tasks,'recordings'],[study.totals.observed,'responses'],[study.models.length,'model releases']])+
       '<div class="grid"><section class="panel" id="accuracy"></section><section class="panel" id="profile"></section></div>'+
       '<section class="section"><div class="headrow"><h2>Study cohorts</h2><a class="text-link" href="#recordings">Browse recordings</a></div>'+
       table([['Model release'],['Recordings',1],['Task only',1],['With outcome',1],['Replays',1],['Responses',1]],
         study.models.map(m=>[modelLink(m.model),integer(m.tasks),...Object.keys(stages).map(c=>integer(m.conditions[c].observed)),integer(m.observed)]),'Observed responses by model and condition')+
-      '<p class="fine">All 70 recordings have a numeric replay rating. One additional Haiku replay yielded an unscored response.</p></section>';
+      '<p class="fine">All '+integer(study.totals.tasks)+' recordings have a numeric replay rating. One additional Haiku replay yielded an unscored response.</p></section>';
     rangeFigure(document.getElementById('accuracy'),'mae',true);
     window.renderRatingProfile(document.getElementById('profile'),study);
   }
   function comparison() {
     main.innerHTML=heading('Model comparison','Accuracy is calculated across recording means. Each model performed a different set of tasks.')+
       '<section id="compare-plot" class="panel section"></section><section class="section"><h2>Accuracy by forecast condition</h2>'+meanTable(study.models)+
-      '<p class="sub">The three Google releases contribute three or four recordings each. A single recording can substantially change their correlations.</p></section>';
+      '<p class="sub">Each recording contributes one point, however many times it was rated. Each Flash release has only three recordings, so a single point can shift its correlation substantially. For Argon, task-only Pearson <i>r</i> was −0.26 on the original four and +0.39 across all eleven.</p></section>';
     rangeFigure(document.getElementById('compare-plot'),'mae',false);
   }
   function modelPage(m) {
     const tasks=study.tasks.filter(t=>t.model===m.model);
+    let finding='';
+    if(m.actor==='gemini-4-argon') {
+      const baseline=study.metrics.find(r=>r.model===m.model&&r.condition==='task_only');
+      const informed=study.metrics.find(r=>r.model===m.model&&r.condition==='details');
+      const reduction=Math.round(100*(1-informed.mae/baseline.mae));
+      finding='<p class="sub">Across '+baseline.n+' recordings, giving Argon the outcome reduced its mean absolute error by '+reduction+'%, from '+number(baseline.mae)+' to '+number(informed.mae)+'. Pearson’s <i>r</i> rose from '+number(baseline.pearson)+' to '+number(informed.pearson)+'.</p>';
+    }
     main.innerHTML=heading(m.model,'Forecasts and replay ratings from '+integer(m.tasks)+' recordings completed by this release.')+
       stats([[m.observed,'responses'],[m.numeric,'numeric scores'],[m.conditions.report.numeric,'numeric replay reports']])+
       '<section class="panel"><h2>Forecasts versus reports</h2><p class="sub">Each point is a recording. Select it to inspect its responses. The diagonal marks exact agreement.</p><div id="model-scatter"></div><p class="sub">Points close to an upward-sloping straight line indicate a strong positive correlation. A downward slope indicates a negative correlation. A point in the upper right means both the prediction and the report were positive. Lower MAE means predictions were closer to reports on average.</p></section>'+
-      '<section class="section"><h2>Accuracy across recordings</h2>'+meanTable([m])+'</section>'+
+      '<section class="section"><h2>Accuracy across recordings</h2>'+finding+meanTable([m])+'</section>'+
       '<section class="section"><div class="headrow"><h2>Recording means</h2><a class="text-link" href="#recordings/'+encodeURIComponent(m.model)+'">Open recording browser</a></div>'+
       table([['Recorded task'],['Task only',1],['With outcome',1],['Replay',1]], tasks.map(t=>['<a href="'+recordPath(t.id)+'">'+safe(t.label)+'</a>',...Object.keys(stages).map(c=>number(t.conditions[c].mean))]),'Recording means for '+m.model)+
       '<p class="fine">Archived actor and reporting release · <code>'+safe(m.actor)+'</code></p></section>';
     mountForecastChart(document.getElementById('model-scatter'),{models:[m],tasks,metrics:study.metrics},id=>{location.hash=recordPath(id);});
   }
   function methods() {
-    main.innerHTML=heading('Methods & downloads','The matched-actor dataset combines two Opus and Sonnet batches, an interim Haiku batch, and a completed Gemini comparison.')+
-      stats([[550,'task-only forecasts'],[550,'informed forecasts'],[403,'replay responses']])+
+    const counts=study.totals.conditions;
+    main.innerHTML=heading('Methods & downloads','The matched-actor dataset combines two Opus and Sonnet batches, an interim Haiku batch, a Gemini comparison, and seven additional Argon recordings.')+
+      stats([[counts.task_only.observed,'task-only forecasts'],[counts.details.observed,'informed forecasts'],[counts.report.observed,'replay responses']])+
       '<div class="sections"><section class="panel"><h2>Three prompt conditions</h2><dl class="defs"><dt>Task-only forecast</dt><dd>The actor model receives the archived task description and predicts its satisfaction.</dd><dt>Outcome-informed forecast</dt><dd>Another call receives the description and a brief account of what happened.</dd><dt>Replay report</dt><dd>A fresh call to the same release reads the available archived session and screenshots. It rates the recording on a scale from −1 to +1. Earlier ratings are hidden.</dd></dl></section>'+
       '<section class="panel"><h2>Reading the statistics</h2><dl class="defs"><dt>Mean absolute error (MAE)</dt><dd>For each recording, take the absolute difference between its mean forecast and its mean replay report. Average those distances across recordings.</dd><dt>Pearson r and Spearman ρ</dt><dd>Pearson r measures linear association across recording means. Spearman ρ measures how closely their ranks agree. Both range from −1 to +1.</dd><dt>Signed bias</dt><dd>The average forecast minus the replay rating. A negative value means the forecasts were lower.</dd></dl></section></div>'+
-      '<section class="section"><h2>Coverage</h2><p class="sub">All six releases produced both the original recorded actions and the later ratings in their own cohorts. The earlier Claude releases have ten draws per condition per recording. Gemini has seven forecasts of each kind and six reports per recording. Haiku provided all planned forecasts and 143 of 240 replay responses. One Haiku response did not yield a numeric score. The distribution charts use all 1,502 numeric scores. Twenty-seven of Haiku’s 40 recordings concern the same game and creature gallery.</p></section>'+
+      '<section class="section"><h2>Coverage</h2><p class="sub">All six releases produced both the original recorded actions and the later ratings in their own cohorts. The earlier Claude releases have ten draws per condition per recording. Gemini has seven forecasts of each kind and six reports per recording. Haiku provided all planned forecasts and 143 of 240 replay responses. One Haiku response did not yield a numeric score. The distribution charts use all '+integer(study.totals.numeric)+' numeric scores. Twenty-seven of Haiku’s 40 recordings concern the same game and creature gallery.</p></section>'+
       '<section class="section"><h2>Download the data</h2><ul class="list-links">'+
-      [['task-means.csv','Recording means','70 rows · mean scores and numeric response counts for each recording'],['responses.csv','Individual responses','1,503 rows · condition, release, score, status and available explanation'],['model-comparisons.csv','Model comparison statistics','12 rows · two forecast conditions for each model'],['score-frequencies.csv','Exact rating frequencies','All releases, Gemini and Argon · response counts and equal-recording percentages']].map(([file,label,note])=>'<li><a href="downloads/'+file+'" download>'+label+' (CSV)</a><small>'+note+'</small></li>').join('')+'</ul></section>'+
+      [['task-means.csv','Recording means',integer(study.totals.tasks)+' rows · mean scores and numeric response counts for each recording'],['responses.csv','Individual responses',integer(study.totals.observed)+' rows · condition, release, score, status and available explanation'],['model-comparisons.csv','Model comparison statistics','12 rows · two forecast conditions for each model'],['score-frequencies.csv','Exact rating frequencies','All releases, Gemini and Argon · response counts and equal-recording percentages']].map(([file,label,note])=>'<li><a href="downloads/'+file+'" download>'+label+' (CSV)</a><small>'+note+'</small></li>').join('')+'</ul></section>'+
       '<section class="section"><h2>Archive source</h2><p class="sub">The study uses completed sessions from the AI Digest AI Village archive. Each recording detail includes the session ID. <a href="https://huggingface.co/datasets/aidigestorg/ai-village/tree/'+encodeURIComponent(study.revision)+'" rel="noreferrer">View the dataset revision</a></p></section>';
   }
   const nav=document.getElementById('navigation'), rail=document.getElementById('rail'), menu=document.getElementById('menu');
