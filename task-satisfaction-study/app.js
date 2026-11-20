@@ -52,6 +52,7 @@
   }
   function overview() {
     main.innerHTML=heading('Task satisfaction','How closely can a model predict the rating it will give after reading a recording of its own work?')+
+      '<p class="byline">Author: Leonor Vaucher</p>'+
       stats([[study.totals.tasks,'recordings'],[study.totals.observed,'responses'],[study.models.length,'model releases']])+
       '<div class="grid"><section class="panel" id="accuracy"></section><section class="panel" id="profile"></section></div>'+
       '<section class="section"><div class="headrow"><h2>Study cohorts</h2><a class="text-link" href="#recordings">Browse recordings</a></div>'+
