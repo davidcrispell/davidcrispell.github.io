@@ -72,7 +72,7 @@
     const tasks=study.tasks.filter(t=>t.model===m.model);
     main.innerHTML=heading(m.model,'Forecasts and replay ratings from '+integer(m.tasks)+' recordings completed by this release.')+
       stats([[m.observed,'responses'],[m.numeric,'numeric scores'],[m.conditions.report.numeric,'numeric replay reports']])+
-      '<section class="panel"><h2>Forecasts versus reports</h2><p class="sub">Each point is a recording. Select it to inspect its responses. The diagonal marks exact agreement.</p><div id="model-scatter"></div></section>'+
+      '<section class="panel"><h2>Forecasts versus reports</h2><p class="sub">Each point is a recording. Select it to inspect its responses. The diagonal marks exact agreement.</p><div id="model-scatter"></div><p class="sub">Points close to an upward-sloping straight line indicate a strong positive correlation. A downward slope indicates a negative correlation. A point in the upper right means both the prediction and the report were positive. Lower MAE means predictions were closer to reports on average.</p></section>'+
       '<section class="section"><h2>Accuracy across recordings</h2>'+meanTable([m])+'</section>'+
       '<section class="section"><div class="headrow"><h2>Recording means</h2><a class="text-link" href="#recordings/'+encodeURIComponent(m.model)+'">Open recording browser</a></div>'+
       table([['Recorded task'],['Task only',1],['With outcome',1],['Replay',1]], tasks.map(t=>['<a href="'+recordPath(t.id)+'">'+safe(t.label)+'</a>',...Object.keys(stages).map(c=>number(t.conditions[c].mean))]),'Recording means for '+m.model)+
