@@ -108,10 +108,18 @@
 
     function onScroll() {
       var y = Math.min(bottom, Math.max(0, window.scrollY));
-      if (y < lastY || y === 0 || header.matches(":has(:focus-visible, .section-menu[open])")) {
+      var delta = y - lastY;
+      if (delta < 0 && hidden > 0) {
+        header.classList.add("is-revealing");
+      } else if (delta > 0 && header.classList.contains("is-revealing")) {
+        // Resume from the visible position if the scroll reverses during the reveal.
+        hidden = Math.max(0, -header.getBoundingClientRect().top);
+        header.classList.remove("is-revealing");
+      }
+      if (delta < 0 || y === 0 || header.matches(":has(:focus-visible, .section-menu[open])")) {
         hidden = 0;
       } else {
-        hidden = Math.min(height, hidden + (y - lastY) * travelRatio);
+        hidden = Math.min(height, hidden + delta * travelRatio);
       }
       lastY = y;
       // Move the fixed box itself so pointer hit testing follows its painted position.
@@ -135,6 +143,7 @@
       window.removeEventListener("resize", measure);
       window.removeEventListener("scroll", onScroll);
       header.removeEventListener("pointerdown", onScroll);
+      header.classList.remove("is-revealing");
       header.style.removeProperty("--nav-offset");
       hidden = 0;
       // Entering the compact layout mid-page is not a downward scroll.
