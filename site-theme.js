@@ -32,7 +32,8 @@
     } catch (error) {
       if (root.dataset.palette) return;
     }
-    root.dataset.palette = palette;
+    // Keep Plate III's saved preference available if it returns to the picker.
+    root.dataset.palette = palette === "butterflies" ? "redwood" : palette;
     root.classList.toggle("dark", dark);
     var toggle = document.querySelector(".theme-toggle");
     if (toggle) toggle.setAttribute("aria-pressed", String(dark));

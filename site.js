@@ -28,6 +28,7 @@
     },
     {
       id: "butterflies",
+      hidden: true,
       src: "assets/butterflies.png",
       alt: "Butterflies and flowers artwork",
       width: 551,
@@ -47,7 +48,7 @@
     },
     { id: "redwood", plate: "Plate V", caption: "Redwood" },
     { id: "blank-slate", plate: "Plate VI", caption: "Veil" },
-  ];
+  ].filter(function (palette) { return !palette.hidden; });
 
   /* The plates are muted (see index.html), so the image/button may be absent
      while the palette arrows still exist. Run whenever EITHER is present; the
