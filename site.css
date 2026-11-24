@@ -46,7 +46,7 @@
 }
 
 :root[data-palette="blank-slate"] {
-  --background: #ededed;
+  --background: #f3f3f3;
   --text: #111111;
   --muted: #555555;
   --accent: #111111;
@@ -720,6 +720,19 @@ a:hover {
     background-color: var(--background);
     pointer-events: auto;
     transition: background-color var(--theme-fade);
+  }
+
+  @media screen and (not (prefers-reduced-transparency: reduce)) {
+    @supports (backdrop-filter: blur(6px)) or (-webkit-backdrop-filter: blur(6px)) {
+      .home-header,
+      .reader-rail,
+      .ai-contact-page .site-header {
+        background-color: color-mix(in srgb, var(--background) 62%, transparent);
+        -webkit-backdrop-filter: blur(6px);
+        backdrop-filter: blur(6px);
+        box-shadow: inset 0 -1px color-mix(in srgb, var(--text) 9%, transparent);
+      }
+    }
   }
 
   @media screen {
