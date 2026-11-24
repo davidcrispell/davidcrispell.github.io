@@ -143,7 +143,7 @@
       var distance = header.offsetHeight / travelRatio;
       if (!distance) return;
       if (distance !== travel) {
-        var newStart = travel ? Math.max(0, lastY - progress(lastY) * distance) : 0;
+        var newStart = travel ? Math.max(0, lastY - progress(lastY) * distance) : lastY;
         travel = distance;
         setStart(newStart);
       }
@@ -155,12 +155,14 @@
       sizes.disconnect();
       window.removeEventListener("resize", measure);
       window.removeEventListener("scroll", onScroll);
+      header.removeEventListener("pointerdown", onScroll);
       useTimeline = compact.matches && supportsTimeline && !reducedMotion.matches;
       header.classList.toggle("scroll-driven-nav", useTimeline);
       header.style.removeProperty("animation-range");
       header.style.removeProperty("--nav-offset");
       travel = 0;
-      lastY = 0;
+      // Entering the compact layout mid-page is not a downward scroll.
+      lastY = Math.max(0, window.scrollY);
       lastOffset = undefined;
       if (compact.matches) {
         measure();
@@ -168,6 +170,8 @@
         sizes.observe(header);
         window.addEventListener("resize", measure);
         window.addEventListener("scroll", onScroll, { passive: true });
+        // Record a menu- or keyboard-revealed bar before the press changes focus.
+        header.addEventListener("pointerdown", onScroll, { passive: true });
       }
     }
 
