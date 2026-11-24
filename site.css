@@ -773,6 +773,20 @@ a:hover {
     }
   }
 
+  @media screen and (pointer: coarse) {
+    /* Move the controls and their glass together during touch scrolling. */
+    :is(.home-header, .reader-rail, .ai-contact-page .site-header):not(:has(:focus-visible, .section-menu[open])) {
+      top: 0;
+      transform: translate3d(0, var(--nav-offset, 0px), 0);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      :is(.home-header, .reader-rail, .ai-contact-page .site-header).is-revealing {
+        transition: transform 260ms cubic-bezier(0.22, 0.61, 0.36, 1), background-color var(--theme-fade);
+      }
+    }
+  }
+
   .home-header,
   .reader-sidebar,
   .ai-contact-page .site-header {

@@ -100,23 +100,38 @@
     var header = document.querySelector(".home-header, .reader-rail, .ai-contact-page .site-header");
     if (!header) return;
     var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    var touch = window.matchMedia("(pointer: coarse)");
     var bottom = 0;
     var height = 0;
     var hidden = 0;
     var lastY = 0;
     var lastOffset;
+    var frame = 0;
 
     function onScroll() {
       var y = Math.min(bottom, Math.max(0, window.scrollY));
       var delta = y - lastY;
-      if (delta < 0 && hidden > 0) {
+      var revealing = header.classList.contains("is-revealing");
+      var pinned = header.matches(":has(:focus-visible, .section-menu[open])");
+      // Keep the turning point through small fluctuations in touch momentum.
+      // Several small movements in the same direction still count as a reversal.
+      if (touch.matches && y > 0 && !pinned &&
+          ((revealing && delta > 0 && delta < 5) ||
+           (!revealing && hidden > 0 && delta < 0 && delta > -5))) return;
+
+      if (delta < 0 && hidden > 0 && !pinned) {
         header.classList.add("is-revealing");
-      } else if (delta > 0 && header.classList.contains("is-revealing")) {
+      } else if (delta > 0 && revealing && !pinned) {
         // Resume from the visible position if the scroll reverses during the reveal.
-        hidden = Math.max(0, -header.getBoundingClientRect().top);
+        if (touch.matches) {
+          var transform = getComputedStyle(header).transform;
+          hidden = transform === "none" ? 0 : Math.max(0, -new DOMMatrixReadOnly(transform).m42);
+        } else {
+          hidden = Math.max(0, -header.getBoundingClientRect().top);
+        }
         header.classList.remove("is-revealing");
       }
-      if (delta < 0 || y === 0 || header.matches(":has(:focus-visible, .section-menu[open])")) {
+      if (delta < 0 || y === 0 || pinned) {
         hidden = 0;
       } else {
         hidden = Math.min(height, hidden + delta);
@@ -126,6 +141,14 @@
       var offset = reducedMotion.matches ? (hidden > height / 2 ? height : 0) : hidden;
       if (offset !== lastOffset) header.style.setProperty("--nav-offset", -offset + "px");
       lastOffset = offset;
+    }
+
+    function queueScroll() {
+      if (frame) return;
+      frame = window.requestAnimationFrame(function () {
+        frame = 0;
+        onScroll();
+      });
     }
 
     function measure() {
@@ -140,8 +163,11 @@
     var sizes = new ResizeObserver(measure);
     function syncLayout() {
       sizes.disconnect();
+      window.cancelAnimationFrame(frame);
+      frame = 0;
       window.removeEventListener("resize", measure);
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("scroll", queueScroll);
       header.removeEventListener("pointerdown", onScroll);
       header.classList.remove("is-revealing");
       header.style.removeProperty("--nav-offset");
@@ -154,7 +180,7 @@
         sizes.observe(root);
         sizes.observe(header);
         window.addEventListener("resize", measure);
-        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("scroll", touch.matches ? queueScroll : onScroll, { passive: true });
         // Record a menu- or keyboard-revealed bar before the press changes focus.
         header.addEventListener("pointerdown", onScroll, { passive: true });
       }
@@ -162,6 +188,7 @@
 
     syncLayout();
     compact.addEventListener("change", syncLayout);
+    touch.addEventListener("change", syncLayout);
     reducedMotion.addEventListener("change", syncLayout);
     window.addEventListener("pageshow", syncLayout);
   }
