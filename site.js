@@ -46,7 +46,7 @@
       frame: "assets/floral-frame-ada.png",
     },
     { id: "redwood", caption: "Redwood" },
-    { id: "blank-slate", caption: "Blank Slate" },
+    { id: "blank-slate", caption: "Veil" },
   ];
 
   /* The plates are muted (see index.html), so the image/button may be absent
