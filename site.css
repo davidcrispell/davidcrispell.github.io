@@ -499,16 +499,23 @@ a:hover {
    in index.html; when the plates come back, drop this block and the
    .theme-cycle markup along with it. */
 .theme-cycle {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 44px minmax(0, max-content) 44px;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  column-gap: 8px;
   margin-top: 16px;
 }
 
+.theme-cycle .plate-nav {
+  width: 100%;
+  height: 44px;
+}
+
 .theme-cycle__label {
+  grid-area: 1 / 2;
   min-width: 0;
+  overflow-wrap: anywhere;
   color: var(--muted);
   font-size: 15px;
   font-style: italic;
@@ -516,7 +523,12 @@ a:hover {
   transition: color 520ms ease;
 }
 
+.theme-cycle__label[aria-hidden="true"] {
+  visibility: hidden;
+}
+
 .theme-cycle .plate-no {
+  white-space: nowrap;
   margin-right: 0.55em;
   color: var(--accent-2);
   font-size: 12px;

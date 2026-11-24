@@ -57,6 +57,27 @@
     return;
   }
 
+  function renderCaption(label, palette) {
+    label.textContent = palette.caption;
+    if (palette.plate) {
+      var number = document.createElement("span");
+      number.className = "plate-no";
+      number.textContent = palette.plate;
+      label.prepend(number, " ");
+    }
+  }
+
+  // Size the center column for every visible palette, including wrapped captions.
+  if (artCaption && artCaption.classList.contains("theme-cycle__label")) {
+    palettes.forEach(function (palette) {
+      var label = document.createElement("span");
+      label.className = "theme-cycle__label";
+      label.setAttribute("aria-hidden", "true");
+      renderCaption(label, palette);
+      artCaption.before(label);
+    });
+  }
+
   function showImage(index) {
     if (!artImage || !palettes[index].src) {
       return;
@@ -132,13 +153,7 @@
       }
     }
     if (artCaption) {
-      artCaption.textContent = palette.caption;
-      if (palette.plate) {
-        var number = document.createElement("span");
-        number.className = "plate-no";
-        number.textContent = palette.plate;
-        artCaption.prepend(number, " ");
-      }
+      renderCaption(artCaption, palette);
     }
     if (artButton) {
       artButton.hidden = !palette.src;
