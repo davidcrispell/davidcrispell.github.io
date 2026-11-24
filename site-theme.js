@@ -99,7 +99,6 @@
     var header = document.querySelector(".home-header, .reader-rail, .ai-contact-page .site-header");
     if (!header) return;
     var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    var travelRatio = 0.65;
     var bottom = 0;
     var height = 0;
     var hidden = 0;
@@ -119,7 +118,7 @@
       if (delta < 0 || y === 0 || header.matches(":has(:focus-visible, .section-menu[open])")) {
         hidden = 0;
       } else {
-        hidden = Math.min(height, hidden + delta * travelRatio);
+        hidden = Math.min(height, hidden + delta);
       }
       lastY = y;
       // Move the fixed box itself so pointer hit testing follows its painted position.
