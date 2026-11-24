@@ -45,8 +45,8 @@
       caption: "Ada Lovelace",
       frame: "assets/floral-frame-ada.png",
     },
-    { id: "redwood", caption: "Redwood" },
-    { id: "blank-slate", caption: "Veil" },
+    { id: "redwood", plate: "Plate V", caption: "Redwood" },
+    { id: "blank-slate", plate: "Plate VI", caption: "Veil" },
   ];
 
   /* The plates are muted (see index.html), so the image/button may be absent
